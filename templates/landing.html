@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>로그인</title>
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/reset.css') }}"
+    />
+    <!-------------------------------------------------------------------------->
+
+    <!-- CSS 연결 -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/landing.css') }}"
+    />
+
+    <!-------------------------------------------------------------------------->
+
+    <!-- Javascript 연결 -->
+    <script
+      src="{{ url_for('static', path='javascript/landing.js') }}"
+      defer
+    ></script>
+
+    <!-------------------------------------------------------------------------->
+  </head>
+  <body>
+    <div class="parent">
+      <div class="left">
+        <img
+          id="character"
+          src="{{ url_for('static', path='images/ari_character.svg') }}"
+          alt=""
+        />
+      </div>
+
+      <div class="right">
+        <div class="right_child">
+          <h1>아리에 오신것을 환영합니다!</h1>
+          <form method="post" action="/api/login">
+            <input
+              type="text"
+              placeholder="이름을 입력해주세요"
+              id="username"
+              name="username"
+              required
+            /><br />
+            <input
+              type="text"
+              placeholder="전화번호를 입력해주세요"
+              id="phonenumber"
+              name="phonenumber"
+              oninput="oninputPhone(this)"
+              maxlength="13"
+              required
+            /><br />
+            <input
+              type="password"
+              placeholder="4자리 PIN을 입력해주세요"
+              id="PINCode"
+              name="PINCode"
+              oninput="onPINCode(this)"
+              maxlength="4"
+              required
+            /><br />
+            <button type="submit">로그인</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
