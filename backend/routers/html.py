@@ -13,7 +13,7 @@ def isLogined(username):
         return False
 
 
-router = APIRouter()
+router = APIRouter(tags=["HTML"])
 templates = Jinja2Templates(directory="../front-web/templates")
 
 

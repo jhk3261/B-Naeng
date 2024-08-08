@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Form, Response, Depends, Request
 from fastapi.responses import RedirectResponse
 
-router = APIRouter()
+router = APIRouter(tags=["인증"])
 isAuthenticated = False
 
 
