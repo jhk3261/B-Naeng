@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>QR 로그인</title>
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    />
+    <!-------------------------------------------------------------------------->
+
+    <!-- CSS 연결 -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/reset.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/QR/landing.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+      integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm"
+      crossorigin="anonymous"
+    />
+
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+    <!-- Javascript 연결 -->
+    <script
+      src="{{ url_for('static', path='javascript/QR/landing.js') }}"
+      defer
+    ></script>
+
+    <!-------------------------------------------------------------------------->
+  </head>
+  <body>
+    <!-- 헤더 영역 -->
+    <header id="header_container">
+      <span class="header_timer">00:00:00</span>
+      <i class="header_wifi fas fa-wifi"></i>
+    </header>
+
+    <div id="fancy_background"></div>
+    <!-- 상단 -->
+    <section id="please_login">
+      "<span style="color: #2c8832">QR코드를 인식</span>하여<br />
+      로그인 해주세요."
+    </section>
+
+    <!-- 중앙 -->
+    <section id="QR_section">
+      <div class="QR_background"></div>
+    </section>
+
+    <!-- 하단 -->
+    <section id="logo_section">
+      <img
+        src="{{ url_for('static', path='images/QR/main_logo_with_text.svg' )}}"
+        alt=""
+      />
+    </section>
+  </body>
+</html>
