@@ -1,3 +1,27 @@
+@font-face {
+  font-family: "GmarketSansLight";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GmarketSansMedium";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GmarketSansBold";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
 a,
 abbr,
 acronym,
@@ -85,7 +109,7 @@ video {
   margin: 0;
   padding: 0;
   vertical-align: baseline;
-  font-family: "Pretendard";
+  font-family: "GmarketSansBold";
 }
 article,
 aside,
@@ -99,21 +123,21 @@ menu,
 nav,
 section {
   display: block;
-  font-family: "Pretendard";
+  font-family: "GmarketSansBold";
 }
 body {
   line-height: 1;
-  font-family: "Pretendard";
+  font-family: "GmarketSansBold";
 }
 ol,
 ul {
   list-style: none;
-  font-family: "Pretendard";
+  font-family: "GmarketSansBold";
 }
 blockquote,
 q {
   quotes: none;
-  font-family: "Pretendard";
+  font-family: "GmarketSansBold";
 }
 blockquote:after,
 blockquote:before,
@@ -121,10 +145,10 @@ q:after,
 q:before {
   content: "";
   content: none;
-  font-family: "Pretendard";
+  font-family: "GmarketSansBold";
 }
 table {
   border-collapse: collapse;
   border-spacing: 0;
-  font-family: "Pretendard";
+  font-family: "GmarketSansBold";
 }

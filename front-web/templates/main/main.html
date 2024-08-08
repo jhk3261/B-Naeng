@@ -6,27 +6,45 @@
     <title>메인</title>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', path='css/reset.css') }}"
+      href="{{ url_for('static', path='css/main/main.css' )}}"
     />
-    <!-------------------------------------------------------------------------->
-
-    <!-- CSS 연결 -->
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', path='css/main/main.css') }}"
-    />
-
-    <!-------------------------------------------------------------------------->
-
-    <!-- Javascript 연결 -->
-    <script
-      src="{{ url_for('static', path='javascript/main/main.js') }}"
-      defer
-    ></script>
-
-    <!-------------------------------------------------------------------------->
   </head>
   <body>
-    <h1>지아 메인 페이지</h1>
+    <!-- logo -->
+    <article class="logoTextBox">
+      <img
+        class="logo"
+        src="{{ url_for('static', path='images/main/btnLogo.png' )}}"
+      />
+      <div class="textBox">
+        <div class="titleDetileText">비</div>
+        <div class="titleText">워줘!</div>
+        <div class="titleDetileText">냉</div>
+        <div class="titleText">장고!</div>
+      </div>
+    </article>
+
+    <!-- button -->
+    <article class="btnSection">
+      <div class="btn1">
+        <div class="mainText">재고 관리</div>
+        <div class="btnTextBox">
+          <div class="subText">소비기한이 얼마남지 않은 식품이</div>
+          <div class="detileText">&nbsp;3</div>
+          <div class="subText">개 있어요</div>
+        </div>
+      </div>
+    </article>
+
+    <article>
+      <div class="btn2">
+        <div class="mainText">추천 메뉴</div>
+        <div class="btnTextBox">
+          <div class="subText">오늘 점심은</div>
+          <div class="detileText">&nbsp;갈비찜</div>
+          <div class="subText">&nbsp;어떠신가요?</div>
+        </div>
+      </div>
+    </article>
   </body>
 </html>
