@@ -3,16 +3,6 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from urllib.parse import unquote
 
-
-def isLogined(username):
-    try:
-        tmp_username = unquote(username)
-        if tmp_username:
-            return True
-    except:
-        return False
-
-
 router = APIRouter(tags=["HTML"])
 templates = Jinja2Templates(directory="../front-web/templates")
 
