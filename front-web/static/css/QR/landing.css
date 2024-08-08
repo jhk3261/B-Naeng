@@ -1,0 +1,152 @@
+body {
+  background: linear-gradient(
+    to bottom,
+    #ecf6ea 0%,
+    white 25%,
+    white 75%,
+    #ecf6ea 100%
+  );
+  height: 100vh;
+}
+
+#fancy_background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../../images/QR/fancy.svg") no-repeat center center;
+  z-index: -1;
+}
+
+/* 헤더 영역 */
+
+#header_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  height: 50px;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.header_timer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header_wifi {
+  margin-left: auto;
+  margin-right: 2rem;
+  font-weight: bold;
+}
+
+/* 상단 멘트 영역 */
+
+#please_login {
+  font-size: 70px;
+  font-weight: bold;
+  text-align: center;
+  color: #82c65b;
+  margin: 100px 0 100px 0;
+}
+
+/* 중앙 QR 영역 */
+
+#QR_section {
+  display: flex;
+  justify-content: center;
+  margin: 100px 0 100px 0;
+}
+
+.QR_background {
+  background-color: #ecf6ea;
+  width: 706px;
+  height: 706px;
+  border-radius: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* 이미지 위치를 상대적으로 설정 */
+}
+
+.QR_background canvas {
+  width: 500px;
+  height: 500px;
+}
+
+/* 하단 로고 영역 */
+#logo_section {
+  text-align: center;
+  margin: 100px 0 100px 0;
+}
+
+/* 로딩 CSS */
+.loader {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 3em;
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+}
+.loader,
+.loader:before,
+.loader:after {
+  animation: 1s infinite ease-in-out;
+}
+.loader:before,
+.loader:after {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.loader-black {
+  background-color: rgb(130, 198, 91);
+}
+.loader-6 {
+  animation: loader6-1 1.5s infinite linear;
+}
+.loader-6:before,
+.loader-6:after {
+  content: "";
+  margin: -25px 0 0 -25px;
+  top: 50%;
+  left: 50%;
+  background-color: rgba(130, 198, 91, 0.7);
+  animation-name: loader6-2;
+}
+.loader-6:after {
+  animation-direction: reverse;
+}
+
+@keyframes loader6-1 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader6-2 {
+  0% {
+    transform: scale(0.2);
+    left: 0%;
+  }
+  50% {
+    transform: scale(1);
+    left: 50%;
+  }
+  100% {
+    transform: scale(0.2);
+    left: 100%;
+  }
+}

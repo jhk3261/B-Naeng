@@ -13,38 +13,20 @@ def isLogined(username):
         return False
 
 
-router = APIRouter()
+router = APIRouter(tags=["HTML"])
 templates = Jinja2Templates(directory="../front-web/templates")
 
 
 @router.get("/", response_class=HTMLResponse)
-async def landing(
-    request: Request, login_error: bool = False, username: str = Cookie(None)
-):
-    # if isLogined(username):
-    #     return RedirectResponse(url="/main")
-    # else:
-        return templates.TemplateResponse(
-            "landing.html", {"request": request, "login_error": login_error}
-        )
+async def landing(request: Request):
+    return templates.TemplateResponse("QR/landing.html", {"request": request})
 
 
 @router.get("/main", response_class=HTMLResponse)
-async def main(request: Request, username: str = Cookie(None)):
-    # if not isLogined(username):
-    #     return RedirectResponse(url="/")
-
-    return templates.TemplateResponse(
-        "main.html", {"request": request, "username": username}
-    )
+async def main(request: Request):
+    return templates.TemplateResponse("main/main.html", {"request": request})
 
 
-@router.get("/payment", response_class=HTMLResponse)
-async def payment(request: Request, counselor_item: int, username: str = Cookie(None)):
-    # if not isLogined(username):
-    #     return RedirectResponse(url="/")
-
-    return templates.TemplateResponse(
-        "payment.html",
-        {"request": request, "username": username, "counselor_item": counselor_item},
-    )
+@router.get("/mobile_authenticated", response_class=HTMLResponse)
+async def mobile_authenticated(request: Request):
+    return templates.TemplateResponse("QR/mobileQRResponse.html", {"request": request})
