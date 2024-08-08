@@ -1,0 +1,16 @@
+### 가상환경 구성
+
+1. anaconda 환경
+2. python=3.10
+3. eg. conda create -n B_Naeng python=3.10
+4. conda activate B_Naeng
+
+### 서버 실행
+
+1. B-Naeng 폴더(backend 폴더, front-web 폴더, 그리고 '.gitignore' 파일이 보이는 폴더)를 열고 터미널을 연다.
+2. conda activate 가상환경명
+3. cd backend
+4. (\*필요시) pip install -r requirements.txt
+5. python main.py
+
+#### (알림) QR 코드 스캔을 통한 페이지 리디렉션은 '배포 환경'에서만 작동합니다.
