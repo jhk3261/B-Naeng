@@ -1,10 +1,11 @@
 const REFRIGERATOR_ID = 2422;
 let intervalId;
+let SERVER_ADDRESS = location.host;
 
 const createAndShowQRCode = () => {
   let QR_background = document.getElementsByClassName("QR_background")[0];
   let qrCode = new QRCode(QR_background, {
-    text: `http://203.255.3.121/api/QRLogin/${REFRIGERATOR_ID}`,
+    text: `http://${SERVER_ADDRESS}/api/QRLogin/${REFRIGERATOR_ID}`,
     width: 500,
     height: 500,
     colorDark: "#000000",
