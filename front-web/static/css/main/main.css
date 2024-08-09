@@ -65,6 +65,7 @@ body {
 /* button */
 .btn1,
 .btn2 {
+  border: none;
   border-radius: 50px;
 
   width: 52rem;
