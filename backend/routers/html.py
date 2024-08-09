@@ -20,3 +20,9 @@ async def main(request: Request):
 @router.get("/mobile_authenticated", response_class=HTMLResponse)
 async def mobile_authenticated(request: Request):
     return templates.TemplateResponse("QR/mobileQRResponse.html", {"request": request})
+
+
+# 재고 리스트
+@router.get("/stock_list", response_class=HTMLResponse)
+async def stock_list(request : Request):
+    return templates.TemplateResponse("stock/stockList.html", {"request" : request})
