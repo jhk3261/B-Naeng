@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/stock/stockList.css') }}">
+    <script src="{{ url_for('static', path='javascript/stock/stockList.js') }}" defer></script>
+    <title>B-Naeng Stock List</title>
+</head>
+<body>
+    <header>
+        <div class="moveBefore"></div>
+        <div class="stockManagement">재고 관리</div>
+        <div class="addStock">적용</div>
+    </header>
+    <main>
+        <div class="modal">
+            <div class="modalPopup">
+                <div class="countStocks-modal"></div>
+                <div class="itemBox-modal">
+                    <div class="expirationDate-modal"></div>
+                    <div class="itemImg-modal"></div>
+                    <div class="itemName-modal"></div>
+                </div>
+            </div>
+        </div>
+        <ul>
+            <li class="itemContainer">
+                <div class="foodCategory"><span class="item">육류</span></div>
+                <div class="stockBox">
+                    <div class="slideLeft"></div>
+                    <!-- 재고 리스트 박스 -->
+                    <div class="stockListContainer">
+                        <ul>
+                            <li class="left1DayBox itemList">
+                                <div class="countStocks left1DayBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 1</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">돼지고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 10</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">베이컨</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 10</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">베이컨</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="slideRight"></div>
+                </div>
+            </li>
+            <li>
+                <div class="foodCategory"><span class="item">소스</span></div>
+                <div class="stockBox">
+                    <div class="slideLeft"></div>
+                    <div class="stockListContainer">
+                        <ul>
+                            <li class="left1DayBox itemList">
+                                <div class="countStocks left1DayBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 1</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">돼지고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 10</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">베이컨</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 10</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">베이컨</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="slideRight"></div>
+                </div>
+            </li>
+            <li>
+                <div class="foodCategory"><span class="item">유제품</span></div>
+                <div class="stockBox">
+                    <div class="slideLeft"></div>
+                    <div class="stockListContainer">
+                        <ul>
+                            <li class="left1DayBox itemList">
+                                <div class="countStocks left1DayBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 1</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">돼지고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 10</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">베이컨</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 10</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">베이컨</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="slideRight"></div>
+                </div>
+            </li>
+            <li>
+                <div class="foodCategory"><span class="item">채소</span></div>
+                <div class="stockBox">
+                    <div class="slideLeft"></div>
+                    <div class="stockListContainer">
+                        <ul>
+                            <li class="left1DayBox itemList">
+                                <div class="countStocks left1DayBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 1</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">돼지고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 10</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">베이컨</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">2</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 10</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">베이컨</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">1</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 2</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">소고기 100g</div>
+                                </div>
+                            </li>
+                            <li class="leftDaysBox itemList">
+                                <div class="countStocks leftDaysBox">3</div>
+                                <div class="itemBox">
+                                    <div class="expirationDate">D - 8</div>
+                                    <div class="itemImg">🍖</div>
+                                    <div class="itemName">닭가슴살</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="slideRight"></div>
+                </div>
+            </li>
+        </ul>
+    </main>
+</body>
+</html>
