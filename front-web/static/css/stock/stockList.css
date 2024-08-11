@@ -251,7 +251,8 @@ body.modal-open::before {
     transform: translate(-50%, -50%);
     top: 50%;
     left: 50%;
-    width: 80%;
+    width: 70%;
+    height: 70%;
 }
 
 .countStocks-modal {
@@ -262,23 +263,41 @@ body.modal-open::before {
     align-items: center;
 
     transform: translate(-50%, -50%);
-    left: 560px;
+    left: 500px;
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    font-size: 60px;
+    font-size: 50px;
     backdrop-filter: none;
     filter: none;
+}
+.upBtn {
+    background-image: url('../../images/stock/upBtn.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 30px;
+    height: 20px;
+    margin-right: 2vw;
+}
+.downBtn {
+    background-image: url('../../images/stock/downBtn.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 30px;
+    height: 20px;
+    margin-right: 2vw;
 }
 
 .expirationDate-modal {
     font-size: 60px;
-    margin: 3vh auto 10vh auto;
+    margin: 10% auto 13% auto;
 }
 .itemImg-modal {
-    font-size: 200px;
+    font-size: 150px;
 }
 .itemName-modal {
     font-size: 50px;
-    margin: 10vh auto 3vh auto;
+    margin: 13% auto 10% auto;
 }
