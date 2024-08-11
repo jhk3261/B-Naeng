@@ -1,0 +1,132 @@
+@font-face {
+    font-family: "GmarketSansLight";
+    src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff")
+      format("woff");
+    font-weight: normal;
+    font-style: normal;
+  }
+
+@font-face {
+font-family: "GmarketSansMedium";
+src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff")
+    format("woff");
+font-weight: normal;
+font-style: normal;
+}
+
+@font-face {
+font-family: "GmarketSansBold";
+src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff")
+    format("woff");
+font-weight: normal;
+font-style: normal;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(#f1f9f0, #ffffff, #f1f9f0);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/*section*/
+.section1 {
+    width: fit-content;
+
+    text-align: center;
+
+    margin-bottom: 10rem;
+}
+
+.section2 {
+    width: fit-content;
+
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.title {
+    font-size: 60px;
+
+    color: #449C4A;
+
+    margin-bottom: 3rem;
+}
+
+/*card*/
+.swiper-slide {
+    width: 350px !important;
+    height: 350px !important;
+
+    border: 3px solid #E5E5E5;
+    border-radius: 30px;
+
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+
+    box-sizing: border-box;
+    padding: 1rem;
+
+    margin: 0 1rem;
+}
+.card-item .food {
+    height: 200px;
+    margin-bottom: 2rem;
+}
+.card-item .foodName {
+    font-size: 36px;
+    
+    color: #8EC96D;
+    margin-bottom: 1.5rem;
+}
+
+#header_container {
+    position: fixed;
+    top:0;
+    left:0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 50px;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  
+.header_timer {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.header_wifi {
+    margin-left: auto;
+    margin-right: 2rem;
+    font-weight: bold;
+}
+
+/*modal*/
+.modal {
+    width: 850px;
+    height: 600px;
+
+    border: 3.5px solid #8EC96D;
+    border-radius: 40px;
+    background-color: #fff;
+
+    position: absolute;
+    top:30%; left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 999;
+}
