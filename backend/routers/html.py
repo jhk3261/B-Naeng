@@ -20,3 +20,7 @@ async def main(request: Request):
 @router.get("/mobile_authenticated", response_class=HTMLResponse)
 async def mobile_authenticated(request: Request):
     return templates.TemplateResponse("QR/mobileQRResponse.html", {"request": request})
+
+@router.get("/recommend", response_class=HTMLResponse)
+async def mobile_authenticated(request: Request):
+    return templates.TemplateResponse("stock/recommend.html", {"request": request})
