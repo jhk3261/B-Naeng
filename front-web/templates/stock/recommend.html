@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>메인</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/stock/recommend.css' )}}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/reset.css') }}"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <script src="https://kit.fontawesome.com/32afc995e9.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="{{ url_for('static', path='/javascript/stock/recommend.js') }}" defer></script>
+  </head>
+  <body>
+    <!-- 헤더 영역 -->
+    <header id="header_container">
+        <span class="header_timer">00:00:00</span>
+        <i class="header_wifi fas fa-wifi"></i>
+    </header>
+    <article class="section1">
+        <h1 class="title">나의 냉장고 추천 메뉴</h1>
+        <div class="container">
+            <div class="slider-wrapper mySwiper">
+                <div class="card-list swiper-wrapper">
+                    <div class="card-item swiper-slide">
+                        <img src="{{ url_for('static', path='images/stock/food1.png') }}" class="food" />
+                        <h2 class="foodName">아보카도 덮밥</h2>
+                    </div>
+                    <div class="card-item swiper-slide">
+                        <img src="{{ url_for('static', path='images/stock/food2.png') }}" class="food" />
+                        <h2 class="foodName">포케</h2>
+                    </div>
+                    <div class="card-item swiper-slide">
+                        <img src="{{ url_for('static', path='images/stock/food3.png') }}" class="food" />
+                        <h2 class="foodName">두부 덮밥</h2>
+                    </div>
+                </div>
+
+                <div class="swiper-pagination"></div>
+
+            </div>
+        </div>
+    </article>
+    <article class="section2">
+        <h1 class="title">한 두개만 더 있다면?</h1>
+        <div class="container">
+            <div class="slider-wrapper mySwiper">
+                <div class="card-list swiper-wrapper">
+                    <div class="card-item swiper-slide">
+                        <img src="{{ url_for('static', path='images/stock/food4.png') }}" class="food" />
+                        <h2 class="foodName">다이어트 식단</h2>
+                    </div>
+                    <div class="card-item swiper-slide">
+                        <img src="{{ url_for('static', path='images/stock/food5.png') }}" class="food" />
+                        <h2 class="foodName">쭈꾸미 볶음</h2>
+                    </div>
+                    <div class="card-item swiper-slide">
+                        <img src="{{ url_for('static', path='images/stock/food6.png') }}" class="food" />
+                        <h2 class="foodName">삼겹살 볶음밥</h2>
+                    </div>
+                </div>
+
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </article>
+    <!-- <div class="modal"> -->
+        <div class="foodInfoWrap">
+            <img src="{{ url_for('static', path='images/stock/food1.png') }}" class="infoFood"/>
+            <div class="foodInfo">
+                <h1 class="title">아보카도 덮밥</h1>
+                <i class="fa-regular fa-star"></i>
+            </div>
+            <p class="foodMatterWrap">재료: <span class="matter">밥, 아보카도, 계란</span></p>
+        </div>
+        <div class="foodRecipe">
+            <ol>
+                <li>잘 씻은 쌀로 밥을 짓는다.</li>
+                <li>그릇에 밥을 옮겨 담는다.</li>
+                <li>계란 프라이를 밥 위에 올린다</li>
+                <li>마지막으로 아보카도를 얇게 썰어서 올린다.</li>
+            </ol>
+        </div>
+    </div>
+  </body>
+</html>
