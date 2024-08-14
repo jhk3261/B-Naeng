@@ -30,29 +30,31 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
     margin: 0;
     box-sizing: border-box;
+
+    overflow: hidden;
 }
 
 /*section*/
 .section1 {
-    width: fit-content;
 
     text-align: center;
 
     margin-bottom: 10rem;
+    margin-left: 3.5rem;
 }
 
 .section2 {
-    width: fit-content;
-
     text-align: center;
+
     margin-bottom: 5rem;
+    margin-left: 3.5rem;
+    
 }
 
 .title {
-    font-size: 60px;
+    font-size: 48px;
 
     color: #449C4A;
 
@@ -61,52 +63,69 @@ body {
 
 /*card*/
 .swiper-slide {
-    width: 350px !important;
-    height: 350px !important;
+    width: 275px !important;
+    height: 275px !important;
 
-    border: 3px solid #E5E5E5;
-    border-radius: 30px;
+    border: 3px solid #E5E5E5 !important;
+    border-radius: 30px !important;
 
     display: flex !important;
     flex-direction: column;
-    justify-content: flex-end;
     align-items: center;
 
     box-sizing: border-box;
     padding: 1rem;
 
-    margin: 0 1rem;
 }
-.card-item .food {
-    height: 200px;
-    margin-bottom: 2rem;
+.swiper-slide .food {
+    height: 150px;
+    margin: 1rem 0rem;
 }
-.card-item .foodName {
+.swiper-slide .foodName {
     font-size: 36px;
     
     color: #8EC96D;
-    margin-bottom: 1.5rem;
+    margin: .75rem 0;
+}
+/*swiper*/
+.swiper-pagination {
+    position: relative !important;
+    top: 2rem !important;
+}
+.swiper-pagination span {
+    width: 24px;
+    height: 24px;
+    background-color: #8EC96D;
+}
+.swiper-pagination2 {
+    position: relative !important;
+    top: 2rem !important;
+}
+.swiper-pagination2 span {
+    width: 24px;
+    height: 24px;
+    background-color: #8EC96D;
 }
 
+/*header*/
 #header_container {
     position: fixed;
-    top:0;
-    left:0;
+    top:0; left:0;
 
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
     height: 50px;
     padding: 10px;
     font-weight: bold;
     font-size: 1.5rem;
-  }
-  
+
+    width: 100%;
+}
 .header_timer {
-    position: absolute;
+    position: relative;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%);
 }
 
 .header_wifi {
