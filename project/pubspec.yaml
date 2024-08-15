@@ -23,11 +23,22 @@ flutter:
 
   assets:
     - assets/profile.png
+
     - assets/family.png
     - assets/fridge.png
-    - assets/downArrow.png
     - assets/rightArrow.png
+
+    - assets/upArrow.png
+    - assets/downArrow.png
     - assets/star.png
+
+    - assets/img1.png
+    - assets/img2.png
+    - assets/img3.png
+    - assets/img4.png
+
+    - assets/heart.png
+    - assets/comment.png
 
   fonts:
     - family: GmarketSansBold
