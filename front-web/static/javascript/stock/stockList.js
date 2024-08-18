@@ -29,11 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
             stockListContainer.style.transform = `translateX(-${slideAmount}px)`;
         }
     });
-});
 
-
-
-document.addEventListener('DOMContentLoaded', function() {
+    // 모달 띄우기
     const modal = document.querySelector('.modal');
     const modalOpens = document.querySelectorAll('.itemList');
 
@@ -46,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const name = this.querySelector('.itemName').textContent;
             const count = this.querySelector('.countStocks').textContent;
 
-            modal.querySelector('.countStocks-modal').textContent = count;
+            modal.querySelector('.count').textContent = count;
             modal.querySelector('.expirationDate-modal').textContent = expiration;
             modal.querySelector('.itemImg-modal').textContent = img;
             modal.querySelector('.itemName-modal').textContent = name;
@@ -64,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.modalPopup').style.backgroundColor = bgColor;
             document.querySelector('.modalPopup').style.border = border;
             
+            this.classList.add('on');
             modal.classList.add('on');
             document.body.classList.add('modal-open');
 
@@ -79,7 +77,47 @@ document.addEventListener('DOMContentLoaded', function() {
         if (modal.classList.contains('on') && !modal.querySelector('.modalPopup').contains(event.target)) {
             modal.classList.remove('on');
             document.body.classList.remove('modal-open');
-
+            
+            const openItem = document.querySelector('.itemList.on');
+            if (openItem) {
+                openItem.classList.remove('on');
+            }
         }
     });
+
+    // 재고 수량 변경 부분
+    const upBtn = modal.querySelector('.upBtn');
+    const downBtn = modal.querySelector('.downBtn');
+    const countElement = modal.querySelector('.count');
+
+    // 재고 추가
+    upBtn.addEventListener('click', function() {
+        let currentCount = parseInt(countElement.textContent);
+        currentCount += 1;
+        countElement.textContent = currentCount;
+        updateOriginalItemCount(currentCount); // 업뎃
+    });
+
+    // 재고 삭제
+    downBtn.addEventListener('click', function() {
+        let currentCount = parseInt(countElement.textContent);
+        if (currentCount > 0) { 
+            currentCount -= 1;
+            countElement.textContent = currentCount;
+            updateOriginalItemCount(currentCount); // 업뎃
+        }
+    });
+
+    // html 값 수정 put 하는 부분
+    function updateOriginalItemCount(newCount) {
+        const originalItem = document.querySelector('.itemList.on .countStocks');
+        if (originalItem) {
+            originalItem.textContent = newCount;
+        }
+    }
+});
+
+// 뒤로가기
+document.getElementById('moveBefore').addEventListener('click', function() {
+    window.location.href = '/main';
 });
