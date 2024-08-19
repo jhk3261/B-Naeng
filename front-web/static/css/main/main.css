@@ -40,14 +40,14 @@ body {
   font-size: 3rem;
 
   display: flex;
-  margin: 3rem 0 2rem 0;
+  margin: -2rem 0 2rem 0;
 }
 
 .textBox {
   display: flex;
   align-items: center;
 
-  margin: 0 1rem;
+  /* margin: 0 1rem; */
 }
 
 .titleDetileText {
@@ -68,8 +68,9 @@ body {
   border: none;
   border-radius: 50px;
 
-  width: 52rem;
-  height: 29rem;
+  /* width: 52rem; */
+  width: 80vw;
+  height: 35vh;
 
   display: flex;
   flex-direction: column;
