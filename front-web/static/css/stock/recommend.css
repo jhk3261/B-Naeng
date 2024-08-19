@@ -53,6 +53,10 @@ body {
     
 }
 
+.section1 > h1 {
+    margin-top: 2vh;
+}
+
 .title {
     font-size: 48px;
 
@@ -63,8 +67,8 @@ body {
 
 /*card*/
 .swiper-slide {
-    width: 275px !important;
-    height: 275px !important;
+    width: 250px !important;
+    height: 250px !important;
 
     border: 3px solid #E5E5E5 !important;
     border-radius: 30px !important;
@@ -78,11 +82,12 @@ body {
 
 }
 .swiper-slide .food {
-    height: 150px;
+    height: 140px;
+    width: 140px;
     margin: 1rem 0rem;
 }
 .swiper-slide .foodName {
-    font-size: 36px;
+    font-size: 30px;
     
     color: #8EC96D;
     margin: .75rem 0;

@@ -24,7 +24,13 @@ async def favicon():
 
 
 # HOST와 PORT 설정
-HOST = "127.0.0.1"
+# HOST = "127.0.0.1"
+# PORT = 8000
+
+# if __name__ == "__main__":
+#     uvicorn.run("main:app", host=HOST, port=PORT, reload=True)
+
+HOST = "0.0.0.0"
 PORT = 8000
 
 if __name__ == "__main__":
