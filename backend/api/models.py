@@ -13,6 +13,23 @@ class User(Base):
     phonenumber = Column(String, unique=True, nullable=False)
     pincode = Column(Integer, nullable=False)
 
+    ingredients = relationship("Ingredient", back_populates="user")
+
+
+class Ingredient(Base):
+    __tablename__ = "ingredients"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    contents = Column(Text, nullable=False)
+
+    user = relationship("User", back_populates="ingredients")
+    # chats = relationship('Chat', back_populates='ingredient')
+
+    # chat에 아래 코드 두 줄 들어가야 함
+    # ingredient_id = Column(Integer, ForeignKey('ingredients.id'), nullable=False)
+    # ingredient = relationship('Ingredient', back_populates='chats')
+
 
 class Tip(Base):
     __tablename__ = "tips"
