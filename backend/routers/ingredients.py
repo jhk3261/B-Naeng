@@ -5,19 +5,21 @@ from api.models import Ingredient
 from config.database import get_db
 from typing import List
 
-router = APIRouter(tags=["재료"])
+router = APIRouter(tags=["식재료"])
 
 
-# pydantic 모델
+# 식재료 생성 모델
 class IngredientCreate(BaseModel):
     user_id: int
     contents: str
 
 
+# 식재료 업데이트 모델
 class IngredientUpdate(BaseModel):
     contents: str
 
 
+# 식재료 조회 모델
 class IngredientResponse(BaseModel):
     id: int
     user_id: int
@@ -27,7 +29,7 @@ class IngredientResponse(BaseModel):
         from_attributes = True
 
 
-# 재료 추가
+# 식재료 추가
 @router.post("/ingredients/", response_model=IngredientResponse)
 def create_ingredient(ingredient: IngredientCreate, db: Session = Depends(get_db)):
     db_ingredient = Ingredient(user_id=ingredient.user_id, contents=ingredient.contents)
@@ -37,7 +39,7 @@ def create_ingredient(ingredient: IngredientCreate, db: Session = Depends(get_db
     return db_ingredient
 
 
-# 재료 조회
+# 식재료 조회
 @router.get("/ingredients/{ingredient_id}", response_model=IngredientResponse)
 def read_ingredient(ingredient_id: int, db: Session = Depends(get_db)):
     db_ingredient = db.query(Ingredient).filter(Ingredient.id == ingredient_id).first()
@@ -46,7 +48,7 @@ def read_ingredient(ingredient_id: int, db: Session = Depends(get_db)):
     return db_ingredient
 
 
-# 재료 업데이트
+# 식재료 업데이트
 @router.put("/ingredients/{ingredient_id}", response_model=IngredientResponse)
 def update_ingredient(
     ingredient_id: int, ingredient: IngredientUpdate, db: Session = Depends(get_db)
@@ -60,7 +62,7 @@ def update_ingredient(
     return db_ingredient
 
 
-# 재료 삭제
+# 식재료 삭제
 @router.delete("/ingredients/{ingredient_id}", response_model=IngredientResponse)
 def delete_ingredient(ingredient_id: int, db: Session = Depends(get_db)):
     db_ingredient = db.query(Ingredient).filter(Ingredient.id == ingredient_id).first()
@@ -71,7 +73,7 @@ def delete_ingredient(ingredient_id: int, db: Session = Depends(get_db)):
     return db_ingredient
 
 
-# 재료 조회
+# 식재료 조회
 @router.get("/ingredients/", response_model=List[IngredientResponse])
 def read_ingredients(db: Session = Depends(get_db)):
     db_ingredients = db.query(Ingredient).all()

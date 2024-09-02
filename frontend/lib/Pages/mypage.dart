@@ -28,6 +28,132 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState(cameras: cameras);
 }
 
+// 사용하기 페이지
+class UsePointsPage extends StatefulWidget {
+  const UsePointsPage({super.key});
+
+  @override
+  _UsePointsPageState createState() => _UsePointsPageState();
+}
+
+class _UsePointsPageState extends State<UsePointsPage> {
+  int _selectedAmount = 10000; // 초기값 설정
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('사용하기'),
+        backgroundColor: Colors.white,
+        elevation: 0, // 그림자 제거
+        centerTitle: true, // 제목을 가운데 정렬
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '보유 중인 그린 포인트',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              '10000 gp',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF4CAF50), // 녹색
+              ),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildRadioButton(10000, '10000원'),
+                  _buildRadioButton(20000, '20000원'),
+                  _buildRadioButton(30000, '30000원'),
+                  _buildRadioButton(40000, '40000원'),
+                  _buildRadioButton(50000, '50000원'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  // 변경하기 버튼 클릭 시 처리할 로직
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4CAF50), // 녹색
+                  padding: const EdgeInsets.symmetric(vertical: 15.0),
+                  textStyle: const TextStyle(fontSize: 18),
+                  minimumSize: const Size(double.infinity, 50), // 버튼 가로 채우기
+                ),
+                child: const Text('변경하기'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRadioButton(int value, String label) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedAmount = value;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: _selectedAmount == value
+                ? const Color(0xFF4CAF50)
+                : Colors.grey.shade300,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              _selectedAmount == value
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_unchecked,
+              color: _selectedAmount == value
+                  ? const Color(0xFF4CAF50)
+                  : Colors.grey,
+            ),
+            const SizedBox(width: 10),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 18,
+                color: _selectedAmount == value
+                    ? const Color(0xFF4CAF50)
+                    : Colors.black,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _ProfilePageState extends State<ProfilePage> {
   final List<CameraDescription> cameras;
 
@@ -38,6 +164,87 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       isScrapExpanded = !isScrapExpanded;
     });
+  }
+
+  // 냉장고 팝업
+  void showFridgeDetails(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            height: 300, // 필요에 따라 높이 조정 가능
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      '냉장고 소유 목록',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop(); // 다이얼로그 닫기
+                      },
+                      child: const Icon(Icons.close, color: Colors.black),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      ListTile(
+                        title: const Text(
+                          '현재 선택된 냉장고',
+                          style: TextStyle(color: Colors.green),
+                        ),
+                        trailing: const Text(
+                          '관리',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        onTap: () {
+                          // 여기에서 필요한 로직 구현
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('2번 냉장고'),
+                        trailing: const Text(
+                          '관리',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        onTap: () {
+                          // 여기에서 필요한 로직 구현
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('3번 냉장고'),
+                        trailing: const Text(
+                          '관리',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        onTap: () {
+                          // 여기에서 필요한 로직 구현
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -152,69 +359,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
 
-                // 가족 구성원 및 냉장고 섹션
+                // 냉장고 섹션
                 const SizedBox(height: 30),
                 Row(
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.transparent,
-                            child: Image.asset(
-                              'assets/images/family.png',
-                              width: 43,
-                              height: 43,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SizedBox(width: 15),
-                              const Text(
-                                '가족 구성원',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontFamily: 'GmarketSansMedium',
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              const Text(
-                                '4',
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontFamily: 'GmarketSansBold',
-                                ),
-                              ),
-                              const SizedBox(width: 2),
-                              const Text(
-                                '명',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontFamily: 'GmarketSansMedium',
-                                ),
-                              ),
-                              const SizedBox(width: 3),
-                              Image.asset(
-                                'assets/images/rightArrow.png',
-                                width: 18,
-                                height: 18,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 1,
-                      height: 90,
-                      color: const Color.fromARGB(255, 173, 173, 173),
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                    ),
-                    // Fridge Information
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -258,13 +406,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               const SizedBox(width: 3),
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          QRScan(cameras: cameras),
-                                    ),
-                                  );
+                                  showFridgeDetails(
+                                      context); // 화살표 아이콘을 클릭했을 때 다이얼로그를 표시
                                 },
                                 child: Image.asset(
                                   'assets/images/rightArrow.png',
@@ -274,7 +417,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               const SizedBox(width: 10),
                             ],
-                          ),
+                          )
                         ],
                       ),
                     ),
@@ -465,23 +608,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ]),
-    );
-  }
-}
-
-// 사용하기 페이지 (임시)
-class UsePointsPage extends StatelessWidget {
-  const UsePointsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('사용하기'),
-      ),
-      body: const Center(
-        child: Text('대충 사용하기 페이지 어쩌궁... 피그마 만든 게 없던데 그냥 없앨까...'),
-      ),
     );
   }
 }
