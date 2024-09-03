@@ -1,4 +1,4 @@
-from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text, Boolean
 from config.database import Base
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
@@ -16,19 +16,20 @@ class User(Base):
     ingredients = relationship("Ingredient", back_populates="user")
 
 
+# 식재료 나눔 커뮤니티
 class Ingredient(Base):
     __tablename__ = "ingredients"
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String, nullable=False)
+    image_url = Column(String, nullable=True) # 이미지 url 저장
     contents = Column(Text, nullable=False)
+    is_shared = Column(Boolean, default=False, nullable=False)
+    ingredient_id = Column(Integer, ForeignKey('ingredients.id'), nullable=True)
 
     user = relationship("User", back_populates="ingredients")
-    # chats = relationship('Chat', back_populates='ingredient')
-
-    # chat에 아래 코드 두 줄 들어가야 함
-    # ingredient_id = Column(Integer, ForeignKey('ingredients.id'), nullable=False)
-    # ingredient = relationship('Ingredient', back_populates='chats')
+    chats = relationship('Chat', back_populates='ingredient')
 
 
 class Tip(Base):

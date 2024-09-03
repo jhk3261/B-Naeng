@@ -39,7 +39,7 @@ def create_ingredient(ingredient: IngredientCreate, db: Session = Depends(get_db
     return db_ingredient
 
 
-# 식재료 조회
+# 특정 식재료 조회
 @router.get("/ingredients/{ingredient_id}", response_model=IngredientResponse)
 def read_ingredient(ingredient_id: int, db: Session = Depends(get_db)):
     db_ingredient = db.query(Ingredient).filter(Ingredient.id == ingredient_id).first()
@@ -73,8 +73,10 @@ def delete_ingredient(ingredient_id: int, db: Session = Depends(get_db)):
     return db_ingredient
 
 
-# 식재료 조회
+# 모든 식재료 조회
 @router.get("/ingredients/", response_model=List[IngredientResponse])
 def read_ingredients(db: Session = Depends(get_db)):
     db_ingredients = db.query(Ingredient).all()
     return db_ingredients
+
+# 게시글 형식처럼??? 수정 (tips처럼)
