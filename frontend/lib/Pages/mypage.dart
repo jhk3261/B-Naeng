@@ -43,7 +43,6 @@ class _UsePointsPageState extends State<UsePointsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('사용하기'),
         backgroundColor: Colors.white,
         elevation: 0, // 그림자 제거
         centerTitle: true, // 제목을 가운데 정렬
@@ -64,6 +63,7 @@ class _UsePointsPageState extends State<UsePointsPage> {
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey,
+                fontFamily: 'GmarketSansMedium',
               ),
             ),
             const SizedBox(height: 10),
@@ -71,7 +71,7 @@ class _UsePointsPageState extends State<UsePointsPage> {
               '10000 gp',
               style: TextStyle(
                 fontSize: 30,
-                fontWeight: FontWeight.bold,
+                fontFamily: 'GmarketSansBold',
                 color: Color(0xFF4CAF50), // 녹색
               ),
             ),
@@ -96,10 +96,18 @@ class _UsePointsPageState extends State<UsePointsPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4CAF50), // 녹색
                   padding: const EdgeInsets.symmetric(vertical: 15.0),
-                  textStyle: const TextStyle(fontSize: 18),
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontFamily: 'GmarketSansMedium',
+                  ),
                   minimumSize: const Size(double.infinity, 50), // 버튼 가로 채우기
                 ),
-                child: const Text('변경하기'),
+                child: const Text(
+                  '변경하기',
+                  style: TextStyle(
+                    color: Color(0xffFFFFFF),
+                  ),
+                ),
               ),
             ),
           ],
@@ -142,6 +150,7 @@ class _UsePointsPageState extends State<UsePointsPage> {
               label,
               style: TextStyle(
                 fontSize: 18,
+                fontFamily: 'GmarketSansMedium',
                 color: _selectedAmount == value
                     ? const Color(0xFF4CAF50)
                     : Colors.black,
@@ -188,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       '냉장고 소유 목록',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontFamily: 'GmarketSansBold',
                       ),
                     ),
                     GestureDetector(
@@ -206,31 +215,53 @@ class _ProfilePageState extends State<ProfilePage> {
                       ListTile(
                         title: const Text(
                           '현재 선택된 냉장고',
-                          style: TextStyle(color: Colors.green),
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontFamily: 'GmarketSansMedium',
+                          ),
                         ),
                         trailing: const Text(
                           '관리',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        onTap: () {
-                          // 여기에서 필요한 로직 구현
-                        },
-                      ),
-                      ListTile(
-                        title: const Text('2번 냉장고'),
-                        trailing: const Text(
-                          '관리',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontFamily: 'GmarketSansMedium',
+                          ),
                         ),
                         onTap: () {
                           // 여기에서 필요한 로직 구현
                         },
                       ),
                       ListTile(
-                        title: const Text('3번 냉장고'),
+                        title: const Text(
+                          '2번 냉장고',
+                          style: TextStyle(
+                            fontFamily: 'GmarketSansMedium',
+                          ),
+                        ),
                         trailing: const Text(
                           '관리',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontFamily: 'GmarketSansMedium',
+                          ),
+                        ),
+                        onTap: () {
+                          // 여기에서 필요한 로직 구현
+                        },
+                      ),
+                      ListTile(
+                        title: const Text(
+                          '3번 냉장고',
+                          style: TextStyle(
+                            fontFamily: 'GmarketSansMedium',
+                          ),
+                        ),
+                        trailing: const Text(
+                          '관리',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontFamily: 'GmarketSansMedium',
+                          ),
                         ),
                         onTap: () {
                           // 여기에서 필요한 로직 구현
@@ -315,7 +346,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       const Text(
                         '그린 포인트',
-                        style: TextStyle(fontSize: 14),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'GmarketSansMedium',
+                        ),
                       ),
                       const SizedBox(width: 5),
                       const Expanded(
@@ -326,14 +360,17 @@ class _ProfilePageState extends State<ProfilePage> {
                               '999',
                               style: TextStyle(
                                 fontSize: 17,
-                                fontWeight: FontWeight.bold,
+                                fontFamily: 'GmarketSansBold',
                                 color: Color(0xFF449C4A),
                               ),
                             ),
                             SizedBox(width: 3),
                             Text(
                               '점',
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'GmarketSansMedium',
+                              ),
                             ),
                           ],
                         ),
@@ -351,6 +388,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           '사용하기',
                           style: TextStyle(
                             fontSize: 11,
+                            fontFamily: 'GmarketSansMedium',
                             color: Color.fromARGB(255, 159, 159, 159),
                           ),
                         ),
@@ -455,7 +493,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             const SizedBox(width: 9),
                             const Text(
                               '스크랩',
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'GmarketSansMedium',
+                              ),
                             ),
                           ],
                         ),
@@ -647,7 +688,10 @@ class ScrapItem extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 13),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontFamily: 'GmarketSansMedium',
+                  ),
                   overflow: TextOverflow.ellipsis, // 텍스트 일정 길이 넘어가면 말줄임표 처리
                 ),
                 const SizedBox(height: 10),
@@ -662,7 +706,11 @@ class ScrapItem extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       '$likes',
-                      style: const TextStyle(fontSize: 10, color: Colors.grey),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey,
+                        fontFamily: 'GmarketSansMedium',
+                      ),
                     ),
                     const SizedBox(width: 10),
                     // 코멘트 아이콘을 comment.png로 교체
@@ -674,12 +722,20 @@ class ScrapItem extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       '$comments',
-                      style: const TextStyle(fontSize: 10, color: Colors.grey),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey,
+                        fontFamily: 'GmarketSansMedium',
+                      ),
                     ),
                     const Spacer(),
                     Text(
                       date,
-                      style: const TextStyle(fontSize: 10, color: Colors.grey),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey,
+                        fontFamily: 'GmarketSansMedium',
+                      ),
                     ),
                   ],
                 ),
