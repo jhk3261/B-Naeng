@@ -2,7 +2,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/chat_room.dart';
 import 'package:frontend/Pages/friger.dart';
-import 'package:frontend/Pages/qr_scanner.dart';
 import 'package:frontend/Pages/receipe_recommend.dart';
 import 'package:frontend/Pages/share_ingredient.dart';
 
