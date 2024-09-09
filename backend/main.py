@@ -1,9 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from routers import auth, tips, ingredients
+from routers import auth, tips, ingredients, kakao_auth
 from config.database import engine, Base
 from fastapi.responses import FileResponse
+from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
@@ -13,11 +14,20 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # 데이터베이스 초기화
 Base.metadata.create_all(bind=engine)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"],  
+)
+
 # 라우터 포함
 app.include_router(auth.router)
+app.include_router(html.router)
+app.include_router(kakao_auth.router)
 app.include_router(tips.router)
 app.include_router(ingredients.router)
-
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():

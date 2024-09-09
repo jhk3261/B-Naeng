@@ -15,3 +15,4 @@ async def login(request: Request, refrigerator_id: int):
 @router.get("/api/checkCondition")
 async def check_condition(request: Request):
     return {"condition": isAuthenticated}
+
