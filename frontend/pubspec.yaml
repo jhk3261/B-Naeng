@@ -1,0 +1,42 @@
+name: frontend
+description: "A new Flutter project."
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  camera: ^0.11.0+2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/json/
+
+  fonts:
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard-Regular.otf
+
+    - family: GmarketSansMedium
+      fonts:
+        - asset: assets/fonts/GmarketSansMedium.otf
+
+    - family: GmarketSansBold
+      fonts:
+        - asset: assets/fonts/GmarketSansBold.otf
