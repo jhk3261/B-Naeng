@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 
 class ReceipeShareElement extends StatelessWidget {
+  final int id;
   final bool isShared;
   final String title;
   final String imgPath;
   final String locationDong;
+  final int like_count;
+  final int comment_count;
+  final int scrap_count;
 
   const ReceipeShareElement({
     super.key,
+    required this.id,
     required this.isShared,
     required this.title,
     required this.imgPath,
     required this.locationDong,
+    required this.like_count,
+    required this.comment_count,
+    required this.scrap_count,
   });
 
   @override
@@ -86,7 +94,7 @@ class ReceipeShareElement extends StatelessWidget {
                   icon: const Icon(Icons.favorite, color: Color(0xFF449C4A)),
                   onPressed: () {},
                 ),
-                const Text("122")
+                Text(like_count.toString())
               ],
             ),
             Row(
@@ -95,7 +103,7 @@ class ReceipeShareElement extends StatelessWidget {
                   icon: const Icon(Icons.chat, color: Color(0xFF449C4A)),
                   onPressed: () {},
                 ),
-                const Text("64")
+                Text(comment_count.toString())
               ],
             ),
             Row(
@@ -104,7 +112,7 @@ class ReceipeShareElement extends StatelessWidget {
                   icon: const Icon(Icons.star, color: Color(0xFF449C4A)),
                   onPressed: () {},
                 ),
-                const Text("512")
+                Text(scrap_count.toString())
               ],
             )
           ],

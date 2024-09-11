@@ -4,8 +4,48 @@ import 'package:frontend/Pages/mypage.dart';
 import 'package:frontend/Pages/receipe_recommend.dart';
 import 'package:frontend/widgets/food_element.dart';
 import 'package:camera/camera.dart';
-import 'share_receipe.dart';
+import 'share_tips.dart';
 import 'chat_room.dart';
+
+import 'WritePostPage.dart'; // 글쓰기
+import 'IngredientDetailPage.dart'; // 살세페이지
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+const String baseUrl = 'http://localhost:8000';
+
+// 식재료 생성 (POST 요청)
+Future<void> createIngredient(
+    int userId, String title, String contents, BuildContext context,
+    {String? imageUrl, bool isShared = false}) async {
+  final url = Uri.parse('$baseUrl/ingredients/');
+
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'user_id': userId,
+      'title': title,
+      'contents': contents,
+      'image_url': imageUrl,
+      'is_shared': isShared,
+    }),
+  );
+
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('식재료 생성 성공!')),
+    );
+    print('Ingredient created: ${response.body}');
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('식재료 생성 실패: ${response.statusCode}')),
+    );
+    print('Failed to create ingredient: ${response.statusCode}');
+    throw Exception('Failed to create ingredient');
+  }
+}
 
 class ShareIngredient extends StatelessWidget {
   final List<CameraDescription> cameras;
@@ -49,6 +89,22 @@ class ShareIngredient extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('비냉 나눔터'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WritePostPage(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           Padding(
@@ -56,19 +112,6 @@ class ShareIngredient extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 80),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "비냉 나눔터",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -92,7 +135,7 @@ class ShareIngredient extends StatelessWidget {
                         );
                       },
                       child: const Text(
-                        "레시피 나눔",
+                        "정보 나눔",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -137,11 +180,27 @@ class ShareIngredient extends StatelessWidget {
                     itemCount: foodElements.length,
                     itemBuilder: (context, index) {
                       final food = foodElements[index];
-                      return FoodElement(
-                        isShared: food['isShared'],
-                        title: food['title'],
-                        imgPath: food['imgPath'],
-                        locationDong: food['locationDong'],
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => IngredientDetailPage(
+                                ingredientId: 1,
+                                title: food['title'],
+                                imageUrl: food['imgPath'],
+                                description:
+                                    '구매일자: 2024.09.05\n개인위치: 경상국립대학교 후문',
+                              ),
+                            ),
+                          );
+                        },
+                        child: FoodElement(
+                          isShared: food['isShared'],
+                          title: food['title'],
+                          imgPath: food['imgPath'],
+                          locationDong: food['locationDong'],
+                        ),
                       );
                     },
                   ),
@@ -183,7 +242,9 @@ class ShareIngredient extends StatelessWidget {
                           Icons.people,
                           color: Color(0xFF8EC96D),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          createIngredient(1, '새 식재료', '설명', context);
+                        },
                       ),
                       const Text("나눔터"),
                     ],
