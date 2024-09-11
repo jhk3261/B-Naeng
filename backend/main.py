@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from routers import auth, tips, ingredients, kakao_auth
+from routers import auth, tips, ingredients, kakao_auth, users, recipe
 from config.database import engine, Base
 from fastapi.responses import FileResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -24,10 +24,12 @@ app.add_middleware(
 
 # 라우터 포함
 app.include_router(auth.router)
-app.include_router(html.router)
+# app.include_router(html.router)
 app.include_router(kakao_auth.router)
 app.include_router(tips.router)
 app.include_router(ingredients.router)
+app.include_router(users.router)
+app.include_router(recipe.router)
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
