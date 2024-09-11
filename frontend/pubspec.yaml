@@ -33,9 +33,11 @@ flutter:
     - family: Pretendard
       fonts:
         - asset: assets/fonts/Pretendard-Regular.otf
-    - family: GmarketSans
+
+    - family: GmarketSansMedium
       fonts:
         - asset: assets/fonts/GmarketSansMedium.otf
+
     - family: GmarketSansBold
       fonts:
         - asset: assets/fonts/GmarketSansBold.otf
