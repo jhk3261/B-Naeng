@@ -4,7 +4,7 @@ import 'package:frontend/Pages/mypage.dart';
 import 'package:frontend/Pages/receipe_recommend.dart';
 import 'package:frontend/widgets/food_element.dart';
 import 'package:camera/camera.dart';
-import 'share_receipe.dart';
+import 'share_tips.dart';
 import 'chat_room.dart';
 
 import 'WritePostPage.dart'; // 글쓰기
@@ -135,7 +135,7 @@ class ShareIngredient extends StatelessWidget {
                         );
                       },
                       child: const Text(
-                        "레시피 나눔",
+                        "정보 나눔",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

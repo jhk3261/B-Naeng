@@ -210,8 +210,8 @@ class Friger extends StatelessWidget {
                                       width: 44,
                                     ),
                                     PlusBtn(
-                                      cameras: cameras,
-                                    ),
+                                        //cameras: cameras,
+                                        ),
                                   ],
                                 )
                               ]),
@@ -310,8 +310,8 @@ class Friger extends StatelessWidget {
                                       width: 44,
                                     ),
                                     PlusBtn(
-                                      cameras: cameras,
-                                    ),
+                                        //cameras: cameras,
+                                        ),
                                   ],
                                 )
                               ]),
@@ -396,8 +396,8 @@ class Friger extends StatelessWidget {
                                       width: 44,
                                     ),
                                     PlusBtn(
-                                      cameras: cameras,
-                                    ),
+                                        // cameras: cameras,
+                                        ),
                                   ],
                                 )
                               ]),
