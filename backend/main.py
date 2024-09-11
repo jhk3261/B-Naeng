@@ -4,8 +4,23 @@ from fastapi.staticfiles import StaticFiles
 from routers import auth, tips, ingredients
 from config.database import engine, Base
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+
+# CORS 설정 추가
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 또는 허용할 도메인 목록
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 
 # static 폴더 연결
 app.mount("/static", StaticFiles(directory="static"), name="static")

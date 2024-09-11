@@ -23,13 +23,14 @@ class Ingredient(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String, nullable=False)
-    image_url = Column(String, nullable=True) # 이미지 url 저장
     contents = Column(Text, nullable=False)
+    image_url = Column(String, nullable=True)
     is_shared = Column(Boolean, default=False, nullable=False)
-    ingredient_id = Column(Integer, ForeignKey('ingredients.id'), nullable=True)
 
     user = relationship("User", back_populates="ingredients")
-    chats = relationship('Chat', back_populates='ingredient')
+    likes = relationship("Like", back_populates="ingredient", cascade="all, delete-orphan")
+    comments = relationship("Comment", back_populates="ingredient", cascade="all, delete-orphan")
+    scraps = relationship("Scrap", back_populates="ingredient", cascade="all, delete-orphan")
 
 
 class Tip(Base):
@@ -42,38 +43,45 @@ class Tip(Base):
     pictures = Column(JSON, nullable=True)
 
     likes = relationship("Like", back_populates="tip", cascade="all, delete-orphan")
-    comments = relationship(
-        "Comment", back_populates="tip", cascade="all, delete-orphan"
-    )
+    comments = relationship("Comment", back_populates="tip", cascade="all, delete-orphan")
     scraps = relationship("Scrap", back_populates="tip", cascade="all, delete-orphan")
 
 
+# 좋아요 모델
 class Like(Base):
     __tablename__ = "likes"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, nullable=False)
-    tip_id = Column(Integer, ForeignKey("tips.id"), nullable=False)
+    tip_id = Column(Integer, ForeignKey("tips.id"), nullable=True)
+    ingredient_id = Column(Integer, ForeignKey("ingredients.id"), nullable=True)
 
     tip = relationship("Tip", back_populates="likes")
+    ingredient = relationship("Ingredient", back_populates="likes")
 
 
+# 댓글 모델
 class Comment(Base):
     __tablename__ = "comments"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, nullable=False)
-    tip_id = Column(Integer, ForeignKey("tips.id"), nullable=False)
+    tip_id = Column(Integer, ForeignKey("tips.id"), nullable=True)
+    ingredient_id = Column(Integer, ForeignKey("ingredients.id"), nullable=True)
     content = Column(Text, nullable=False)
 
     tip = relationship("Tip", back_populates="comments")
+    ingredient = relationship("Ingredient", back_populates="comments")
 
 
+# 스크랩 모델
 class Scrap(Base):
     __tablename__ = "scraps"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, nullable=False)
-    tip_id = Column(Integer, ForeignKey("tips.id"), nullable=False)
+    tip_id = Column(Integer, ForeignKey("tips.id"), nullable=True)
+    ingredient_id = Column(Integer, ForeignKey("ingredients.id"), nullable=True)
 
     tip = relationship("Tip", back_populates="scraps")
+    ingredient = relationship("Ingredient", back_populates="scraps")

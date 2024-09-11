@@ -67,7 +67,7 @@ class _UsePointsPageState extends State<UsePointsPage> {
             ),
             const SizedBox(height: 10),
             const Text(
-              '10000 gp',
+              '0 gp',
               style: TextStyle(
                 fontSize: 30,
                 fontFamily: 'GmarketSansBold',
