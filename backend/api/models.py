@@ -22,6 +22,7 @@ class Tip(Base):
     contents = Column(Text, nullable=False)
     category = Column(Integer, nullable=False)  # 0: 레시피, 1: 특가, 2: 냉장고 팁
     pictures = Column(JSON, nullable=True)
+    locationDong = Column(Text, nullable=False)
 
     likes = relationship("Like", back_populates="tip", cascade="all, delete-orphan")
     comments = relationship(

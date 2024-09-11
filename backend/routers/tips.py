@@ -21,7 +21,7 @@ class LikeResponse(BaseModel):
     user_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 ############ 댓글 모델 형식 ############
@@ -38,7 +38,7 @@ class CommentResponse(BaseModel):
     content: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 ############ 스크랩 모델 형식 ############
@@ -53,7 +53,7 @@ class ScrapResponse(BaseModel):
     user_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 ############ 팁 모델 형식 ############
@@ -64,6 +64,7 @@ class TipCreate(BaseModel):
     contents: str
     category: int
     pictures: List[str] = []
+    locationDong: str
 
 
 class TipResponse(TipCreate):
@@ -76,12 +77,13 @@ class TipResponseWithCounts(BaseModel):
     contents: str
     category: int
     pictures: List[str]
+    locationDong: str
     like_count: int
     comment_count: int
     scrap_count: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class TipDetailsResponse(TipResponse):
@@ -90,7 +92,7 @@ class TipDetailsResponse(TipResponse):
     comments: List[CommentResponse]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # 1. Tip 생성
@@ -101,6 +103,7 @@ def create_tip(tip: TipCreate, db: Session = Depends(get_db)):
         contents=tip.contents,
         category=tip.category,
         pictures=tip.pictures,
+        locationDong=tip.locationDong,
     )
     db.add(db_tip)
     db.commit()
@@ -123,6 +126,7 @@ def get_tips(db: Session = Depends(get_db)):
                 contents=tip.contents,
                 category=tip.category,
                 pictures=tip.pictures,
+                locationDong=tip.locationDong,
                 like_count=len(tip.likes),
                 comment_count=len(tip.comments),
                 scrap_count=len(tip.scraps),
@@ -145,6 +149,7 @@ def get_tip(tip_id: int, db: Session = Depends(get_db)):
         contents=db_tip.contents,
         category=db_tip.category,
         pictures=db_tip.pictures,
+        locationDong=db_tip.locationDong,
         like_count=len(db_tip.likes),
         comments=[
             CommentResponse(
