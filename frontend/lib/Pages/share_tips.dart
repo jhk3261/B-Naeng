@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/Pages/tip_detail.dart';
+import 'package:http/http.dart' as http;
 import 'package:frontend/Pages/chat_room.dart';
 import 'package:frontend/Pages/friger.dart';
 import 'package:frontend/Pages/mypage.dart';
@@ -7,46 +11,60 @@ import 'package:frontend/Pages/receipe_recommend.dart';
 import 'package:frontend/Pages/share_ingredient.dart';
 import 'package:frontend/widgets/receipe_element.dart';
 
-class ShareReceipe extends StatelessWidget {
+class ShareReceipe extends StatefulWidget {
   final List<CameraDescription> cameras;
 
   const ShareReceipe({super.key, required this.cameras});
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> receipes = [
-      {
-        'isShared': true,
-        'title': '소고기 요리 꿅팁 방출~',
-        'imgPath': 'assets/images/beef.jpg',
-        'locationDong': '가좌동',
-      },
-      {
-        'isShared': true,
-        'title': '등갈비, 이렇게하면 뼈가 쏙쏙 빠져요~',
-        'imgPath': 'assets/images/backrip.jpg',
-        'locationDong': '초전동',
-      },
-      {
-        'isShared': false,
-        'title': '라면과 최고 조합인 김치는?!!!!',
-        'imgPath': 'assets/images/kimchi.jpg',
-        'locationDong': '금산면',
-      },
-      {
-        'isShared': true,
-        'title': '스팸으로 만드는 10가지 요리법',
-        'imgPath': 'assets/images/spam.jpg',
-        'locationDong': '정촌면',
-      },
-      {
-        'isShared': true,
-        'title': '햇반으로 만드는 고슬고슬 황금밥알 볶음밥',
-        'imgPath': 'assets/images/rice.jpeg',
-        'locationDong': '충무공동',
-      }
-    ];
+  _ShareReceipeState createState() => _ShareReceipeState();
+}
 
+class _ShareReceipeState extends State<ShareReceipe> {
+  List<Map<String, dynamic>> receipes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchReceipes();
+  }
+
+  Future<void> fetchReceipes() async {
+    final url = Uri.parse('http://127.0.0.1:8000/tips');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+
+        // isShared를 랜덤하게 추가
+        final random = Random();
+        receipes = data.map((item) {
+          return {
+            'id': item['id'],
+            'isShared': random.nextBool(), // true 또는 false 랜덤하게 설정
+            'title': item['title'],
+            'pictures': item['pictures'],
+            'locationDong': item['locationDong'],
+            'like_count': item['like_count'],
+            'comment_count': item['comment_count'],
+            'scrap_count': item['scrap_count'],
+          };
+        }).toList();
+
+        print(receipes);
+
+        setState(() {});
+      } else {
+        throw Exception('Failed to load receipes');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
@@ -75,13 +93,12 @@ class ShareReceipe extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        // 수정
                         onTap: () {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  ShareIngredient(cameras: cameras),
+                                  ShareIngredient(cameras: widget.cameras),
                             ),
                           );
                         },
@@ -95,7 +112,7 @@ class ShareReceipe extends StatelessWidget {
                         ),
                       ),
                       const Text(
-                        "레시피 나눔",
+                        "정보 나눔",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -133,17 +150,33 @@ class ShareReceipe extends StatelessWidget {
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 1,
                         childAspectRatio: 1.5,
-                        crossAxisSpacing: 5, // 간격 줄이기
-                        mainAxisSpacing: 5, // 간격 줄이기
+                        crossAxisSpacing: 5,
+                        mainAxisSpacing: 5,
                       ),
                       itemCount: receipes.length,
                       itemBuilder: (context, index) {
                         final r = receipes[index];
-                        return ReceipeShareElement(
-                          isShared: r['isShared'],
-                          title: r['title'],
-                          imgPath: r['imgPath'],
-                          locationDong: r["locationDong"],
+                        return GestureDetector(
+                          onTap: () {
+                            // 터치 시 ReceipeDetailPage로 이동하면서 id를 전달
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ReceipeDetailPage(id: r['id']),
+                              ),
+                            );
+                          },
+                          child: ReceipeShareElement(
+                            id: r['id'],
+                            isShared: r['isShared'],
+                            title: r['title'],
+                            imgPath: r['pictures'][0],
+                            locationDong: r['locationDong'],
+                            like_count: r['like_count'],
+                            comment_count: r['comment_count'],
+                            scrap_count: r['scrap_count'],
+                          ),
                         );
                       },
                     ),
@@ -170,7 +203,7 @@ class ShareReceipe extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    ReceipeRecommend(cameras: cameras),
+                                    ReceipeRecommend(cameras: widget.cameras),
                               ),
                             );
                           },
@@ -198,7 +231,8 @@ class ShareReceipe extends StatelessWidget {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Friger(cameras: cameras),
+                                builder: (context) =>
+                                    Friger(cameras: widget.cameras),
                               ),
                             );
                           },
@@ -215,7 +249,7 @@ class ShareReceipe extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    ChatRoom(cameras: cameras),
+                                    ChatRoom(cameras: widget.cameras),
                               ),
                             );
                           },
@@ -231,7 +265,8 @@ class ShareReceipe extends StatelessWidget {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => MyPage(cameras: cameras),
+                                builder: (context) =>
+                                    MyPage(cameras: widget.cameras),
                               ),
                             );
                           },

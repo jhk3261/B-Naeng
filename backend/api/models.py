@@ -6,17 +6,19 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.sqlite import JSON
 
-
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
     username = Column(String, nullable=False)
-    phonenumber = Column(String, unique=True, nullable=False)
-    pincode = Column(Integer, nullable=False)
+    email = Column(String, unique=True, nullable=False)
 
     ingredients = relationship("Ingredient", back_populates="user")
 
+class Chat(Base): # 에러 때문에 임의로 추가
+    __tablename__ = "chats"
+    id = Column(Integer, primary_key=True)
+    ingredient = relationship("Ingredient", back_populates="chat")
 
 # 식재료 나눔 커뮤니티
 class Ingredient(Base):
@@ -29,9 +31,10 @@ class Ingredient(Base):
     contents = Column(Text, nullable=False)
     is_shared = Column(Boolean, default=False, nullable=False)
     ingredient_id = Column(Integer, ForeignKey('ingredients.id'), nullable=True)
-
+    chat_id = Column(Integer, ForeignKey('chats.id'))
+    
     user = relationship("User", back_populates="ingredients")
-    chats = relationship('Chat', back_populates='ingredient')
+    chat = relationship('Chat', back_populates='ingredient')
 
 
 class Tip(Base):
@@ -42,6 +45,7 @@ class Tip(Base):
     contents = Column(Text, nullable=False)
     category = Column(Integer, nullable=False)  # 0: 레시피, 1: 특가, 2: 냉장고 팁
     pictures = Column(JSON, nullable=True)
+    locationDong = Column(Text, nullable=False)
 
     likes = relationship("Like", back_populates="tip", cascade="all, delete-orphan")
     comments = relationship(
@@ -106,3 +110,9 @@ class Inventory(Base):
 
     friger_id = Column(Integer, ForeignKey("friger.id"))
     friger = relationship("Friger", back_populates="inventory_list")
+    
+class RecommendRecipe(Base):
+    __tablename__ = "recommendrecipes"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
