@@ -1,22 +1,24 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/bill_scanner.dart';
+import 'package:frontend/Pages/food_create.dart';
 
 class PlusBtn extends StatelessWidget {
-  final List<CameraDescription> cameras;
+  // final List<CameraDescription> cameras;
 
-  const PlusBtn({super.key, required this.cameras});
+  const PlusBtn({super.key});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => BillScan(
-                    cameras: cameras,
-                  )),
+              // builder: (context) => BillScan(
+              //       cameras: cameras,
+              //     )),
+              builder: (context) => FoodCreate()),
         );
       },
       child: Container(
