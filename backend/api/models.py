@@ -1,6 +1,6 @@
-from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text, Boolean
+from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text, Boolean, DateTime
 from random import random
-from sqlalchemy import JSON, Column, Date, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Column, Date, ForeignKey, Integer, String, Text, JSON
 from config.database import Base
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
@@ -9,9 +9,15 @@ from sqlalchemy.dialects.sqlite import JSON
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
+    nickname = Column(String, nullable=False)
+    birth = Column(DateTime, nullable=False)
+    gender = Column(Integer, nullable=False)
+    recommender = Column(String, nullable=True)
+    location = Column(String, nullable=False)
+    friger = Column(JSON, nullable=False)
 
     ingredients = relationship("Ingredient", back_populates="user")
 
