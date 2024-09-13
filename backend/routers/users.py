@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 from typing import Optional
-from jose import JWTError, jwt
+from jose import jwt, JWTError
 from config.database import get_db, get_session
 from dotenv import load_dotenv
 from api.models import User

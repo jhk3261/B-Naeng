@@ -33,6 +33,34 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool isScrapExpanded = false;
+  late Future<UserProfile> userProfile;
+  late Future<List<ScrapItem>> scrapItems;
+
+  @override
+  void initState() {
+    super.initState();
+    userProfile = fetchUserProfile();
+    scrapItems = fetchScrapItems();
+  }
+
+  Future<UserProfile> fetchUserProfile() async {
+    final response = await http.get(Uri.parse('$apiUrl/mypage/1')); // userId를 1로 예시, 실제 값 사용 필요
+    if (response.statusCode == 200) {
+      return UserProfile.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load user profile');
+    }
+  }
+
+  Future<List<ScrapItem>> fetchScrapItems() async {
+    final response = await http.get(Uri.parse('$apiUrl/scrap_items/1')); // userId를 1로 예시, 실제 값 사용 필요
+    if (response.statusCode == 200) {
+      List<dynamic> jsonList = jsonDecode(response.body);
+      return jsonList.map((json) => ScrapItem.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load scrap items');
+    }
+  }
 
   void toggleScrapSection() {
     setState(() {
@@ -51,14 +79,70 @@ class _ProfilePageState extends State<ProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 40),
-                buildProfileSection(),
+                FutureBuilder<UserProfile>(
+                  future: userProfile,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      final profile = snapshot.data!;
+                      return buildProfileSection(profile);
+                    } else {
+                      return Center(child: Text('No data available'));
+                    }
+                  },
+                ),
                 const SizedBox(height: 15),
-                buildGreenPoints(context),
+                FutureBuilder<UserProfile>(
+                  future: userProfile,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      final profile = snapshot.data!;
+                      return buildGreenPoints(context, profile);
+                    } else {
+                      return Center(child: Text('No data available'));
+                    }
+                  },
+                ),
                 const SizedBox(height: 30),
-                buildFridgeSection(context),
+                FutureBuilder<UserProfile>(
+                  future: userProfile,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      final profile = snapshot.data!;
+                      return buildFridgeSection(context, profile);
+                    } else {
+                      return Center(child: Text('No data available'));
+                    }
+                  },
+                ),
                 const SizedBox(height: 16),
                 buildScrapSection(),
-                if (isScrapExpanded) buildScrapList(),
+                if (isScrapExpanded) FutureBuilder<List<ScrapItem>>(
+                  future: scrapItems,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      final items = snapshot.data!;
+                      return buildScrapList(items);
+                    } else {
+                      return Center(child: Text('No data available'));
+                    }
+                  },
+                ),
               ],
             ),
           ),
@@ -69,7 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   // 프로필 섹션
-  Widget buildProfileSection() {
+  Widget buildProfileSection(UserProfile profile) {
     return Container(
       width: double.infinity,
       height: 150,
@@ -81,21 +165,21 @@ class _ProfilePageState extends State<ProfilePage> {
           CircleAvatar(
             radius: 30,
             backgroundColor: Colors.transparent,
-            child: Image.asset('assets/images/profile.png'),
+            backgroundImage: NetworkImage(profile.profileImageUrl),
           ),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Text(
-                '홍길동',
-                style: TextStyle(
+                '홍길동', // 실제 사용자 이름으로 변경 필요
+                style: const TextStyle(
                   fontSize: 20,
                   fontFamily: 'GmarketSansBold',
                 ),
               ),
-              SizedBox(width: 4),
-              Text(
+              const SizedBox(width: 4),
+              const Text(
                 '님',
                 style: TextStyle(
                   fontSize: 13,
@@ -110,7 +194,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   // 그린 포인트 섹션
-  Widget buildGreenPoints(BuildContext context) {
+  Widget buildGreenPoints(BuildContext context, UserProfile profile) {
     return Container(
       height: 45,
       decoration: BoxDecoration(
@@ -129,10 +213,10 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           const SizedBox(width: 5),
-          const Expanded(
+          Expanded(
             child: Text(
-              '999 점',
-              style: TextStyle(
+              '${profile.greenPoints} 점',
+              style: const TextStyle(
                 fontSize: 17,
                 fontFamily: 'GmarketSansBold',
                 color: Color(0xFF449C4A),
@@ -162,7 +246,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   // 냉장고 섹션
-  Widget buildFridgeSection(BuildContext context) {
+  Widget buildFridgeSection(BuildContext context, UserProfile profile) {
     return Row(
       children: [
         Expanded(
@@ -190,9 +274,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const Text(
-                    '2 대',
-                    style: TextStyle(
+                  Text(
+                    '${profile.fridgeCount} 대',
+                    style: const TextStyle(
                       fontSize: 17,
                       fontFamily: 'GmarketSansBold',
                     ),
@@ -260,7 +344,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   // 스크랩 리스트
-  Widget buildScrapList() {
+  Widget buildScrapList(List<ScrapItem> items) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       height: isScrapExpanded ? 300.0 : 0.0,
@@ -268,33 +352,16 @@ class _ProfilePageState extends State<ProfilePage> {
         thumbVisibility: true,
         thickness: 4.0,
         radius: const Radius.circular(5),
-        child: ListView(
-          children: const [
-            ScrapItem(
-                image: 'assets/images/img1.png',
-                title: '당근이 남아돌 때 꿀 팁!!',
-                likes: 122,
-                comments: 65,
-                date: '2024.06.28'),
-            ScrapItem(
-                image: 'assets/images/img2.png',
-                title: '쌈 채소 드려요',
-                likes: 62,
-                comments: 13,
-                date: '2024.05.12'),
-            ScrapItem(
-                image: 'assets/images/img3.png',
-                title: '삼겹살 800g',
-                likes: 5,
-                comments: 0,
-                date: '2024.07.12'),
-            ScrapItem(
-                image: 'assets/images/img4.png',
-                title: '아보카도 덮밥 레시피',
-                likes: 100,
-                comments: 0,
-                date: '2024.06.28'),
-          ],
+        child: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return ListTile(
+              leading: Image.asset(item.image),
+              title: Text(item.title),
+              subtitle: Text('${item.likes} likes, ${item.comments} comments, ${item.date}'),
+            );
+          },
         ),
       ),
     );
@@ -405,29 +472,50 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-// 스크랩 아이템 클래스
-class ScrapItem extends StatelessWidget {
+// 사용자 프로필 데이터 모델
+class UserProfile {
+  final String profileImageUrl;
+  final int greenPoints;
+  final int fridgeCount;
+
+  UserProfile({
+    required this.profileImageUrl,
+    required this.greenPoints,
+    required this.fridgeCount,
+  });
+
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+      profileImageUrl: json['profileImageUrl'],
+      greenPoints: json['greenPoints'],
+      fridgeCount: json['fridgeCount'],
+    );
+  }
+}
+
+// 스크랩 아이템 데이터 모델
+class ScrapItem {
   final String image;
   final String title;
   final int likes;
   final int comments;
   final String date;
 
-  const ScrapItem({
-    Key? key,
+  ScrapItem({
     required this.image,
     required this.title,
     required this.likes,
     required this.comments,
     required this.date,
-  }) : super(key: key);
+  });
 
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Image.asset(image),
-      title: Text(title),
-      subtitle: Text('$likes likes, $comments comments, $date'),
+  factory ScrapItem.fromJson(Map<String, dynamic> json) {
+    return ScrapItem(
+      image: json['image'],
+      title: json['title'],
+      likes: json['likes'],
+      comments: json['comments'],
+      date: json['date'],
     );
   }
 }

@@ -6,19 +6,25 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.sqlite import JSON
 
+
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
     username = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
+    is_admin = Column(Boolean, default=False, nullable=False)
 
     ingredients = relationship("Ingredient", back_populates="user")
+    mypage = relationship("MyPage", uselist=False, back_populates="user")
+    owned_friger = relationship("Friger", back_populates="owner")
+    
 
 class Chat(Base): # 에러 때문에 임의로 추가
     __tablename__ = "chats"
     id = Column(Integer, primary_key=True)
     ingredient = relationship("Ingredient", back_populates="chat")
+
 
 # 식재료 나눔 커뮤니티
 class Ingredient(Base):
@@ -35,6 +41,20 @@ class Ingredient(Base):
     likes = relationship("Like", back_populates="ingredient", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="ingredient", cascade="all, delete-orphan")
     scraps = relationship("Scrap", back_populates="ingredient", cascade="all, delete-orphan")
+
+
+# 마이페이지
+class MyPage(Base):
+    __tablename__ = "mypage"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    profile_image_url = Column(String, nullable=True)
+    green_points = Column(Integer, default=0, nullable=False)  # 그린 포인트
+    fridge_count = Column(Integer, default=0, nullable=False)  # 냉장고 개수
+    scrap_expanded = Column(Boolean, default=False, nullable=False)  # 스크랩 섹션 확장 여부
+
+    user = relationship("User", back_populates="mypage")
 
 
 class Tip(Base):
