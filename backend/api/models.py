@@ -1,4 +1,4 @@
-from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text, Boolean
+from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text, Boolean, DateTime, Table
 from random import random
 from sqlalchemy import JSON, Column, Date, ForeignKey, Integer, String, Text
 from config.database import Base
@@ -6,19 +6,30 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.sqlite import JSON
 
+
+friger_user_association = Table(
+    'friger_user_association', Base.metadata,
+    Column('user_id', Integer, ForeignKey('users.id')),
+    Column('friger_id', Integer, ForeignKey('frigers.id'))
+)
+
+
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
+    nickname = Column(String, nullable=False)
+    birth = Column(DateTime, nullable=False)
+    gender = Column(Integer, nullable=False)
+    recommender = Column(String, nullable=True)
+    location = Column(String, nullable=False)
 
-    ingredients = relationship("Ingredient", back_populates="user")
+    owned_friger = relationship("Friger", back_populates="owner", cascade="all, delete-orphan")
+    frigers = relationship("Friger", secondary=friger_user_association, back_populates="users")
+    ingredients = relationship("Ingredient", back_populates="users")
 
-class Chat(Base): # 에러 때문에 임의로 추가
-    __tablename__ = "chats"
-    id = Column(Integer, primary_key=True)
-    ingredient = relationship("Ingredient", back_populates="chat")
 
 # 식재료 나눔 커뮤니티
 class Ingredient(Base):
@@ -31,7 +42,7 @@ class Ingredient(Base):
     image_url = Column(String, nullable=True)
     is_shared = Column(Boolean, default=False, nullable=False)
 
-    user = relationship("User", back_populates="ingredients")
+    users = relationship("User", back_populates="ingredients")
     likes = relationship("Like", back_populates="ingredient", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="ingredient", cascade="all, delete-orphan")
     scraps = relationship("Scrap", back_populates="ingredient", cascade="all, delete-orphan")
@@ -93,7 +104,7 @@ class Scrap(Base):
 
 
 class Friger(Base) :
-    __tablename__ = "friger"
+    __tablename__ = "frigers"
 
     id = Column(Integer, primary_key=True, autoincrement=True) #db에서의 아이디 
     name = Column(String, nullable=False)  # 냉장고 이름
@@ -101,7 +112,7 @@ class Friger(Base) :
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # 대표 유저 ID
 
     inventory_list = relationship("Inventory", back_populates="friger")
-    user_list = relationship("User", secondary='friger_user_association', back_populates="friger_list")
+    users = relationship("User", secondary=friger_user_association, back_populates="frigers")
     owner = relationship("User", back_populates="owned_friger")  # 대표 유저와의 관계 (User모델에 owned_friger추가해주세요(권한가진냉장고리스트))
 
 
@@ -115,9 +126,10 @@ class Inventory(Base):
     #icon = 이미지 어케넣더라.. #milk.png 검색
     category = Column(String, nullable=False)
 
-    friger_id = Column(Integer, ForeignKey("friger.id"))
+    friger_id = Column(Integer, ForeignKey("frigers.id"))
     friger = relationship("Friger", back_populates="inventory_list")
     
+
 class RecommendRecipe(Base):
     __tablename__ = "recommendrecipes"
 
