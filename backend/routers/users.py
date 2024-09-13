@@ -65,6 +65,13 @@ router = APIRouter(tags=["User"])
 class UserLogin(BaseModel):
     email: str
     username: str
+
+    nickname : str
+    birth : datetime
+    gender : int
+    recommender : str
+    location : str
+
     exp: int
 
 class TokenResponse(BaseModel):
@@ -82,7 +89,14 @@ async def login(body: UserLogin, response : Response, db : Session=Depends(get_d
             access_token = create_access_token(body.email, body.exp)
         else:
             # 새로운 유저를 DB에 추가할 때 exp 필드를 포함하지 않음
-            new_user = User(email=body.email, username=body.username)
+            new_user = User(email=body.email, 
+                            username=body.username,
+                            nickname=body.nickname,
+                            birth=body.birth,
+                            gender=body.gender,
+                            recommender=body.recommender,
+                            location=body.location,
+                            )
             db.add(new_user)
             db.commit()
             db.refresh(new_user)
