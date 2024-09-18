@@ -9,11 +9,9 @@ void main() async {
 
   runApp(MaterialApp(
     theme: ThemeData(
-        textTheme: const TextTheme(
-      bodyLarge: TextStyle(fontFamily: 'GmarketSansLight'),
-      bodyMedium: TextStyle(fontFamily: 'GmarketSansMedium'),
-      headlineLarge: TextStyle(fontFamily: 'GmarketSansBold'),
-    )),
+      fontFamily: 'GmarketSansMedium',
+    ),
+    themeMode: ThemeMode.system,
     home: Friger(cameras: cameras),
   ));
 }
