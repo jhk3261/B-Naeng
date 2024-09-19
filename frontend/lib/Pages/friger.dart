@@ -88,7 +88,6 @@ class Friger extends StatelessWidget {
                       Text(
                         "육류",
                         style: TextStyle(
-                          fontFamily: 'GmarketSans',
                           fontSize: 16,
                           color: Color(0xFFCBCBCB),
                         ),
@@ -99,7 +98,6 @@ class Friger extends StatelessWidget {
                       Text(
                         "소스",
                         style: TextStyle(
-                          fontFamily: 'GmarketSans',
                           fontSize: 16,
                           color: Color(0xFFCBCBCB),
                         ),
@@ -110,7 +108,6 @@ class Friger extends StatelessWidget {
                       Text(
                         "유제품",
                         style: TextStyle(
-                          fontFamily: 'GmarketSans',
                           fontSize: 16,
                           color: Color(0xFFCBCBCB),
                         ),
@@ -121,7 +118,6 @@ class Friger extends StatelessWidget {
                       Text(
                         "채소",
                         style: TextStyle(
-                          fontFamily: 'GmarketSans',
                           fontSize: 16,
                           color: Color(0xFFCBCBCB),
                         ),
