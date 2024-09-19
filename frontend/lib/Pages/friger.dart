@@ -1,16 +1,31 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/chat_room.dart';
+import 'package:frontend/Pages/friger_change.dart';
 import 'package:frontend/Pages/mypage.dart';
 import 'package:frontend/Pages/receipe_recommend.dart';
 import 'package:frontend/Pages/share_ingredient.dart';
 import 'package:frontend/widgets/friger_food.dart';
 import 'package:frontend/widgets/plus_btn.dart';
 
-class Friger extends StatelessWidget {
+class Friger extends StatefulWidget {
   final List<CameraDescription> cameras;
 
   const Friger({super.key, required this.cameras});
+
+  @override
+  State<Friger> createState() => _FrigerState();
+}
+
+class _FrigerState extends State<Friger> {
+  Map<String, dynamic>? currentFridge;
+
+  @override
+  void initState() {
+    super.initState();
+    // 기본값 설정
+    currentFridge = {'name': '홍길동', 'user_count': 1};
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +37,8 @@ class Friger extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -31,34 +46,43 @@ class Friger extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            "홍길동",
+                            '${currentFridge?['name']}',
                             style: TextStyle(
                                 fontFamily: 'GmarketSansBold',
                                 fontSize: 24,
                                 color: Color(0xFF449C4A)),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 5,
                           ),
-                          Text(
-                            "님의 냉장고",
+                          const Text(
+                            "냉장고",
                             style: TextStyle(
                               fontFamily: 'GmarketSansBold',
-                              fontSize: 18,
+                              fontSize: 20,
                               color: Color(0xFF8EC96D),
                             ),
                           ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Icon(
-                            Icons.repeat_rounded,
+                          IconButton(
+                            onPressed: () async {
+                              final selectedFridge = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FrigerChange()),
+                              );
+                              // 선택된 냉장고로 현재 냉장고 변경
+                              if (selectedFridge != null) {
+                                setState(() {
+                                  currentFridge = selectedFridge;
+                                });
+                              }
+                            },
                             color: Color(0xFFCBCBCB),
-                            size: 18,
+                            icon: const Icon(Icons.repeat_rounded),
                           ),
                         ],
                       ),
-                      Icon(
+                      const Icon(
                         Icons.alarm,
                         color: Color(0xFF449C4A),
                         size: 24,
@@ -76,7 +100,6 @@ class Friger extends StatelessWidget {
                       Text(
                         "전체보기",
                         style: TextStyle(
-                          fontFamily: 'GmarketSans',
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF449C4A),
@@ -432,7 +455,7 @@ class Friger extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                ReceipeRecommend(cameras: cameras),
+                                ReceipeRecommend(cameras: widget.cameras),
                           ),
                         );
                       },
@@ -452,7 +475,7 @@ class Friger extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                ShareIngredient(cameras: cameras),
+                                ShareIngredient(cameras: widget.cameras),
                           ),
                         );
                       },
@@ -477,7 +500,8 @@ class Friger extends StatelessWidget {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ChatRoom(cameras: cameras),
+                            builder: (context) =>
+                                ChatRoom(cameras: widget.cameras),
                           ),
                         );
                       },
@@ -493,7 +517,8 @@ class Friger extends StatelessWidget {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => MyPage(cameras: cameras),
+                            builder: (context) =>
+                                MyPage(cameras: widget.cameras),
                           ),
                         );
                       },
