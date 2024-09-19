@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from routers import auth, tips, ingredients, kakao_auth
 from routers import auth, tips, friger
-from routers import auth, tips, ingredients, kakao_auth, users, recipe
+from routers import auth, tips, ingredients, kakao_auth, users, recipe, mypage
 from config.database import engine, Base
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -48,6 +48,7 @@ app.include_router(ingredients.router)
 app.include_router(users.router)
 app.include_router(recipe.router)
 app.include_router(friger.router)
+app.include_router(mypage.router)
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():

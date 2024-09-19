@@ -1,5 +1,4 @@
 # This is a generated file; do not edit or check into version control.
-<<<<<<< HEAD
 camera=C:\\Users\\cooki\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\camera-0.11.0+2\\
 camera_android_camerax=C:\\Users\\cooki\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\camera_android_camerax-0.6.8+3\\
 camera_avfoundation=C:\\Users\\cooki\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\camera_avfoundation-0.9.17+3\\
@@ -15,20 +14,3 @@ image_picker_ios=C:\\Users\\cooki\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\
 image_picker_linux=C:\\Users\\cooki\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\image_picker_linux-0.2.1+1\\
 image_picker_macos=C:\\Users\\cooki\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\image_picker_macos-0.2.1+1\\
 image_picker_windows=C:\\Users\\cooki\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\image_picker_windows-0.2.1+1\\
-=======
-camera=/Users/seojiwon/.pub-cache/hosted/pub.dev/camera-0.11.0+2/
-camera_android_camerax=/Users/seojiwon/.pub-cache/hosted/pub.dev/camera_android_camerax-0.6.8+3/
-camera_avfoundation=/Users/seojiwon/.pub-cache/hosted/pub.dev/camera_avfoundation-0.9.17+3/
-camera_web=/Users/seojiwon/.pub-cache/hosted/pub.dev/camera_web-0.3.5/
-file_selector_linux=/Users/seojiwon/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.2+1/
-file_selector_macos=/Users/seojiwon/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.4/
-file_selector_windows=/Users/seojiwon/.pub-cache/hosted/pub.dev/file_selector_windows-0.9.3+2/
-flutter_plugin_android_lifecycle=/Users/seojiwon/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.22/
-image_picker=/Users/seojiwon/.pub-cache/hosted/pub.dev/image_picker-0.8.9/
-image_picker_android=/Users/seojiwon/.pub-cache/hosted/pub.dev/image_picker_android-0.8.12+13/
-image_picker_for_web=/Users/seojiwon/.pub-cache/hosted/pub.dev/image_picker_for_web-2.2.0/
-image_picker_ios=/Users/seojiwon/.pub-cache/hosted/pub.dev/image_picker_ios-0.8.12/
-image_picker_linux=/Users/seojiwon/.pub-cache/hosted/pub.dev/image_picker_linux-0.2.1+1/
-image_picker_macos=/Users/seojiwon/.pub-cache/hosted/pub.dev/image_picker_macos-0.2.1+1/
-image_picker_windows=/Users/seojiwon/.pub-cache/hosted/pub.dev/image_picker_windows-0.2.1+1/
->>>>>>> ed66f7052bf6c0999b1b6a96fcf42a16155475f8

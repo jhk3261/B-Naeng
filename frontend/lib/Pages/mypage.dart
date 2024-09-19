@@ -1,13 +1,9 @@
 import 'dart:convert';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:frontend/pages/receipe_recommend.dart';
-import 'package:frontend/pages/share_ingredient.dart';
-import 'package:frontend/pages/friger.dart';
-import 'package:frontend/pages/chat_room.dart';
-import 'package:frontend/pages/user_points_page.dart';
-import 'package:frontend/pages/fridge_popup.dart';
+import 'package:camera/camera.dart';
+import 'fridge_popup.dart';
+import 'user_points_page.dart';
 
 const String apiUrl = 'http://127.0.0.1:8000';
 
@@ -32,211 +28,159 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late Future<UserProfile> userProfileFuture;
+  int userId = 1004;
   bool isScrapExpanded = false;
-  late Future<UserProfile> userProfile;
-  late Future<List<ScrapItem>> scrapItems;
 
   @override
   void initState() {
     super.initState();
-    userProfile = fetchUserProfile();
-    scrapItems = fetchScrapItems();
+    userProfileFuture = fetchUserProfile(userId);
   }
 
-  Future<UserProfile> fetchUserProfile() async {
-    final response = await http.get(Uri.parse('$apiUrl/mypage/1')); // userId를 1로 예시, 실제 값 사용 필요
-    if (response.statusCode == 200) {
-      return UserProfile.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to load user profile');
+  Future<UserProfile> fetchUserProfile(int userId) async {
+    try {
+      final response = await http.get(Uri.parse('$apiUrl/mypage/$userId'));
+      if (response.statusCode == 200) {
+        return UserProfile.fromJson(jsonDecode(response.body));
+      } else {
+        throw Exception('Failed to load user profile');
+      }
+    } catch (error) {
+      print('Error fetching user profile: $error');
+      return UserProfile(
+        id: 0,
+        userId: userId,
+        username: '기본 사용자',
+        profileImageUrl: null,
+        greenPoints: 0,
+        fridgeCount: 0,
+      );
     }
   }
 
-  Future<List<ScrapItem>> fetchScrapItems() async {
-    final response = await http.get(Uri.parse('$apiUrl/scrap_items/1')); // userId를 1로 예시, 실제 값 사용 필요
-    if (response.statusCode == 200) {
-      List<dynamic> jsonList = jsonDecode(response.body);
-      return jsonList.map((json) => ScrapItem.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load scrap items');
+  Future<List<ScrapItem>> fetchScrapItems(int? userId) async {
+    if (userId == null) {
+      return [];
     }
-  }
 
-  void toggleScrapSection() {
-    setState(() {
-      isScrapExpanded = !isScrapExpanded;
-    });
+    try {
+      final response = await http.get(Uri.parse('$apiUrl/scrap_items/$userId'));
+      if (response.statusCode == 200) {
+        List<dynamic> jsonList = jsonDecode(response.body);
+        return jsonList.map((json) => ScrapItem.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load scrap items');
+      }
+    } catch (error) {
+      print('Error fetching scrap items: $error');
+      return [];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 40),
-                FutureBuilder<UserProfile>(
-                  future: userProfile,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
-                      final profile = snapshot.data!;
-                      return buildProfileSection(profile);
-                    } else {
-                      return Center(child: Text('No data available'));
-                    }
-                  },
-                ),
-                const SizedBox(height: 15),
-                FutureBuilder<UserProfile>(
-                  future: userProfile,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
-                      final profile = snapshot.data!;
-                      return buildGreenPoints(context, profile);
-                    } else {
-                      return Center(child: Text('No data available'));
-                    }
-                  },
-                ),
-                const SizedBox(height: 30),
-                FutureBuilder<UserProfile>(
-                  future: userProfile,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
-                      final profile = snapshot.data!;
-                      return buildFridgeSection(context, profile);
-                    } else {
-                      return Center(child: Text('No data available'));
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                buildScrapSection(),
-                if (isScrapExpanded) FutureBuilder<List<ScrapItem>>(
-                  future: scrapItems,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
-                      final items = snapshot.data!;
-                      return buildScrapList(items);
-                    } else {
-                      return Center(child: Text('No data available'));
-                    }
-                  },
-                ),
-              ],
+      body: FutureBuilder<UserProfile>(
+        future: userProfileFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('오류가 발생했습니다.'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
+          } else {
+            final profile = snapshot.data!;
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  buildProfileSection(profile),
+                  const SizedBox(height: 16),
+                  buildGreenPointsSection(profile),
+                  const SizedBox(height: 16),
+                  buildFridgeSection(profile),
+                  const SizedBox(height: 16),
+                  buildScrapSection(profile.userId),
+                ],
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget buildProfileSection(UserProfile profile) {
+    return Column(
+      children: [
+        Container(
+          width: 60,
+          height: 60,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/profile.png'),
+              fit: BoxFit.cover,
             ),
           ),
-          buildBottomNav(context),
-        ],
-      ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          profile.username ?? '기본 사용자',
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 
-  // 프로필 섹션
-  Widget buildProfileSection(UserProfile profile) {
+  Widget buildGreenPointsSection(UserProfile profile) {
     return Container(
-      width: double.infinity,
-      height: 150,
-      color: const Color(0xFFF8F8F8),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.transparent,
-            backgroundImage: NetworkImage(profile.profileImageUrl),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '홍길동', // 실제 사용자 이름으로 변경 필요
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontFamily: 'GmarketSansBold',
-                ),
-              ),
-              const SizedBox(width: 4),
-              const Text(
-                '님',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontFamily: 'GmarketSansMedium',
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 그린 포인트 섹션
-  Widget buildGreenPoints(BuildContext context, UserProfile profile) {
-    return Container(
-      height: 45,
+      height: 50,
       decoration: BoxDecoration(
         color: const Color(0xFFE1EFE2),
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const Text(
             '그린 포인트',
             style: TextStyle(
-              fontSize: 14,
-              fontFamily: 'GmarketSansMedium',
+              fontSize: 15,
             ),
           ),
-          const SizedBox(width: 5),
-          Expanded(
-            child: Text(
-              '${profile.greenPoints} 점',
-              style: const TextStyle(
-                fontSize: 17,
-                fontFamily: 'GmarketSansBold',
-                color: Color(0xFF449C4A),
-              ),
+          const SizedBox(width: 8),
+          Text(
+            '${profile.greenPoints}',
+            style: const TextStyle(
+              fontSize: 18,
+              fontFamily: 'GmarketSansBold',
+              color: Color(0xFF449C4A),
             ),
           ),
-          GestureDetector(
-            onTap: () {
+          const Text(
+            ' 점',
+            style: TextStyle(
+              fontSize: 15,
+            ),
+          ),
+          const Spacer(),
+          TextButton(
+            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => UsePointsPage()), // const 제거
+                  builder: (context) => UsePointsPage(userId: profile.userId),
+                ),
               );
             },
             child: const Text(
               '사용하기',
               style: TextStyle(
-                fontSize: 11,
-                fontFamily: 'GmarketSansMedium',
-                color: Color.fromARGB(255, 159, 159, 159),
+                color: Colors.grey,
+                fontSize: 13,
               ),
             ),
           ),
@@ -245,19 +189,19 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // 냉장고 섹션
-  Widget buildFridgeSection(BuildContext context, UserProfile profile) {
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+  Widget buildFridgeSection(UserProfile profile) {
+    return Container(
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 30,
                 backgroundColor: Colors.transparent,
-                child: Image.asset(
-                  'assets/images/fridge.png',
+                child: Image(
+                  image: AssetImage('assets/images/fridge.png'),
                   width: 43,
                   height: 43,
                 ),
@@ -268,254 +212,208 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   const Text(
                     '냉장고',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontFamily: 'GmarketSansMedium',
-                    ),
+                    style: TextStyle(fontSize: 14),
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    '${profile.fridgeCount} 대',
+                    '${profile.fridgeCount}',
                     style: const TextStyle(
-                      fontSize: 17,
-                      fontFamily: 'GmarketSansBold',
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 3),
-                  GestureDetector(
-                    onTap: () => showFridgeDetails(context),
-                    child: Image.asset(
-                      'assets/images/rightArrow.png',
-                      width: 18,
-                      height: 18,
-                    ),
+                  const SizedBox(width: 4),
+                  const Text(
+                    '대',
+                    style: TextStyle(fontSize: 16),
                   ),
                 ],
               ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(width: 16),
+          const Row(
+            children: [
+              SizedBox(width: 4),
+              Image(
+                image: AssetImage('assets/images/rightArrow.png'),
+                width: 18,
+                height: 18,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
-  // 스크랩 섹션
-  Widget buildScrapSection() {
-    return GestureDetector(
-      onTap: toggleScrapSection,
-      child: Container(
-        height: 45,
-        decoration: BoxDecoration(
-          color: const Color(0xFFE1EFE2),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Image.asset(
-                  'assets/images/star.png',
-                  width: 20,
-                  height: 20,
+  Widget buildScrapSection(int? userId) {
+    return FutureBuilder<List<ScrapItem>>(
+      future: fetchScrapItems(userId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError || !snapshot.hasData) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE1EFE2),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                const SizedBox(width: 9),
-                const Text(
-                  '스크랩',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontFamily: 'GmarketSansMedium',
-                  ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Row(
+                      children: [
+                        Image(
+                          image: AssetImage('assets/images/star.png'),
+                          width: 16,
+                          height: 16,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          '스크랩',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isScrapExpanded = !isScrapExpanded;
+                        });
+                      },
+                      child: Image(
+                        image: AssetImage(isScrapExpanded
+                            ? 'assets/images/upArrow.png'
+                            : 'assets/images/downArrow.png'),
+                        width: 16,
+                        height: 16,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Image.asset(
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                '스크랩된 항목이 없습니다.',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          );
+        } else {
+          List<ScrapItem> scrapItems = snapshot.data!;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE1EFE2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Row(
+                      children: [
+                        Image(
+                          image: AssetImage('assets/images/star.png'),
+                          width: 18,
+                          height: 18,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          '스크랩',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isScrapExpanded = !isScrapExpanded;
+                        });
+                      },
+                      child: Image(
+                        image: AssetImage(isScrapExpanded
+                            ? 'assets/images/upArrow.png'
+                            : 'assets/images/downArrow.png'),
+                        width: 16,
+                        height: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
               isScrapExpanded
-                  ? 'assets/images/upArrow.png'
-                  : 'assets/images/downArrow.png',
-              width: 18,
-              height: 18,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 스크랩 리스트
-  Widget buildScrapList(List<ScrapItem> items) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      height: isScrapExpanded ? 300.0 : 0.0,
-      child: Scrollbar(
-        thumbVisibility: true,
-        thickness: 4.0,
-        radius: const Radius.circular(5),
-        child: ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            final item = items[index];
-            return ListTile(
-              leading: Image.asset(item.image),
-              title: Text(item.title),
-              subtitle: Text('${item.likes} likes, ${item.comments} comments, ${item.date}'),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  // 하단 네비게이션
-  Widget buildBottomNav(BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: Container(
-        height: 100,
-        color: Colors.white,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            buildBottomNavItem(
-              context,
-              icon: Icons.book,
-              label: "레시피",
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ReceipeRecommend(cameras: widget.cameras),
-                  ),
-                );
-              },
-            ),
-            buildBottomNavItem(
-              context,
-              icon: Icons.people,
-              label: "나눔터",
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ShareIngredient(cameras: widget.cameras),
-                  ),
-                );
-              },
-            ),
-            buildBottomNavItem(
-              context,
-              icon: Icons.kitchen,
-              label: "냉장고",
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Friger(cameras: widget.cameras),
-                  ),
-                );
-              },
-            ),
-            buildBottomNavItem(
-              context,
-              icon: Icons.chat,
-              label: "비냉톡",
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatRoom(cameras: widget.cameras),
-                  ),
-                );
-              },
-            ),
-            buildBottomNavItem(
-              context,
-              icon: Icons.person,
-              label: "내정보",
-              isSelected: true,
-              onPressed: () {}, // onPressed 필수로 추가
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 재사용 가능한 하단 네비게이션 아이템
-  Widget buildBottomNavItem(BuildContext context,
-      {required IconData icon,
-      required String label,
-      required VoidCallback onPressed,
-      bool isSelected = false}) {
-    return Column(
-      children: [
-        IconButton(
-          icon: Icon(icon, color: isSelected ? const Color(0xFF8EC96D) : Colors.grey),
-          onPressed: onPressed,
-        ),
-        Text(label),
-      ],
-    );
-  }
-
-  // 냉장고 상세보기 팝업
-  void showFridgeDetails(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => const FridgePopup(),
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: scrapItems.map((item) {
+                        return ListTile(
+                          title: Text(item.title),
+                          subtitle: Text(item.description),
+                        );
+                      }).toList(),
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          );
+        }
+      },
     );
   }
 }
 
-// 사용자 프로필 데이터 모델
 class UserProfile {
-  final String profileImageUrl;
+  final int id;
+  final int userId;
+  final String? username;
+  final String? profileImageUrl;
   final int greenPoints;
   final int fridgeCount;
 
   UserProfile({
-    required this.profileImageUrl,
+    required this.id,
+    required this.userId,
+    this.username,
+    this.profileImageUrl,
     required this.greenPoints,
     required this.fridgeCount,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
-      profileImageUrl: json['profileImageUrl'],
-      greenPoints: json['greenPoints'],
-      fridgeCount: json['fridgeCount'],
+      id: json['id'],
+      userId: json['user_id'],
+      username: json['username'],
+      profileImageUrl: json['profile_image_url'],
+      greenPoints: json['green_points'],
+      fridgeCount: json['fridge_count'],
     );
   }
 }
 
-// 스크랩 아이템 데이터 모델
 class ScrapItem {
-  final String image;
   final String title;
-  final int likes;
-  final int comments;
-  final String date;
+  final String description;
 
-  ScrapItem({
-    required this.image,
-    required this.title,
-    required this.likes,
-    required this.comments,
-    required this.date,
-  });
+  ScrapItem({required this.title, required this.description});
 
   factory ScrapItem.fromJson(Map<String, dynamic> json) {
     return ScrapItem(
-      image: json['image'],
       title: json['title'],
-      likes: json['likes'],
-      comments: json['comments'],
-      date: json['date'],
+      description: json['description'],
     );
   }
 }

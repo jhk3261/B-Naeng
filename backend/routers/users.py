@@ -15,6 +15,7 @@ load_dotenv()
 class Settings(BaseSettings):
     SECRET_KEY: str
     DATABASE_URL: str
+    openai_api_key: str
 
     class Config:
         env_file = ".env"

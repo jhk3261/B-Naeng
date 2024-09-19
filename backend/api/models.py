@@ -1,19 +1,16 @@
-from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text, Boolean, DateTime, Table
-from random import random
-from sqlalchemy import JSON, Column, Date, ForeignKey, Integer, String, Text
-from config.database import Base
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text, Boolean, DateTime, Table, Date
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.sqlite import JSON
+from config.database import Base
+import random
 
-
+# 유저와 냉장고 관계 테이블 (다대다 관계 설정)
 friger_user_association = Table(
     'friger_user_association', Base.metadata,
     Column('user_id', Integer, ForeignKey('users.id')),
     Column('friger_id', Integer, ForeignKey('frigers.id'))
 )
 
-
+# 유저 모델
 class User(Base):
     __tablename__ = "users"
 
@@ -30,6 +27,24 @@ class User(Base):
     owned_friger = relationship("Friger", back_populates="owner", cascade="all, delete-orphan")
     frigers = relationship("Friger", secondary=friger_user_association, back_populates="users")
     ingredients = relationship("Ingredient", back_populates="users")
+    
+    # MyPage와의 관계 설정
+    mypage = relationship("MyPage", back_populates="user", uselist=False)
+
+
+# 마이페이지 모델
+class MyPage(Base):
+    __tablename__ = "mypage"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    username = Column(Text, nullable=False)
+    profile_image_url = Column(String, nullable=True)
+    green_points = Column(Integer, default=0, nullable=False)  # 그린 포인트
+    fridge_count = Column(Integer, default=0, nullable=False)  # 냉장고 개수
+    scrap_expanded = Column(Boolean, default=False, nullable=False)  # 스크랩 섹션 확장 여부
+
+    user = relationship("User", back_populates="mypage")
 
 
 # 식재료 나눔 커뮤니티
@@ -49,20 +64,43 @@ class Ingredient(Base):
     scraps = relationship("Scrap", back_populates="ingredient", cascade="all, delete-orphan")
 
 
-# 마이페이지
-class MyPage(Base):
-    __tablename__ = "mypage"
+# 냉장고 모델
+class Friger(Base):
+    __tablename__ = "frigers"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)  # 냉장고 이름
+    unique_code = Column(Integer, unique=True, nullable=False, default=lambda: random.randint(1000, 9999))  # 고유번호
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # 대표 유저 ID
+
+    inventory_list = relationship("Inventory", back_populates="friger")
+    users = relationship("User", secondary=friger_user_association, back_populates="frigers")
+    owner = relationship("User", back_populates="owned_friger")
+
+
+# 냉장고 인벤토리
+class Inventory(Base):
+    __tablename__ = "inventory"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, index=True)
+    quantity = Column(Integer)
+    date = Column(Date, nullable=True)
+    category = Column(String, nullable=False)
+
+    friger_id = Column(Integer, ForeignKey("frigers.id"))
+    friger = relationship("Friger", back_populates="inventory_list")
+
+
+# 추천 레시피
+class RecommendRecipe(Base):
+    __tablename__ = "recommendrecipes"
+
+    id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    profile_image_url = Column(String, nullable=True)
-    green_points = Column(Integer, default=0, nullable=False)  # 그린 포인트
-    fridge_count = Column(Integer, default=0, nullable=False)  # 냉장고 개수
-    scrap_expanded = Column(Boolean, default=False, nullable=False)  # 스크랩 섹션 확장 여부
-
-    user = relationship("User", back_populates="mypage")
 
 
+# 팁 모델
 class Tip(Base):
     __tablename__ = "tips"
 
@@ -83,7 +121,7 @@ class Like(Base):
     __tablename__ = "likes"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     tip_id = Column(Integer, ForeignKey("tips.id"), nullable=True)
     ingredient_id = Column(Integer, ForeignKey("ingredients.id"), nullable=True)
 
@@ -96,7 +134,7 @@ class Comment(Base):
     __tablename__ = "comments"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     tip_id = Column(Integer, ForeignKey("tips.id"), nullable=True)
     ingredient_id = Column(Integer, ForeignKey("ingredients.id"), nullable=True)
     content = Column(Text, nullable=False)
@@ -110,43 +148,9 @@ class Scrap(Base):
     __tablename__ = "scraps"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     tip_id = Column(Integer, ForeignKey("tips.id"), nullable=True)
     ingredient_id = Column(Integer, ForeignKey("ingredients.id"), nullable=True)
 
     tip = relationship("Tip", back_populates="scraps")
     ingredient = relationship("Ingredient", back_populates="scraps")
-
-
-class Friger(Base) :
-    __tablename__ = "frigers"
-
-    id = Column(Integer, primary_key=True, autoincrement=True) #db에서의 아이디 
-    name = Column(String, nullable=False)  # 냉장고 이름
-    unique_code = Column(Integer, unique=True, nullable=False, default=lambda: random.randint(1000, 9999))  # 고유번호
-    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # 대표 유저 ID
-
-    inventory_list = relationship("Inventory", back_populates="friger")
-    users = relationship("User", secondary=friger_user_association, back_populates="frigers")
-    owner = relationship("User", back_populates="owned_friger")  # 대표 유저와의 관계 (User모델에 owned_friger추가해주세요(권한가진냉장고리스트))
-
-
-class Inventory(Base):
-    __tablename__ = "inventory"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, index=True)
-    quantity = Column(Integer)
-    date = Column(Date, nullable=True)
-    #icon = 이미지 어케넣더라.. #milk.png 검색
-    category = Column(String, nullable=False)
-
-    friger_id = Column(Integer, ForeignKey("frigers.id"))
-    friger = relationship("Friger", back_populates="inventory_list")
-    
-
-class RecommendRecipe(Base):
-    __tablename__ = "recommendrecipes"
-
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
