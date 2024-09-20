@@ -1,20 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/google_auth.dart';
 import 'package:frontend/widgets/signup_inputForm.dart';
 import 'package:frontend/widgets/signup_termsForm.dart';
 import 'package:geolocator/geolocator.dart';
-// import 'package:location/location.dart';
-// import 'package:geolocator_platform_interface/src/enums/location_accuracy.dart';
-// import 'package:location_platform_interface/location_platform_interface.dart';
 import 'package:frontend/widgets/user_geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 
 class SignupPage1 extends StatefulWidget {
   final String username;
