@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/widgets/friger_item.dart';
+import 'package:frontend/widgets/friger/friger_item.dart';
 
 class FrigerChange extends StatefulWidget {
   const FrigerChange({super.key});

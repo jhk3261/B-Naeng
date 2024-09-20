@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/friger.dart';
-import 'package:frontend/Pages/mypage.dart';
-import 'package:frontend/Pages/receipe_recommend.dart';
-import 'package:frontend/widgets/food_element.dart';
+import 'package:frontend/Pages/friger/friger.dart';
+import 'package:frontend/Pages/mypage/mypage.dart';
+import 'package:frontend/Pages/recipe/receipe_recommend.dart';
+import 'package:frontend/widgets/friger/food_element.dart';
 import 'package:camera/camera.dart';
-import 'share_tips.dart';
-import 'chat_room.dart';
+import '../tips/share_tips.dart';
+import '../../chating/chat_room.dart';
 
 import 'WritePostPage.dart'; // 글쓰기
 import 'IngredientDetailPage.dart'; // 살세페이지
