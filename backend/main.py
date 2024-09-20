@@ -1,9 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from routers import auth, tips, ingredients, kakao_auth
-from routers import auth, tips, friger
-from routers import auth, tips, ingredients, kakao_auth, users, recipe, mypage
+from routers import auth, tips, ingredients, kakao_auth, users, recipe, mypage, friger
 from config.database import engine, Base
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware

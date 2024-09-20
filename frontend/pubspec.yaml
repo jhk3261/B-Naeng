@@ -16,6 +16,8 @@ dependencies:
   camera: ^0.11.0+2
   image_picker: ^0.8.6+2 
   http: ^0.13.3
+  dropdown_button2: ^2.3.9
+  intl: ^0.19.0
 
 
 dev_dependencies:
@@ -35,11 +37,14 @@ flutter:
     - family: Pretendard
       fonts:
         - asset: assets/fonts/Pretendard-Regular.otf
+          weight: 300
 
     - family: GmarketSansMedium
       fonts:
         - asset: assets/fonts/GmarketSansMedium.otf
+          weight: 500
 
     - family: GmarketSansBold
       fonts:
         - asset: assets/fonts/GmarketSansBold.otf
+          weight: 700
