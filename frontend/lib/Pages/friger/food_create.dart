@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:frontend/widgets/confirm_btn.dart';
-import 'package:frontend/widgets/food_counter.dart';
+import 'package:frontend/widgets/friger/confirm_btn.dart';
+import 'package:frontend/widgets/friger/food_counter.dart';
 import 'package:intl/intl.dart';
 
 class FoodCreate extends StatefulWidget {

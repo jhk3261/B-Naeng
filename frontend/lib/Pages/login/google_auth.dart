@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/signup.dart';
+import 'package:frontend/Pages/login/signup.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -40,11 +40,19 @@ class DatabaseHelper {
   //   );
   // }
 
-    Future<void> insertUser(String name, String email, String nickname, String birthday, String gender, String recommender) async {
+  Future<void> insertUser(String name, String email, String nickname,
+      String birthday, String gender, String recommender) async {
     final db = await database;
     await db.insert(
       'users',
-      {'name': name, 'email': email, "nickname" : nickname, "birthday" : birthday, "gender" : gender, "recommender" : recommender, },
+      {
+        'name': name,
+        'email': email,
+        "nickname": nickname,
+        "birthday": birthday,
+        "gender": gender,
+        "recommender": recommender,
+      },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }

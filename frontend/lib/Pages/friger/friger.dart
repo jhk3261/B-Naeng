@@ -1,12 +1,12 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/chat_room.dart';
-import 'package:frontend/Pages/friger_change.dart';
-import 'package:frontend/Pages/mypage.dart';
-import 'package:frontend/Pages/receipe_recommend.dart';
-import 'package:frontend/Pages/share_ingredient.dart';
-import 'package:frontend/widgets/friger_food.dart';
-import 'package:frontend/widgets/plus_btn.dart';
+import 'package:frontend/Pages/chating/chat_room.dart';
+import 'package:frontend/Pages/friger/friger_change.dart';
+import 'package:frontend/Pages/mypage/mypage.dart';
+import 'package:frontend/Pages/recipe/receipe_recommend.dart';
+import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
+import 'package:frontend/widgets/friger/friger_food.dart';
+import 'package:frontend/widgets/friger/plus_btn.dart';
 
 class Friger extends StatefulWidget {
   final List<CameraDescription> cameras;

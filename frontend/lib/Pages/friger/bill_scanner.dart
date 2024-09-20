@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:frontend/Pages/mypage.dart';
+import 'package:frontend/Pages/friger/friger.dart';
 
-class QRScan extends StatelessWidget {
+class BillScan extends StatelessWidget {
   final List<CameraDescription> cameras;
 
-  const QRScan({super.key, required this.cameras});
+  const BillScan({super.key, required this.cameras});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class QRScan extends StatelessWidget {
                 const Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "냉장고 QR 스캔",
+                    "영수증 스캔",
                     style: TextStyle(
                       fontSize: 27,
                       fontWeight: FontWeight.w800,
@@ -35,7 +35,7 @@ class QRScan extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MyPage(cameras: cameras),
+                          builder: (context) => Friger(cameras: cameras),
                         ),
                       );
                     },
@@ -127,25 +127,19 @@ class CameraScreenState extends State<CameraScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                width: 200,
-                height: 200,
+                width: 300,
+                height: 550,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.white, width: 3),
                   color: Colors.transparent,
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Center(
-                child: Text(
-                  "냉장고 QR 코드를 스캔해주세요.",
-                  style: TextStyle(
-                    fontSize: 25,
-                    color: Color(0xFF8EC96D),
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
+              Container(
+                height: 50,
+                width: 50,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                    color: Colors.white, shape: BoxShape.circle),
               ),
             ],
           ),
