@@ -1,13 +1,18 @@
-from typing import List
-from fastapi import APIRouter, Depends
+import os
+from typing import List, Optional
+from fastapi import APIRouter, Depends, File, Form, UploadFile
 from fastapi import Depends, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
+from datetime import datetime
 from sqlalchemy.orm import Session
 from api.models import Tip, Like, Comment, Scrap
 from config.database import get_db
 
 router = APIRouter(tags=["팁, 좋아요, 댓글, 스크랩"])
 
+UPLOAD_DIR = "./uploads"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 ############ 좋아요 모델 형식 ############
 
@@ -36,6 +41,7 @@ class CommentResponse(BaseModel):
     id: int
     user_id: int
     content: str
+    created_at: datetime
 
     class Config:
         from_attributes = True
@@ -63,12 +69,12 @@ class TipCreate(BaseModel):
     title: str
     contents: str
     category: int
-    pictures: List[str] = []
     locationDong: str
 
 
 class TipResponse(TipCreate):
     id: int
+    pictures: list[str]
 
 
 class TipResponseWithCounts(BaseModel):
@@ -95,19 +101,54 @@ class TipDetailsResponse(TipResponse):
         from_attributes = True
 
 
+##########################################################################################
+
+
+@router.get("/tip_image")
+async def get_tip_image(file_path: str):
+    # 파일이 존재하는지 확인
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    else:
+        return {"error": "File not found"}
+
+
+##########################################################################################
+
+
 # 1. Tip 생성
 @router.post("/tips/")
-def create_tip(tip: TipCreate, db: Session = Depends(get_db)):
+async def create_tip(
+    title: str = Form(...),
+    contents: str = Form(...),
+    category: int = Form(...),
+    locationDong: str = Form(...),
+    raw_picture_list: list[UploadFile] = None,
+    # raw_picture_list: Optional[List[UploadFile]] = File([]),
+    db: Session = Depends(get_db),
+):
+    # Process and save images
+
+    file_paths = []
+    if raw_picture_list:
+        for file in raw_picture_list:
+            file_path = os.path.join(UPLOAD_DIR, file.filename)
+            with open(file_path, "wb") as buffer:
+                buffer.write(await file.read())
+            file_paths.append(file_path)
+
     db_tip = Tip(
-        title=tip.title,
-        contents=tip.contents,
-        category=tip.category,
-        pictures=tip.pictures,
-        locationDong=tip.locationDong,
+        title=title,
+        contents=contents,
+        category=category,
+        pictures=file_paths,  # Save the file paths
+        locationDong=locationDong,
     )
+
     db.add(db_tip)
     db.commit()
     db.refresh(db_tip)
+
     return db_tip
 
 
@@ -132,7 +173,7 @@ def get_tips(db: Session = Depends(get_db)):
                 scrap_count=len(tip.scraps),
             )
         )
-    return result
+    return [*reversed(result)]
 
 
 # 3. 특정 Tip 조회
@@ -153,7 +194,10 @@ def get_tip(tip_id: int, db: Session = Depends(get_db)):
         like_count=len(db_tip.likes),
         comments=[
             CommentResponse(
-                id=comment.id, user_id=comment.user_id, content=comment.content
+                id=comment.id,
+                user_id=comment.user_id,
+                content=comment.content,
+                created_at=comment.created_at,
             )
             for comment in db_tip.comments
         ],

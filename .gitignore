@@ -1,6 +1,19 @@
 # Mac OS
 .DS_Store
 */.DS_Store
+.env
+
+frontend/.dart_tool/*
+frontend/.flutter*
+frontend/ios
+frontend/android
+frontend/web
+frontend/test
+frontend/windows
+frontend/build
+frontend/.idea
+frontend/analysis_options.yaml
+
 
 backend/migrations/versions/*.py
 
