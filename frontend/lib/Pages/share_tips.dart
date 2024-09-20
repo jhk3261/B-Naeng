@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/WritePostPage.dart';
 import 'package:frontend/Pages/tip_detail.dart';
 import 'package:frontend/Pages/write_tip_page.dart';
 import 'package:http/http.dart' as http;
@@ -32,7 +30,7 @@ class _ShareReceipeState extends State<ShareReceipe> {
   }
 
   Future<void> fetchReceipes() async {
-    final url = Uri.parse('http://192.168.0.8:22222/tips');
+    final url = Uri.parse('http://172.17.114.116:22222/tips');
     try {
       final response = await http.get(url);
 
@@ -40,11 +38,11 @@ class _ShareReceipeState extends State<ShareReceipe> {
         final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
 
         // isShared를 랜덤하게 추가
-        final random = Random();
+        // final random = Random();
         receipes = data.map((item) {
           return {
             'id': item['id'],
-            'isShared': random.nextBool(), // true 또는 false 랜덤하게 설정
+            // 'isShared': random.nextBool(), // true 또는 false 랜덤하게 설정
             'title': item['title'],
             'pictures': item['pictures'],
             'locationDong': item['locationDong'],
@@ -81,16 +79,23 @@ class _ShareReceipeState extends State<ShareReceipe> {
             ),
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const WriteTipPage(),
-                  ),
-                );
-              },
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WriteTipPage(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(
+                  width: 10,
+                )
+              ],
             ),
           ],
         ),
@@ -164,9 +169,11 @@ class _ShareReceipeState extends State<ShareReceipe> {
                           },
                           child: ReceipeShareElement(
                             id: r['id'],
-                            isShared: r['isShared'],
+                            // isShared: r['isShared'],
                             title: r['title'],
-                            imgPath: r['pictures'][0],
+                            imgPath: r['pictures'].isNotEmpty
+                                ? r['pictures'][0]
+                                : "",
                             locationDong: r['locationDong'],
                             like_count: r['like_count'],
                             comment_count: r['comment_count'],
@@ -176,6 +183,9 @@ class _ShareReceipeState extends State<ShareReceipe> {
                       },
                     ),
                   ),
+                  const SizedBox(
+                    height: 100,
+                  )
                 ],
               ),
             ),

@@ -15,6 +15,7 @@ from config.database import Base
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.sqlite import JSON
+from datetime import datetime
 
 
 friger_user_association = Table(
@@ -108,6 +109,7 @@ class Comment(Base):
     tip_id = Column(Integer, ForeignKey("tips.id"), nullable=True)
     ingredient_id = Column(Integer, ForeignKey("ingredients.id"), nullable=True)
     content = Column(Text, nullable=False)
+    created_at = Column(DateTime, nullable=True, default=datetime.now())
 
     tip = relationship("Tip", back_populates="comments")
     ingredient = relationship("Ingredient", back_populates="comments")
