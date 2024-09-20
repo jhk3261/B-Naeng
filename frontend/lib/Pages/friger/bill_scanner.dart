@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:frontend/Pages/friger.dart';
+import 'package:frontend/Pages/friger/friger.dart';
 
 class BillScan extends StatelessWidget {
   final List<CameraDescription> cameras;
