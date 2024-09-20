@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -56,13 +55,5 @@ class _GoogleLoginPageState extends State<GoogleLoginPage> {
         ),
       ),
     );
-=======
-// import 'package:flutter/material.dart';
-
-class Googlelogin extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
->>>>>>> main
   }
 }
