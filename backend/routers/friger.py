@@ -1,4 +1,4 @@
-from random import random
+from random import randint
 from sqlite3 import IntegrityError
 from typing import List
 from fastapi import APIRouter, Depends
@@ -7,13 +7,14 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from api.models import Friger, Inventory, User
 from config.database import get_db
+from routers.users import authenticate
 
 router = APIRouter(tags=["식재료, 냉장고"])
 
 
 def generate_unique_code(db: Session):
     while True:
-        code = random.randint(1000, 9999)
+        code = randint(1000, 9999)
         existing_friger = db.query(Friger).filter_by(unique_code=code).first()
         if not existing_friger:
             return code
@@ -40,16 +41,23 @@ class InventoryResponse(BaseModel):
 
 # 냉장고 모델
 class FrigerCreate(BaseModel):
+    owner_id: int
     name: str
 
 
 class FrigerResponse(FrigerCreate):
     id: int
+    name: str
+    unique_code: int
+    owner_id: int
+
+    class Config:
+        from_attributes = True
 
 
 class FrigerUpdate(BaseModel):
     name: str
-    user_list: List[int]  # User ID 리스트
+    users: List[int]  # User ID 리스트
 
 
 class FrigerResponseWithCount(BaseModel):
@@ -63,20 +71,20 @@ class FrigerResponseWithCount(BaseModel):
     class Config:
         from_attributes = True
 
-
-class FrigerDetailResponse(FrigerResponse):
-    user_list: List[int]  # 포함된 유저 ID 리스트
-    inverntory_list: List[InventoryResponse]  # 포함된 인벤토리 리스트
+class FrigerDetailResponse(BaseModel):
+    id: int
+    name: str
+    unique_code: int
+    owner_id: int
+    users: List[int]
+    inventory_list: List[InventoryResponse]
 
     class Config:
         from_attributes = True
 
-
 # 1. Friger 생성
 @router.post("/frigers/")
-def create_friger(
-    friger: FrigerCreate, db: Session = Depends(get_db), current_user: User = Depends()
-):
+def create_friger(friger: FrigerCreate, db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
     unique_code = generate_unique_code(db)
     new_friger = Friger(
         name=friger.name,
@@ -94,11 +102,11 @@ def create_friger(
 
 
 # 2. 내가 포함된 Friger List 조회
-@router.get("/frigers/my/")
-def get_my_frigers(db: Session = Depends(get_db), current_user: User = Depends()):
-    frigers = (
-        db.query(Friger).filter(Friger.user_list.any(User.id == current_user.id)).all()
-    )
+@router.get("/frigers/{user_id}")
+def get_my_frigers(db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
+    frigers = db.query(Friger).filter(Friger.users.any(User.id == current_user.id)).all()
+    if not frigers:
+        raise HTTPException(status_code=404, detail="Friger not found")
 
     result = []
     for friger in frigers:
@@ -108,8 +116,8 @@ def get_my_frigers(db: Session = Depends(get_db), current_user: User = Depends()
                 name=friger.name,
                 unique_code=friger.unique_code,
                 owner_id=friger.owner_id,
-                user_count=len(friger.user_list),
-                inventory_count=len(friger.inventory_list),
+                user_count=len(friger.users),
+                inventory_count = len(friger.inventory_list)
             )
         )
     return result
@@ -123,17 +131,21 @@ def get_friger(friger_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Friger not found")
 
     return FrigerResponse(
-        id=db_friger.id,
-        name=db_friger.name,
-        unique_code=db_friger.unique_code,
-        owner_id=db_friger.owner_id,
-        inverntory_list=[
-            InventoryResponse(
-                id=inventory.id,
-                name=inventory.name,
-                quantity=inventory.quantity,
-                category=inventory.category,
-                date=inventory.date,
+                id=db_friger.id,
+                name=db_friger.name,
+                unique_code=db_friger.unique_code,
+                owner_id=db_friger.owner_id,
+                inverntory_list= [
+                    InventoryResponse (
+                        id = inventory.id,
+                        name = inventory.name,
+                        quantity = inventory.quantity,
+                        category = inventory.category,
+                        date= inventory.date,
+                    )
+                    for inventory in db_friger.inverntory_list
+                ],
+                users = [user.id for user in db_friger.users] #유저 스키마 추가 후 수정 필요
             )
             for inventory in db_friger.inverntory_list
         ],
@@ -143,12 +155,7 @@ def get_friger(friger_id: int, db: Session = Depends(get_db)):
 
 # 4. Friger 수정 (Friger name, userlist 수정 가능)
 @router.put("/frigers/{friger_id}")
-def update_friger(
-    friger_id: int,
-    friger_update: FrigerUpdate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(),
-):
+def update_friger(friger_id: int, friger_update: FrigerUpdate, db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
     friger = db.query(Friger).filter(Friger.id == friger_id).first()
     if not friger:
         raise HTTPException(status_code=404, detail="Friger not found")
@@ -159,7 +166,7 @@ def update_friger(
         )
 
     friger.name = friger_update.name
-    friger.user_list = friger_update.user_list
+    friger.users = friger_update.users
     db.commit()
     db.refresh(friger)
     return friger
@@ -167,9 +174,7 @@ def update_friger(
 
 # 5. owner_id를 가진 user만 Friger 삭제 가능
 @router.delete("/frigers/{friger_id}")
-def delete_friger(
-    friger_id: int, db: Session = Depends(get_db), current_user: User = Depends()
-):
+def delete_friger(friger_id: int, db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
     friger = db.query(Friger).filter(Friger.id == friger_id).first()
     if not friger:
         raise HTTPException(status_code=404, detail="Friger not found")
