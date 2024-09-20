@@ -3,6 +3,7 @@
 */.DS_Store
 .env
 
+frontend/macos/*
 frontend/.dart_tool/*
 frontend/.flutter*
 frontend/ios
