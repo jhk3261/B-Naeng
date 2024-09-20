@@ -15,6 +15,12 @@ class ReceipeRecommend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final categoryFontSize = screenWidth * 0.05;
+    final foodTitleFontSize = screenWidth * 0.03;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder<List<dynamic>>(
@@ -45,24 +51,25 @@ class ReceipeRecommend extends StatelessWidget {
           return Stack(
             children: [
               SingleChildScrollView(
-                padding: const EdgeInsets.only(top: 130), // Header 높이만큼 Padding
+                padding: EdgeInsets.only(
+                    top: screenWidth * 0.3), // Header 높이만큼 Padding
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 20),
+                      SizedBox(height: screenWidth * 0.08),
                       // =============== RECOMMEND RECIPE ===============
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             '나의 냉장고 추천 메뉴',
                             style: TextStyle(
                               color: Color(0xFF449C4A),
-                              fontSize: 20,
+                              fontSize: categoryFontSize,
                               fontFamily: 'GmarketSans',
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           Icon(
@@ -71,10 +78,10 @@ class ReceipeRecommend extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: screenWidth * 0.08),
                       // ============ RECOMMEND RECIPE BOXES ============
                       SizedBox(
-                        height: 350,
+                        height: screenWidth * 0.9,
                         child: PageView(
                           children: [
                             // RR first page
@@ -90,10 +97,11 @@ class ReceipeRecommend extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: screenWidth * 0.01),
                       // ========== RECOMMEND RECIPE PAGE  ==========
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 140),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.35),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [

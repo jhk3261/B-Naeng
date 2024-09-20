@@ -16,6 +16,15 @@ dependencies:
   camera: ^0.11.0+2
   image_picker: ^0.8.6+2 
   http: ^0.13.3
+  google_sign_in: ^6.2.1 # google 로그인 패키지 
+  # firebase_core: ^3.5.0
+  # firebase_auth: ^5.3.0
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+  intl: ^0.17.0 # 생년월일 검증에 필요한 패키지
+  location: ^4.4.0
+  geolocator: ^13.0.1
+  google_maps_flutter: ^2.1.0
 
 
 dev_dependencies:

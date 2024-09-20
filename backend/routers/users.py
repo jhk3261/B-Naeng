@@ -69,10 +69,9 @@ class UserLogin(BaseModel):
     nickname : str
     birth : datetime
     gender : int
-    recommender : str
+    recommender : str = None
     location : str
 
-    exp: int
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -86,7 +85,8 @@ async def login(body: UserLogin, response : Response, db : Session=Depends(get_d
         existing_user = db.query(User).filter(User.email == body.email).first()
         
         if existing_user:
-            access_token = create_access_token(body.email, body.exp)
+            # access_token = create_access_token(body.email, body.exp)
+            access_token = create_access_token(existing_user.email)
         else:
             # 새로운 유저를 DB에 추가할 때 exp 필드를 포함하지 않음
             new_user = User(email=body.email, 
@@ -100,7 +100,7 @@ async def login(body: UserLogin, response : Response, db : Session=Depends(get_d
             db.add(new_user)
             db.commit()
             db.refresh(new_user)
-            access_token = create_access_token(new_user.email, body.exp)
+            access_token = create_access_token(new_user.email)
         
         response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite='Lax')
 
@@ -112,3 +112,10 @@ async def login(body: UserLogin, response : Response, db : Session=Depends(get_d
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.get("/users")
+async def get_users_id_1(db : Session=Depends(get_db)):
+    user_1 = db.query(User).filter(User.id == 1).first()
+    return user_1
+
