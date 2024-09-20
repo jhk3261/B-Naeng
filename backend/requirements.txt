@@ -3,3 +3,5 @@ jinja2
 uvicorn[standard]
 sqlalchemy
 alembic
+pydantic_settings
+python-jose

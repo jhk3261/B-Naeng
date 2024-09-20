@@ -13,6 +13,7 @@ void main() async {
 
   runApp(MaterialApp(
     theme: ThemeData(
+<<<<<<< HEAD
         textTheme: const TextTheme(
       bodyLarge: TextStyle(fontFamily: 'GmarketSansLight'),
       bodyMedium: TextStyle(fontFamily: 'GmarketSansMedium'),
@@ -22,5 +23,11 @@ void main() async {
     // home: GoogleLoginPage(),
     home: SignInPage(),
     // home: ReceipeRecommend(cameras: cameras),
+=======
+      fontFamily: 'GmarketSansMedium',
+    ),
+    themeMode: ThemeMode.system,
+    home: Friger(cameras: cameras),
+>>>>>>> main
   ));
 }

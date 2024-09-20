@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ReceipeShareElement extends StatelessWidget {
   final int id;
-  final bool isShared;
+  // final bool isShared;
   final String title;
   final String imgPath;
   final String locationDong;
@@ -13,7 +13,7 @@ class ReceipeShareElement extends StatelessWidget {
   const ReceipeShareElement({
     super.key,
     required this.id,
-    required this.isShared,
+    // required this.isShared,
     required this.title,
     required this.imgPath,
     required this.locationDong,
@@ -36,33 +36,37 @@ class ReceipeShareElement extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15), // BorderRadius 설정
                 image: DecorationImage(
-                  image: AssetImage(imgPath),
+                  image: imgPath == ""
+                      ? const AssetImage("assets/images/noimg.png") // 기본 이미지 경로
+                      : NetworkImage(
+                          "http://172.17.114.116:22222/tip_image?file_path=$imgPath"), // 네트워크 이미지
                   fit: BoxFit.cover, // 이미지 비율 유지, 잘라내기
                 ),
               ),
             ),
+
             // 조건부 렌더링
-            if (isShared)
-              Positioned.fill(
-                child: Container(
-                  width: 300,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5), // 반투명 회색 배경
-                    borderRadius: BorderRadius.circular(15), // BorderRadius 설정
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '읽음',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            // if (false)
+            //   Positioned.fill(
+            //     child: Container(
+            //       width: 300,
+            //       height: 150,
+            //       decoration: BoxDecoration(
+            //         color: Colors.black.withOpacity(0.5), // 반투명 회색 배경
+            //         borderRadius: BorderRadius.circular(15), // BorderRadius 설정
+            //       ),
+            //       child: const Center(
+            //         child: Text(
+            //           '읽음',
+            //           style: TextStyle(
+            //             color: Colors.white,
+            //             fontSize: 24,
+            //             fontWeight: FontWeight.bold,
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
           ],
         ),
         const SizedBox(

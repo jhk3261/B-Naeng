@@ -36,19 +36,20 @@ class IngredientResponse(BaseModel):
     is_shared: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # 좋아요 모델 형식
 class LikeCreate(BaseModel):
     user_id: int
 
+
 class LikeResponse(BaseModel):
     id: int
     user_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # 댓글 모델 형식
@@ -56,25 +57,27 @@ class CommentCreate(BaseModel):
     user_id: int
     content: str
 
+
 class CommentResponse(BaseModel):
     id: int
     user_id: int
     content: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # 스크랩 모델 형식
 class ScrapCreate(BaseModel):
     user_id: int
 
+
 class ScrapResponse(BaseModel):
     id: int
     user_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # 식재료 추가
@@ -85,7 +88,7 @@ def create_ingredient(ingredient: IngredientCreate, db: Session = Depends(get_db
         title=ingredient.title,
         contents=ingredient.contents,
         image_url=ingredient.image_url,
-        is_shared=ingredient.is_shared
+        is_shared=ingredient.is_shared,
     )
     db.add(db_ingredient)
     db.commit()
@@ -135,6 +138,7 @@ def delete_ingredient(ingredient_id: int, db: Session = Depends(get_db)):
     db.commit()
     return db_ingredient
 
+
 # 모든 식재료 조회
 @router.get("/ingredients/", response_model=List[IngredientResponse])
 def read_ingredients(db: Session = Depends(get_db)):
@@ -156,7 +160,9 @@ def add_like(ingredient_id: int, like: LikeCreate, db: Session = Depends(get_db)
 
 # 댓글 추가
 @router.post("/ingredients/{ingredient_id}/comments", response_model=CommentResponse)
-def add_comment(ingredient_id: int, comment: CommentCreate, db: Session = Depends(get_db)):
+def add_comment(
+    ingredient_id: int, comment: CommentCreate, db: Session = Depends(get_db)
+):
     db_comment = Comment(
         user_id=comment.user_id,
         content=comment.content,

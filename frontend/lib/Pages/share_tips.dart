@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/tip_detail.dart';
+import 'package:frontend/Pages/write_tip_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/Pages/chat_room.dart';
 import 'package:frontend/Pages/friger.dart';
@@ -30,7 +30,7 @@ class _ShareReceipeState extends State<ShareReceipe> {
   }
 
   Future<void> fetchReceipes() async {
-    final url = Uri.parse('http://127.0.0.1:8000/tips');
+    final url = Uri.parse('http://172.17.114.116:22222/tips');
     try {
       final response = await http.get(url);
 
@@ -38,11 +38,11 @@ class _ShareReceipeState extends State<ShareReceipe> {
         final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
 
         // isShared를 랜덤하게 추가
-        final random = Random();
+        // final random = Random();
         receipes = data.map((item) {
           return {
             'id': item['id'],
-            'isShared': random.nextBool(), // true 또는 false 랜덤하게 설정
+            // 'isShared': random.nextBool(), // true 또는 false 랜덤하게 설정
             'title': item['title'],
             'pictures': item['pictures'],
             'locationDong': item['locationDong'],
@@ -52,7 +52,7 @@ class _ShareReceipeState extends State<ShareReceipe> {
           };
         }).toList();
 
-        print(receipes);
+        // print(receipes);
 
         setState(() {});
       } else {
@@ -68,6 +68,37 @@ class _ShareReceipeState extends State<ShareReceipe> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: Colors.white,
+          title: const Text(
+            '비냉 나눔터',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          actions: [
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WriteTipPage(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(
+                  width: 10,
+                )
+              ],
+            ),
+          ],
+        ),
         body: Stack(
           children: [
             Padding(
@@ -75,19 +106,6 @@ class _ShareReceipeState extends State<ShareReceipe> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 80),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "비냉 나눔터",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -121,29 +139,11 @@ class _ShareReceipeState extends State<ShareReceipe> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
                   const Divider(
                     thickness: 1,
                     color: Color(0xFFe5e5e5),
                   ),
                   const SizedBox(height: 10),
-                  const SearchBar(
-                    hintText: "궁금한 요리명을 입력하세요",
-                    elevation: WidgetStatePropertyAll(0),
-                    trailing: [Icon(Icons.search)],
-                    textStyle: WidgetStatePropertyAll(
-                      TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    backgroundColor: WidgetStatePropertyAll(Color(0xFFABD8B1)),
-                    padding: WidgetStatePropertyAll(
-                      EdgeInsets.symmetric(horizontal: 15),
-                    ),
-                    constraints: BoxConstraints(minHeight: 50),
-                  ),
                   Expanded(
                     child: GridView.builder(
                       gridDelegate:
@@ -169,9 +169,11 @@ class _ShareReceipeState extends State<ShareReceipe> {
                           },
                           child: ReceipeShareElement(
                             id: r['id'],
-                            isShared: r['isShared'],
+                            // isShared: r['isShared'],
                             title: r['title'],
-                            imgPath: r['pictures'][0],
+                            imgPath: r['pictures'].isNotEmpty
+                                ? r['pictures'][0]
+                                : "",
                             locationDong: r['locationDong'],
                             like_count: r['like_count'],
                             comment_count: r['comment_count'],
@@ -181,6 +183,9 @@ class _ShareReceipeState extends State<ShareReceipe> {
                       },
                     ),
                   ),
+                  const SizedBox(
+                    height: 100,
+                  )
                 ],
               ),
             ),
@@ -202,8 +207,8 @@ class _ShareReceipeState extends State<ShareReceipe> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    ReceipeRecommend(cameras: widget.cameras),
+                                builder: (context) => ReceipeRecommend(
+                                    cameras: super.widget.cameras),
                               ),
                             );
                           },
@@ -218,7 +223,7 @@ class _ShareReceipeState extends State<ShareReceipe> {
                             Icons.people,
                             color: Color(0xFF8EC96D),
                           ),
-                          onPressed: () {},
+                          onPressed: () => {},
                         ),
                         const Text("나눔터"),
                       ],
@@ -232,7 +237,7 @@ class _ShareReceipeState extends State<ShareReceipe> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    Friger(cameras: widget.cameras),
+                                    Friger(cameras: super.widget.cameras),
                               ),
                             );
                           },
@@ -249,7 +254,7 @@ class _ShareReceipeState extends State<ShareReceipe> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    ChatRoom(cameras: widget.cameras),
+                                    ChatRoom(cameras: super.widget.cameras),
                               ),
                             );
                           },
@@ -266,7 +271,7 @@ class _ShareReceipeState extends State<ShareReceipe> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    MyPage(cameras: widget.cameras),
+                                    MyPage(cameras: super.widget.cameras),
                               ),
                             );
                           },

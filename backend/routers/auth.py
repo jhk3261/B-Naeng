@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form, Response, Depends, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 
 router = APIRouter(tags=["인증"])
@@ -15,4 +15,3 @@ async def login(request: Request, refrigerator_id: int):
 @router.get("/api/checkCondition")
 async def check_condition(request: Request):
     return {"condition": isAuthenticated}
-
