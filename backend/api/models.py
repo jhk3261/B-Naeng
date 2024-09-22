@@ -1,29 +1,10 @@
-<<<<<<< HEAD
-from sqlalchemy import JSON, Column, ForeignKey, Integer, String, Text, Boolean, DateTime, Table, Date
-from sqlalchemy.orm import relationship
-from config.database import Base
-import random
-=======
-from sqlalchemy import (
-    JSON,
-    Column,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-    Boolean,
-    DateTime,
-    Table,
-)
 from random import random
-from sqlalchemy import JSON, Column, Date, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Column, Date, ForeignKey, Integer, String, Text, Table, DateTime, Boolean
 from config.database import Base
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.sqlite import JSON
 from datetime import datetime
 
->>>>>>> 555c8e1074cf0c8d302c13449b08daaaf636669b
 
 # 유저와 냉장고 관계 테이블 (다대다 관계 설정)
 friger_user_association = Table(
@@ -189,48 +170,4 @@ class Scrap(Base):
     ingredient_id = Column(Integer, ForeignKey("ingredients.id"), nullable=True)
 
     tip = relationship("Tip", back_populates="scraps")
-<<<<<<< HEAD
     ingredient = relationship("Ingredient", back_populates="scraps")
-=======
-    ingredient = relationship("Ingredient", back_populates="scraps")
-
-
-class Friger(Base):
-    __tablename__ = "frigers"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)  # db에서의 아이디
-    name = Column(String, nullable=False)  # 냉장고 이름
-    unique_code = Column(
-        Integer, unique=True, nullable=False, default=lambda: random.randint(1000, 9999)
-    )  # 고유번호
-    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # 대표 유저 ID
-
-    inventory_list = relationship("Inventory", back_populates="friger")
-    users = relationship(
-        "User", secondary=friger_user_association, back_populates="frigers"
-    )
-    owner = relationship(
-        "User", back_populates="owned_friger"
-    )  # 대표 유저와의 관계 (User모델에 owned_friger추가해주세요(권한가진냉장고리스트))
-
-
-class Inventory(Base):
-    __tablename__ = "inventory"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, index=True)
-    quantity = Column(Integer)
-    date = Column(Date, nullable=True)
-    # icon = 이미지 어케넣더라.. #milk.png 검색
-    category = Column(String, nullable=False)
-
-    friger_id = Column(Integer, ForeignKey("frigers.id"))
-    friger = relationship("Friger", back_populates="inventory_list")
-
-
-class RecommendRecipe(Base):
-    __tablename__ = "recommendrecipes"
-
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
->>>>>>> 555c8e1074cf0c8d302c13449b08daaaf636669b

@@ -2,11 +2,7 @@ from fastapi import Request, Response
 from itsdangerous import URLSafeSerializer
 
 
-<<<<<<< HEAD
 SECRET_KEY = '2e68714465f0aa212b68b1ffd785d4d343edb371f57fed48182b78b6b41f31dc'
-=======
-SECRET_KEY = "your_secret_key"
->>>>>>> 555c8e1074cf0c8d302c13449b08daaaf636669b
 serializer = URLSafeSerializer(SECRET_KEY)
 
 SESSION_COOKIE_NAME = "session_cookie"

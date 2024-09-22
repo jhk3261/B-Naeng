@@ -147,10 +147,10 @@ def get_friger(friger_id: int, db: Session = Depends(get_db)):
                 ],
                 users = [user.id for user in db_friger.users] #유저 스키마 추가 후 수정 필요
             )
-            for inventory in db_friger.inverntory_list
-        ],
-        user_list=User,  # 유저 스키마 추가 후 수정 필요
-    )
+    #         for inventory in db_friger.inverntory_list
+    #     ],
+    #     user_list=User,  # 유저 스키마 추가 후 수정 필요
+    # )
 
 
 # 4. Friger 수정 (Friger name, userlist 수정 가능)
