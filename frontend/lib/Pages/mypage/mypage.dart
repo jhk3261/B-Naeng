@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
-import 'fridge_popup.dart';
 import 'user_points_page.dart';
 
 const String apiUrl = 'http://127.0.0.1:8000';

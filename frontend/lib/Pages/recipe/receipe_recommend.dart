@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/Pages/chat_room.dart';
-import 'package:frontend/Pages/friger.dart';
-import 'package:frontend/Pages/mypage.dart';
-import 'package:frontend/Pages/share_ingredient.dart';
-import 'package:frontend/widgets/recipe_box_container.dart';
+import 'package:frontend/Pages/chating/chat_room.dart';
+import 'package:frontend/Pages/friger/friger.dart';
+import 'package:frontend/Pages/mypage/mypage.dart';
+import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
+import 'package:frontend/widgets/recipe/recipe_box_container.dart';
 
 class ReceipeRecommend extends StatelessWidget {
   final List<CameraDescription> cameras;
@@ -16,10 +16,8 @@ class ReceipeRecommend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
     final categoryFontSize = screenWidth * 0.05;
-    final foodTitleFontSize = screenWidth * 0.03;
 
     return Scaffold(
       backgroundColor: Colors.white,

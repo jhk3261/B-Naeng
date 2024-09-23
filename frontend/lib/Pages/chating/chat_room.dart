@@ -1,10 +1,10 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/friger.dart';
-import 'package:frontend/Pages/mypage.dart';
-import 'package:frontend/Pages/receipe_recommend.dart';
-import 'package:frontend/Pages/share_ingredient.dart';
-import 'package:frontend/widgets/chat_element.dart';
+import 'package:frontend/Pages/friger/friger.dart';
+import 'package:frontend/Pages/mypage/mypage.dart';
+import 'package:frontend/Pages/recipe/receipe_recommend.dart';
+import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
+import 'package:frontend/widgets/chating/chat_element.dart';
 
 class ChatRoom extends StatelessWidget {
   final List<CameraDescription> cameras;

@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/tip_detail.dart';
-import 'package:frontend/Pages/write_tip_page.dart';
+import 'package:frontend/Pages/share/tips/tip_detail.dart';
+import 'package:frontend/Pages/share/tips/write_tip_page.dart';
 import 'package:http/http.dart' as http;
-import 'package:frontend/Pages/chat_room.dart';
-import 'package:frontend/Pages/friger.dart';
-import 'package:frontend/Pages/mypage.dart';
-import 'package:frontend/Pages/receipe_recommend.dart';
-import 'package:frontend/Pages/share_ingredient.dart';
-import 'package:frontend/widgets/receipe_element.dart';
+import 'package:frontend/Pages/chating/chat_room.dart';
+import 'package:frontend/Pages/friger/friger.dart';
+import 'package:frontend/Pages/mypage/mypage.dart';
+import 'package:frontend/Pages/recipe/receipe_recommend.dart';
+import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
+import 'package:frontend/widgets/share/tips/receipe_element.dart';
 
 class ShareReceipe extends StatefulWidget {
   final List<CameraDescription> cameras;
