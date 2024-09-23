@@ -11,7 +11,7 @@ from sqlalchemy import (
 )
 
 from random import random
-from sqlalchemy import JSON, Column, Date, ForeignKey, Integer, String, Text
+from sqlalchemy import JSON, Column, Date, ForeignKey, Integer, String, Text, Table, DateTime, Boolean
 from config.database import Base
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.sqlite import JSON
