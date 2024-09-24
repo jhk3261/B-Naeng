@@ -72,6 +72,8 @@ class SignInPage extends StatelessWidget {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final DatabaseHelper _dbHelper = DatabaseHelper();
 
+  SignInPage({super.key});
+
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
@@ -105,7 +107,7 @@ class SignInPage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () => _signInWithGoogle(context),
-          child: Text('Sign in with Google'),
+          child: const Text('Sign in with Google'),
         ),
       ),
     );

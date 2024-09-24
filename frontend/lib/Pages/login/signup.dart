@@ -16,7 +16,8 @@ class SignupPage1 extends StatefulWidget {
   final String username;
   final String email;
 
-  SignupPage1({
+  const SignupPage1({
+    super.key,
     required this.username,
     required this.email,
   });
@@ -86,7 +87,7 @@ class _SignupPage1 extends State<SignupPage1> {
                       width: screenWidth * 0.415,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: Color(0xFF8EC96D),
+                        color: const Color(0xFF8EC96D),
                         borderRadius: BorderRadius.circular(12.0), // 둥글게 설정
                       ),
                     ),
@@ -94,14 +95,14 @@ class _SignupPage1 extends State<SignupPage1> {
                       width: screenWidth * 0.415,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: Color(0xFFD9D9D9),
+                        color: const Color(0xFFD9D9D9),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     vertical: 15.0,
                   ),
                   child: Text(
@@ -109,7 +110,7 @@ class _SignupPage1 extends State<SignupPage1> {
                     style: TextStyle(
                       fontSize: screenWidth * 0.045,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF232323),
+                      color: const Color(0xFF232323),
                     ),
                   ),
                 ),
@@ -143,7 +144,7 @@ class _SignupPage1 extends State<SignupPage1> {
                           requiredField: true,
                           fieldController: nicknameController,
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         SignupFormBox(
                           formTitle: '생년월일',
                           formGuide: '생년월일 입력하기',
@@ -151,7 +152,7 @@ class _SignupPage1 extends State<SignupPage1> {
                           requiredField: true,
                           fieldController: birthdayController,
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         SignupFormBox(
                           formTitle: '성별',
                           formGuide: '성별 입력하기',
@@ -159,7 +160,7 @@ class _SignupPage1 extends State<SignupPage1> {
                           requiredField: true,
                           fieldController: genderController,
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         SignupFormBox(
                           formTitle: '추천인 닉네임',
                           formGuide: '추천인 닉네임을 입력해주세요.',
@@ -169,16 +170,16 @@ class _SignupPage1 extends State<SignupPage1> {
                         )
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
               Container(
                 width: screenWidth,
                 height: 10,
-                color: Color(0xffECF6EA),
+                color: const Color(0xffECF6EA),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: 8,
@@ -195,13 +196,13 @@ class _SignupPage1 extends State<SignupPage1> {
                             fontSize: screenWidth * 0.04,
                           ),
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Align(
                           alignment: Alignment.topCenter,
                           child: Container(
                             width: 4,
                             height: 4,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: Color(0xffFF8686),
                               shape: BoxShape.circle,
                             ),
@@ -222,16 +223,16 @@ class _SignupPage1 extends State<SignupPage1> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          checkColor: Color(0xfff9f9f9),
-                          activeColor: Color(0xff8ec960),
-                          side: BorderSide(
+                          checkColor: const Color(0xfff9f9f9),
+                          activeColor: const Color(0xff8ec960),
+                          side: const BorderSide(
                             color: Color(0xffe5e5e5),
                             width: 1,
                           ),
                           materialTapTargetSize: MaterialTapTargetSize.padded,
                         ),
-                        SizedBox(width: 8),
-                        Text(
+                        const SizedBox(width: 8),
+                        const Text(
                           '약관 전체 동의',
                           style: TextStyle(
                             color: Color(0xff232323),
@@ -259,7 +260,7 @@ class _SignupPage1 extends State<SignupPage1> {
                         });
                       },
                     ),
-                    SizedBox(height: 50)
+                    const SizedBox(height: 50)
                   ],
                 ),
               ),
@@ -281,23 +282,23 @@ class _SignupPage1 extends State<SignupPage1> {
                     ),
                   );
                 },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(screenWidth * 0.84, 50),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  backgroundColor: const Color(0xff449C4A),
+                ),
                 child: Text(
                   '다음으로',
                   style: TextStyle(
-                    color: Color(0xffffffff),
+                    color: const Color(0xffffffff),
                     fontSize: screenWidth * 0.045,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(screenWidth * 0.84, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  backgroundColor: Color(0xff449C4A),
-                ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -323,7 +324,8 @@ class SignupPage2 extends StatefulWidget {
   final String gender;
   final String? recommender;
 
-  SignupPage2({
+  const SignupPage2({
+    super.key,
     required this.username,
     required this.email,
     required this.nickname,
@@ -343,7 +345,7 @@ class _SignupPage2 extends State<SignupPage2> {
   double latitude = 0.0;
   double longitude = 0.0;
   String? currentAddress;
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
   GoogleMapController? _mapController;
 
   @override
@@ -365,9 +367,9 @@ class _SignupPage2 extends State<SignupPage2> {
       longitude = lng;
       _markers.add(
         Marker(
-          markerId: MarkerId('currentLocation'),
+          markerId: const MarkerId('currentLocation'),
           position: LatLng(lat, lng),
-          infoWindow: InfoWindow(title: 'Current Location'),
+          infoWindow: const InfoWindow(title: 'Current Location'),
         ),
       );
       _mapController?.moveCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
@@ -396,7 +398,7 @@ class _SignupPage2 extends State<SignupPage2> {
 
   Future<String> getPlaceAddress(double latitude, double longitude) async {
     final url = Uri.parse(
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=${Appkey}&language=ko");
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$Appkey&language=ko");
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -480,7 +482,7 @@ class _SignupPage2 extends State<SignupPage2> {
                       width: screenWidth * 0.415,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: Color(0xFF8EC96D),
+                        color: const Color(0xFF8EC96D),
                         borderRadius: BorderRadius.circular(12.0), // 둥글게 설정
                       ),
                     ),
@@ -488,14 +490,14 @@ class _SignupPage2 extends State<SignupPage2> {
                       width: screenWidth * 0.415,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: Color(0xFF8EC96D),
+                        color: const Color(0xFF8EC96D),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     vertical: 15.0,
                   ),
                   child: Text(
@@ -503,7 +505,7 @@ class _SignupPage2 extends State<SignupPage2> {
                     style: TextStyle(
                       fontSize: screenWidth * 0.045,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF232323),
+                      color: const Color(0xFF232323),
                     ),
                   ),
                 ),
@@ -534,10 +536,10 @@ class _SignupPage2 extends State<SignupPage2> {
                       requiredField: true,
                       fieldController: locationController,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
-                    Container(
+                    SizedBox(
                       width: screenWidth,
                       height: 400,
                       child: GoogleMap(
@@ -549,7 +551,7 @@ class _SignupPage2 extends State<SignupPage2> {
                         markers: _markers,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 50,
                     ),
                     ElevatedButton(
@@ -565,20 +567,20 @@ class _SignupPage2 extends State<SignupPage2> {
                           300000,
                         );
                       },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(screenWidth * 0.84, 50),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        backgroundColor: const Color(0xff449C4A),
+                      ),
                       child: Text(
                         '가입하기',
                         style: TextStyle(
-                          color: Color(0xffffffff),
+                          color: const Color(0xffffffff),
                           fontSize: screenWidth * 0.045,
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(screenWidth * 0.84, 50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        backgroundColor: Color(0xff449C4A),
                       ),
                     ),
                   ],

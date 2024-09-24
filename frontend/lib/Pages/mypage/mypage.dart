@@ -79,34 +79,37 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<UserProfile>(
-        future: userProfileFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('오류가 발생했습니다.'));
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
-          } else {
-            final profile = snapshot.data!;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  buildProfileSection(profile),
-                  const SizedBox(height: 16),
-                  buildGreenPointsSection(profile),
-                  const SizedBox(height: 16),
-                  buildFridgeSection(profile),
-                  const SizedBox(height: 16),
-                  buildScrapSection(profile.userId),
-                ],
-              ),
-            );
-          }
-        },
+    return Padding(
+      padding: const EdgeInsets.only(top: 75),
+      child: Scaffold(
+        body: FutureBuilder<UserProfile>(
+          future: userProfileFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return const Center(child: Text('오류가 발생했습니다.'));
+            } else if (!snapshot.hasData || snapshot.data == null) {
+              return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
+            } else {
+              final profile = snapshot.data!;
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    buildProfileSection(profile),
+                    const SizedBox(height: 16),
+                    buildGreenPointsSection(profile),
+                    const SizedBox(height: 16),
+                    buildFridgeSection(profile),
+                    const SizedBox(height: 16),
+                    buildScrapSection(profile.userId),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

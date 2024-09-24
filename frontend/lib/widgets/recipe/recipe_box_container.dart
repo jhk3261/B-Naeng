@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/widgets/recipe_box.dart';
+import 'package:frontend/widgets/recipe/recipe_box.dart';
 
 class Recipeboxcontainer extends StatelessWidget {
   final int recipePage;
