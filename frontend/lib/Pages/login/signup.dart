@@ -33,8 +33,9 @@ class _SignupPage1 extends State<SignupPage1> {
 
   final nicknameController = TextEditingController();
   final birthdayController = TextEditingController();
-  final genderController = TextEditingController();
   final recommenderController = TextEditingController();
+
+  int gender = -1; // 성별 선택 값 (0: 남성, 1: 여성)
 
   // checkbox 전체 값 변경
   void updateAllCheckbox(bool newValue) {
@@ -88,7 +89,7 @@ class _SignupPage1 extends State<SignupPage1> {
                       height: 6,
                       decoration: BoxDecoration(
                         color: const Color(0xFF8EC96D),
-                        borderRadius: BorderRadius.circular(12.0), // 둥글게 설정
+                        borderRadius: BorderRadius.circular(12.0),
                       ),
                     ),
                     Container(
@@ -153,12 +154,102 @@ class _SignupPage1 extends State<SignupPage1> {
                           fieldController: birthdayController,
                         ),
                         const SizedBox(height: 20),
-                        SignupFormBox(
-                          formTitle: '성별',
-                          formGuide: '성별 입력하기',
-                          titleFontSize: formTitleFontSize,
-                          requiredField: true,
-                          fieldController: genderController,
+                        // 성별을 라디오 버튼으로 변경
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '성별',
+                              style: TextStyle(
+                                fontSize: formTitleFontSize,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xFF232323),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                width: 4,
+                                height: 4,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xffFF8686),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  gender = 0;
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: screenWidth * 0.16,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: gender == 0
+                                        ? const Color(0xff8ec960)
+                                        : const Color(0xffe5e5e5),
+                                    width: 1.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: gender == 0
+                                      ? const Color(0xffecf6ea)
+                                      : Colors.transparent,
+                                ),
+                                child: Text(
+                                  '남성',
+                                  style: TextStyle(
+                                    color: const Color(0xff232323),
+                                    fontSize: formTitleFontSize,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  gender = 1;
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: screenWidth * 0.16,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: gender == 1
+                                        ? const Color(0xff8ec960)
+                                        : const Color(0xffe5e5e5),
+                                    width: 1.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: gender == 1
+                                      ? const Color(0xffecf6ea)
+                                      : Colors.transparent,
+                                ),
+                                child: Text(
+                                  '여성',
+                                  style: TextStyle(
+                                    color: const Color(0xff232323),
+                                    fontSize: formTitleFontSize,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 20),
                         SignupFormBox(
@@ -266,6 +357,7 @@ class _SignupPage1 extends State<SignupPage1> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  DateTime birth = DateTime.parse(birthdayController.text);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -273,10 +365,10 @@ class _SignupPage1 extends State<SignupPage1> {
                         username: widget.username,
                         email: widget.email,
                         nickname: nicknameController.text,
-                        birthday: birthdayController.text,
-                        gender: genderController.text,
+                        birth: birth,
+                        gender: gender,
                         recommender: recommenderController.text.isEmpty
-                            ? null // 선택적 필드 처리
+                            ? null
                             : recommenderController.text,
                       ),
                     ),
@@ -310,7 +402,6 @@ class _SignupPage1 extends State<SignupPage1> {
   void dispose() {
     nicknameController.dispose();
     birthdayController.dispose();
-    genderController.dispose();
     recommenderController.dispose();
     super.dispose();
   }
@@ -320,8 +411,8 @@ class SignupPage2 extends StatefulWidget {
   final String username;
   final String email;
   final String nickname;
-  final String birthday;
-  final String gender;
+  final DateTime birth;
+  final int gender;
   final String? recommender;
 
   const SignupPage2({
@@ -329,7 +420,7 @@ class SignupPage2 extends StatefulWidget {
     required this.username,
     required this.email,
     required this.nickname,
-    required this.birthday,
+    required this.birth,
     required this.gender,
     this.recommender,
   });
@@ -361,10 +452,12 @@ class _SignupPage2 extends State<SignupPage2> {
     super.dispose();
   }
 
+  // 마커
   void _setUserLocation(double lat, double lng) {
     setState(() {
       latitude = lat;
       longitude = lng;
+      _markers.clear();
       _markers.add(
         Marker(
           markerId: const MarkerId('currentLocation'),
@@ -372,25 +465,58 @@ class _SignupPage2 extends State<SignupPage2> {
           infoWindow: const InfoWindow(title: 'Current Location'),
         ),
       );
-      _mapController?.moveCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
+      if (_mapController != null) {
+        print("Moving camera to new location");
+        _mapController?.moveCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
+      }
     });
   }
 
   Future<void> _getCurrentPosition() async {
     try {
-      Position position = await GeolocatorService.getCurrentPosition();
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      // 위치 서비스가 활성화되었는지 확인
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        await Geolocator.openLocationSettings();
+        return;
+      }
+
+      // 위치 권한 확인 및 요청
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          // 권한이 거부된 경우 처리
+          setState(() {
+            currentAddress = "위치 권한이 거부되었습니다.";
+          });
+          return;
+        }
+      }
+
+      // 영구적으로 권한이 거부된 경우
+      if (permission == LocationPermission.deniedForever) {
+        await Geolocator.openAppSettings();
+        return;
+      }
+
+      // 위치 정보 가져오기
+      Position position = await Geolocator.getCurrentPosition();
       _setUserLocation(position.latitude, position.longitude);
       String address =
           await getPlaceAddress(position.latitude, position.longitude);
       setState(() {
         currentAddress = address;
       });
-      locationController.text = '$currentAddress';
+      locationController.text = currentAddress ?? '';
     } catch (e) {
-      _setUserLocation(0.0, 0.0);
       setState(() {
-        currentAddress = "주소를 불러오지 못했습니다. : $e";
+        currentAddress = "주소를 불러오지 못했습니다. 오류: $e";
       });
+      _setUserLocation(0.0, 0.0); // 위치 설정 실패 시 기본값 설정
     }
   }
 
@@ -416,46 +542,50 @@ class _SignupPage2 extends State<SignupPage2> {
       String username,
       String email,
       String nickname,
-      String birthday,
-      String gender,
+      DateTime birth,
+      int gender,
       String? recommender,
-      String location,
-      int exp) async {
-    final url = Uri.parse('http://10.0.2.2:8000/login');
-    // final url = Uri.parse('http://192.168.200.173:8000/login');
+      String location) async {
+    try {
+      final url = Uri.parse('http://127.0.0.1:8000/login');
 
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'username': username,
-        'email': email,
-        'nickname': nickname,
-        'birthday': birthday,
-        'gender': gender,
-        'recommender': recommender,
-        'location': location,
-        "exp": exp,
-      }),
-    );
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'username': username,
+          'email': email,
+          'nickname': nickname,
+          'birth': birth.toIso8601String(),
+          'gender': gender,
+          'recommender': recommender,
+          'location': location,
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
-      String accessToken = responseData('access_token');
-      print('Access Token : $accessToken');
-    } else {
-      print('Failed to send user info : ${response.body}');
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        String accessToken = responseData['access_token'];
+        print('Access Token: $accessToken');
+        // 성공적으로 가입한 경우의 추가 로직 작성 가능
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('가입 성공!')),
+        );
+      } else {
+        print('Failed to send user info: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('가입 실패: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      print('Error occurred during signup: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('오류 발생: $e')),
+      );
     }
   }
-
-  // final DatabaseHelper _dbHelper = DatabaseHelper();
-
-  // // Future<void> _saveToDatabase() async {
-  // //   await _dbHelper.insertUser(widget.username, widget.email);
-  // //   print('User information saved.');
-  // // }
 
   @override
   Widget build(BuildContext context) {
@@ -542,14 +672,18 @@ class _SignupPage2 extends State<SignupPage2> {
                     SizedBox(
                       width: screenWidth,
                       height: 400,
-                      child: GoogleMap(
-                        onMapCreated: _onMapCreated,
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(latitude, longitude),
-                          zoom: 15,
-                        ),
-                        markers: _markers,
-                      ),
+                      child: (latitude != 0.0 && longitude != 0.0)
+                          ? GoogleMap(
+                              onMapCreated: _onMapCreated,
+                              initialCameraPosition: CameraPosition(
+                                target: LatLng(latitude, longitude),
+                                zoom: 15,
+                              ),
+                              markers: _markers,
+                            )
+                          : const Center(
+                              child: CircularProgressIndicator(),
+                            ),
                     ),
                     const SizedBox(
                       height: 50,
@@ -560,11 +694,10 @@ class _SignupPage2 extends State<SignupPage2> {
                           widget.username,
                           widget.email,
                           widget.nickname,
-                          widget.birthday,
+                          widget.birth,
                           widget.gender,
                           widget.recommender,
                           locationController.text,
-                          300000,
                         );
                       },
                       style: ElevatedButton.styleFrom(

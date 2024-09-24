@@ -6,6 +6,8 @@ import 'package:frontend/Pages/friger/friger.dart';
 import 'package:frontend/Pages/share/share_parents.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:frontend/Pages/login/google_auth.dart';
+import 'package:frontend/Pages/login/signup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
