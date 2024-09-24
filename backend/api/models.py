@@ -1,5 +1,16 @@
 from random import random
-from sqlalchemy import JSON, Column, Date, ForeignKey, Integer, String, Text, Table, DateTime, Boolean
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    Date,
+    DateTime,
+    Integer,
+    String,
+    Table,
+    Text,
+    ForeignKey,
+)
 from config.database import Base
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.sqlite import JSON
@@ -13,6 +24,7 @@ friger_user_association = Table(
     Column("user_id", Integer, ForeignKey("users.id")),
     Column("friger_id", Integer, ForeignKey("frigers.id")),
 )
+
 
 # 유저 모델
 class User(Base):
@@ -35,7 +47,7 @@ class User(Base):
         "Friger", secondary=friger_user_association, back_populates="users"
     )
     ingredients = relationship("Ingredient", back_populates="users")
-    
+
     # MyPage와의 관계 설정
     mypage = relationship("MyPage", back_populates="user", uselist=False)
 
@@ -50,7 +62,9 @@ class MyPage(Base):
     profile_image_url = Column(String, nullable=True)
     green_points = Column(Integer, default=0, nullable=False)  # 그린 포인트
     fridge_count = Column(Integer, default=0, nullable=False)  # 냉장고 개수
-    scrap_expanded = Column(Boolean, default=False, nullable=False)  # 스크랩 섹션 확장 여부
+    scrap_expanded = Column(
+        Boolean, default=False, nullable=False
+    )  # 스크랩 섹션 확장 여부
 
     user = relationship("User", back_populates="mypage")
 
@@ -84,11 +98,15 @@ class Friger(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)  # 냉장고 이름
-    unique_code = Column(Integer, unique=True, nullable=False, default=lambda: random.randint(1000, 9999))  # 고유번호
+    unique_code = Column(
+        Integer, unique=True, nullable=False, default=lambda: random.randint(1000, 9999)
+    )  # 고유번호
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # 대표 유저 ID
 
     inventory_list = relationship("Inventory", back_populates="friger")
-    users = relationship("User", secondary=friger_user_association, back_populates="frigers")
+    users = relationship(
+        "User", secondary=friger_user_association, back_populates="frigers"
+    )
     owner = relationship("User", back_populates="owned_friger")
 
 

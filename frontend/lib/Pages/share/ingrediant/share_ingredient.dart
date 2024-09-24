@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/friger/friger.dart';
-import 'package:frontend/Pages/mypage/mypage.dart';
-import 'package:frontend/Pages/recipe/receipe_recommend.dart';
 import 'package:frontend/widgets/friger/food_element.dart';
 import 'package:camera/camera.dart';
 import '../tips/share_tips.dart';
-import '../../chating/chat_room.dart';
-
 import 'WritePostPage.dart'; // 글쓰기
 import 'IngredientDetailPage.dart'; // 살세페이지
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -87,24 +81,16 @@ class ShareIngredient extends StatelessWidget {
       }
     ];
 
+    // const Text(
+    //   "정보 나눔",
+    //   style: TextStyle(
+    //     fontSize: 20,
+    //     fontWeight: FontWeight.bold,
+    //     color: Color(0xFF449C4A),
+    //   ),
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('비냉 나눔터'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WritePostPage(),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
       body: Stack(
         children: [
           Padding(
@@ -112,62 +98,7 @@ class ShareIngredient extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Text(
-                      "재료 나눔",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF449C4A),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ShareReceipe(cameras: cameras),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        "정보 나눔",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFCBCBCB),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                const Divider(
-                  thickness: 1,
-                  color: Color(0xFFe5e5e5),
-                ),
                 const SizedBox(height: 10),
-                const SearchBar(
-                  hintText: "필요한 식재료명을 입력하세요",
-                  elevation: WidgetStatePropertyAll(0),
-                  trailing: [Icon(Icons.search)],
-                  textStyle: WidgetStatePropertyAll(
-                    TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  backgroundColor: WidgetStatePropertyAll(Color(0xFFABD8B1)),
-                  padding: WidgetStatePropertyAll(
-                    EdgeInsets.symmetric(horizontal: 15),
-                  ),
-                  constraints: BoxConstraints(minHeight: 50),
-                ),
                 Expanded(
                   child: GridView.builder(
                     gridDelegate:
@@ -206,99 +137,6 @@ class ShareIngredient extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 100,
-              color: Colors.white,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.book, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ReceipeRecommend(cameras: cameras),
-                            ),
-                          );
-                        },
-                      ),
-                      const Text("레시피"),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: const Icon(
-                          Icons.people,
-                          color: Color(0xFF8EC96D),
-                        ),
-                        onPressed: () {
-                          createIngredient(1, '새 식재료', '설명', context);
-                        },
-                      ),
-                      const Text("나눔터"),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.kitchen, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Friger(cameras: cameras),
-                            ),
-                          );
-                        },
-                      ),
-                      const Text("냉장고"),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.chat, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChatRoom(cameras: cameras),
-                            ),
-                          );
-                        },
-                      ),
-                      const Text("비냉톡"),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.person, color: Colors.grey),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MyPage(cameras: cameras),
-                            ),
-                          );
-                        },
-                      ),
-                      const Text("내정보"),
-                    ],
-                  ),
-                ],
-              ),
             ),
           ),
         ],

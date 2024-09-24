@@ -2,10 +2,6 @@ import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/Pages/chating/chat_room.dart';
-import 'package:frontend/Pages/friger/friger.dart';
-import 'package:frontend/Pages/mypage/mypage.dart';
-import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
 import 'package:frontend/widgets/recipe/recipe_box_container.dart';
 
 class ReceipeRecommend extends StatelessWidget {
@@ -64,13 +60,13 @@ class ReceipeRecommend extends StatelessWidget {
                           Text(
                             '나의 냉장고 추천 메뉴',
                             style: TextStyle(
-                              color: Color(0xFF449C4A),
+                              color: const Color(0xFF449C4A),
                               fontSize: categoryFontSize,
                               fontFamily: 'GmarketSans',
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Icon(
+                          const Icon(
                             Icons.arrow_forward_ios_rounded,
                             color: Color(0xFF449C4A),
                           ),
@@ -100,7 +96,7 @@ class ReceipeRecommend extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: screenWidth * 0.35),
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Icon(
@@ -197,108 +193,12 @@ class ReceipeRecommend extends StatelessWidget {
                       Text(
                         '비냉 추천 레시피',
                         style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontFamily: 'GmarketSans',
-                          fontWeight: FontWeight.w500,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w800,
+                          fontFamily: "GmarketSans",
                         ),
                       ),
                       SizedBox(height: 20),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 100,
-                  color: Colors.white,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.book,
-                                color: Color(0xFF8EC96D)),
-                            onPressed: () {},
-                          ),
-                          const Text("레시피"),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.people,
-                              color: Colors.grey,
-                            ),
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ShareIngredient(cameras: cameras),
-                                ),
-                              );
-                            },
-                          ),
-                          const Text("나눔터"),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.kitchen, color: Colors.grey),
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      Friger(cameras: cameras),
-                                ),
-                              );
-                            },
-                          ),
-                          const Text("냉장고"),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.chat, color: Colors.grey),
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChatRoom(cameras: cameras),
-                                ),
-                              );
-                            },
-                          ),
-                          const Text("비냉톡"),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.person, color: Colors.grey),
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      MyPage(cameras: cameras),
-                                ),
-                              );
-                            },
-                          ),
-                          const Text("내정보"),
-                        ],
-                      ),
                     ],
                   ),
                 ),
