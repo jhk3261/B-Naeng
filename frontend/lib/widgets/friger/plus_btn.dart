@@ -20,7 +20,7 @@ class PlusBtn extends StatelessWidget {
               horizontal: 20,
               vertical: 20,
             ),
-            title: Text(
+            title: const Text(
               '재고등록방법을 선택해주세요',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -32,16 +32,16 @@ class PlusBtn extends StatelessWidget {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF449C4A),
+                    backgroundColor: const Color(0xFF449C4A),
                     foregroundColor: Colors.white,
-                    minimumSize: Size(200, 70),
+                    minimumSize: const Size(200, 70),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   onPressed: () {},
                   //TO DO : 영수증등록화면 네비게이션
-                  child: Text(
+                  child: const Text(
                     '영수증 등록',
                     style: TextStyle(
                       fontSize: 24,
@@ -49,14 +49,14 @@ class PlusBtn extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF8EC96D),
+                    backgroundColor: const Color(0xFF8EC96D),
                     foregroundColor: Colors.white,
-                    minimumSize: Size(200, 70),
+                    minimumSize: const Size(200, 70),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -65,10 +65,11 @@ class PlusBtn extends StatelessWidget {
                     Navigator.of(context).pop();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FoodCreate()),
+                      MaterialPageRoute(
+                          builder: (context) => const FoodCreate()),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     '직접 등록',
                     style: TextStyle(
                       fontSize: 24,
@@ -89,8 +90,8 @@ class PlusBtn extends StatelessWidget {
         onPressed: () => CreateFood(context),
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFF2F2F2),
-          shape: CircleBorder(),
-          padding: EdgeInsets.all(5),
+          shape: const CircleBorder(),
+          padding: const EdgeInsets.all(5),
         ),
         child: Transform.translate(
           offset: const Offset(0, -4),

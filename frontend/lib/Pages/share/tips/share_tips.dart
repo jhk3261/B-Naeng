@@ -4,23 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:frontend/Pages/share/tips/tip_detail.dart';
 import 'package:frontend/Pages/share/tips/write_tip_page.dart';
 import 'package:http/http.dart' as http;
-import 'package:frontend/Pages/chating/chat_room.dart';
-import 'package:frontend/Pages/friger/friger.dart';
-import 'package:frontend/Pages/mypage/mypage.dart';
-import 'package:frontend/Pages/recipe/receipe_recommend.dart';
 import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
 import 'package:frontend/widgets/share/tips/receipe_element.dart';
 
-class ShareReceipe extends StatefulWidget {
+class ShareTips extends StatefulWidget {
   final List<CameraDescription> cameras;
 
-  const ShareReceipe({super.key, required this.cameras});
+  const ShareTips({super.key, required this.cameras});
 
   @override
-  _ShareReceipeState createState() => _ShareReceipeState();
+  _ShareTipsState createState() => _ShareTipsState();
 }
 
-class _ShareReceipeState extends State<ShareReceipe> {
+class _ShareTipsState extends State<ShareTips> {
   List<Map<String, dynamic>> receipes = [];
 
   @override
@@ -68,37 +64,6 @@ class _ShareReceipeState extends State<ShareReceipe> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          surfaceTintColor: Colors.transparent,
-          backgroundColor: Colors.white,
-          title: const Text(
-            '비냉 나눔터',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          actions: [
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const WriteTipPage(),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  width: 10,
-                )
-              ],
-            ),
-          ],
-        ),
         body: Stack(
           children: [
             Padding(
@@ -106,43 +71,6 @@ class _ShareReceipeState extends State<ShareReceipe> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ShareIngredient(cameras: widget.cameras),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          "재료 나눔",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFCBCBCB),
-                          ),
-                        ),
-                      ),
-                      const Text(
-                        "정보 나눔",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF449C4A),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Divider(
-                    thickness: 1,
-                    color: Color(0xFFe5e5e5),
-                  ),
                   const SizedBox(height: 10),
                   Expanded(
                     child: GridView.builder(
@@ -187,100 +115,6 @@ class _ShareReceipeState extends State<ShareReceipe> {
                     height: 100,
                   )
                 ],
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 100,
-                color: Colors.white,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.book, color: Colors.grey),
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ReceipeRecommend(
-                                    cameras: super.widget.cameras),
-                              ),
-                            );
-                          },
-                        ),
-                        const Text("레시피"),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.people,
-                            color: Color(0xFF8EC96D),
-                          ),
-                          onPressed: () => {},
-                        ),
-                        const Text("나눔터"),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.kitchen, color: Colors.grey),
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    Friger(cameras: super.widget.cameras),
-                              ),
-                            );
-                          },
-                        ),
-                        const Text("냉장고"),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.chat, color: Colors.grey),
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ChatRoom(cameras: super.widget.cameras),
-                              ),
-                            );
-                          },
-                        ),
-                        const Text("비냉톡"),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.person, color: Colors.grey),
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    MyPage(cameras: super.widget.cameras),
-                              ),
-                            );
-                          },
-                        ),
-                        const Text("내정보"),
-                      ],
-                    ),
-                  ],
-                ),
               ),
             ),
           ],

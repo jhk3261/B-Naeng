@@ -1,10 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/Pages/chating/chat_room.dart';
 import 'package:frontend/Pages/friger/friger_change.dart';
-import 'package:frontend/Pages/mypage/mypage.dart';
-import 'package:frontend/Pages/recipe/receipe_recommend.dart';
-import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
 import 'package:frontend/widgets/friger/friger_food.dart';
 import 'package:frontend/widgets/friger/plus_btn.dart';
 
@@ -33,7 +29,7 @@ class _FrigerState extends State<Friger> {
       backgroundColor: Colors.white,
       body: Stack(children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 75),
+          padding: const EdgeInsets.only(top: 75),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -47,7 +43,7 @@ class _FrigerState extends State<Friger> {
                         children: [
                           Text(
                             '${currentFridge?['name']}',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontFamily: 'GmarketSansBold',
                                 fontSize: 24,
                                 color: Color(0xFF449C4A)),
@@ -68,7 +64,7 @@ class _FrigerState extends State<Friger> {
                               final selectedFridge = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => FrigerChange()),
+                                    builder: (context) => const FrigerChange()),
                               );
                               // 선택된 냉장고로 현재 냉장고 변경
                               if (selectedFridge != null) {
@@ -77,7 +73,7 @@ class _FrigerState extends State<Friger> {
                                 });
                               }
                             },
-                            color: Color(0xFFCBCBCB),
+                            color: const Color(0xFFCBCBCB),
                             icon: const Icon(Icons.repeat_rounded),
                           ),
                         ],
@@ -154,28 +150,27 @@ class _FrigerState extends State<Friger> {
                 Container(
                     alignment: Alignment.topLeft,
                     color: const Color(0xFFFAFAFA),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 16),
+                    child: const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                       child: Column(children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               "육류",
                               style: TextStyle(
                                 fontFamily: 'GmarketSansBold',
                                 fontSize: 20,
                               ),
                             ),
-                            const SizedBox(
+                            SizedBox(
                               height: 20,
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
+                              padding: EdgeInsets.symmetric(horizontal: 12),
                               child: Column(children: [
-                                const Row(children: [
+                                Row(children: [
                                   FrigerFood(
                                     num: "2",
                                     day: 1,
@@ -211,12 +206,12 @@ class _FrigerState extends State<Friger> {
                                     ftColor: Color(0xFF449C4A),
                                   ),
                                 ]),
-                                const SizedBox(
+                                SizedBox(
                                   height: 24,
                                 ),
                                 Row(
                                   children: [
-                                    const FrigerFood(
+                                    FrigerFood(
                                       num: "10",
                                       day: 10,
                                       imagePath: 'assets/images/food_bacon.png',
@@ -225,7 +220,7 @@ class _FrigerState extends State<Friger> {
                                       bdColor: Color(0xFFAED3B0),
                                       ftColor: Color(0xFF449C4A),
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 44,
                                     ),
                                     PlusBtn(
@@ -235,10 +230,10 @@ class _FrigerState extends State<Friger> {
                                 )
                               ]),
                             ),
-                            const SizedBox(
+                            SizedBox(
                               height: 16,
                             ),
-                            const Divider(
+                            Divider(
                               color: Color(0xFFE5E5E5),
                               thickness: 1.0,
                             )
@@ -247,21 +242,20 @@ class _FrigerState extends State<Friger> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               "소스",
                               style: TextStyle(
                                 fontFamily: 'GmarketSansBold',
                                 fontSize: 20,
                               ),
                             ),
-                            const SizedBox(
+                            SizedBox(
                               height: 20,
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
+                              padding: EdgeInsets.symmetric(horizontal: 12),
                               child: Column(children: [
-                                const Row(children: [
+                                Row(children: [
                                   FrigerFood(
                                     num: "1",
                                     day: 5,
@@ -297,12 +291,12 @@ class _FrigerState extends State<Friger> {
                                     ftColor: Color(0xFF449C4A),
                                   ),
                                 ]),
-                                const SizedBox(
+                                SizedBox(
                                   height: 24,
                                 ),
                                 Row(
                                   children: [
-                                    const FrigerFood(
+                                    FrigerFood(
                                       num: "1",
                                       day: 60,
                                       imagePath:
@@ -312,10 +306,10 @@ class _FrigerState extends State<Friger> {
                                       bdColor: Color(0xFFAED3B0),
                                       ftColor: Color(0xFF449C4A),
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 20,
                                     ),
-                                    const FrigerFood(
+                                    FrigerFood(
                                       num: "2",
                                       day: 365,
                                       imagePath:
@@ -325,7 +319,7 @@ class _FrigerState extends State<Friger> {
                                       bdColor: Color(0xFFAED3B0),
                                       ftColor: Color(0xFF449C4A),
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 44,
                                     ),
                                     PlusBtn(
@@ -335,10 +329,10 @@ class _FrigerState extends State<Friger> {
                                 )
                               ]),
                             ),
-                            const SizedBox(
+                            SizedBox(
                               height: 16,
                             ),
-                            const Divider(
+                            Divider(
                               color: Color(0xFFE5E5E5),
                               thickness: 1.0,
                             )
@@ -347,21 +341,20 @@ class _FrigerState extends State<Friger> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               "유제품",
                               style: TextStyle(
                                 fontFamily: 'GmarketSansBold',
                                 fontSize: 20,
                               ),
                             ),
-                            const SizedBox(
+                            SizedBox(
                               height: 20,
                             ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
+                              padding: EdgeInsets.symmetric(horizontal: 12),
                               child: Column(children: [
-                                const Row(children: [
+                                Row(children: [
                                   FrigerFood(
                                     num: "3",
                                     day: 1,
@@ -396,12 +389,12 @@ class _FrigerState extends State<Friger> {
                                     ftColor: Color(0xFF449C4A),
                                   ),
                                 ]),
-                                const SizedBox(
+                                SizedBox(
                                   height: 24,
                                 ),
                                 Row(
                                   children: [
-                                    const FrigerFood(
+                                    FrigerFood(
                                       num: "5",
                                       day: 12,
                                       imagePath:
@@ -411,7 +404,7 @@ class _FrigerState extends State<Friger> {
                                       bdColor: Color(0xFFAED3B0),
                                       ftColor: Color(0xFF449C4A),
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 44,
                                     ),
                                     PlusBtn(
@@ -421,10 +414,10 @@ class _FrigerState extends State<Friger> {
                                 )
                               ]),
                             ),
-                            const SizedBox(
+                            SizedBox(
                               height: 16,
                             ),
-                            const Divider(
+                            Divider(
                               color: Color(0xFFE5E5E5),
                               thickness: 1.0,
                             )
@@ -432,100 +425,6 @@ class _FrigerState extends State<Friger> {
                         ),
                       ]),
                     ))
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            height: 100,
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.book, color: Colors.grey),
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ReceipeRecommend(cameras: widget.cameras),
-                          ),
-                        );
-                      },
-                    ),
-                    const Text("레시피"),
-                  ],
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.people,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ShareIngredient(cameras: widget.cameras),
-                          ),
-                        );
-                      },
-                    ),
-                    const Text("나눔터"),
-                  ],
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.kitchen, color: Color(0xFF8EC96D)),
-                      onPressed: () {},
-                    ),
-                    const Text("냉장고"),
-                  ],
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.chat, color: Colors.grey),
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ChatRoom(cameras: widget.cameras),
-                          ),
-                        );
-                      },
-                    ),
-                    const Text("비냉톡"),
-                  ],
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.person, color: Colors.grey),
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                MyPage(cameras: widget.cameras),
-                          ),
-                        );
-                      },
-                    ),
-                    const Text("내정보"),
-                  ],
-                ),
               ],
             ),
           ),
