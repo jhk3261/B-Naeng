@@ -1,4 +1,5 @@
 import 'package:frontend/Pages/chating/chat_room.dart';
+import 'package:frontend/Pages/login/signup_complete.dart';
 import 'package:frontend/Pages/mypage/mypage.dart';
 import 'package:frontend/Pages/recipe/receipe_recommend.dart';
 import 'package:frontend/Pages/friger/friger.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         // 추가적으로 다른 테마 속성도 설정 가능
       ),
       home: HomeScreen(cameras: cameras),
+      // SignInPage(),
     );
   }
 }

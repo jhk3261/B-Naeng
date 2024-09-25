@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:frontend/Pages/login/signup.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sqflite/sqflite.dart';
@@ -103,11 +104,36 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
+      backgroundColor: Color(0xff8EC96D),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => _signInWithGoogle(context),
-          child: const Text('Sign in with Google'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            SizedBox(
+              height: screenHeight * 0.1,
+            ),
+            GestureDetector(
+              child: SvgPicture.asset(
+                'assets/images/B-Naeng_logo.svg',
+                width: screenWidth * 0.5,
+              ),
+            ),
+            SizedBox(
+              height: screenHeight * 0.15,
+            ),
+            GestureDetector(
+              onTap: () => _signInWithGoogle(context),
+              child: SvgPicture.asset(
+                'assets/images/ios_neutral_sq_SignInWithGoogle.svg',
+                width: screenWidth * 0.55,
+              ),
+            ),
+          ],
         ),
       ),
     );

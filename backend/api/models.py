@@ -184,3 +184,13 @@ class Scrap(Base):
 
     tip = relationship("Tip", back_populates="scraps")
     ingredient = relationship("Ingredient", back_populates="scraps")
+
+
+class Recipe(Base):
+    __tablename__ = "recipes"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    friger_id = Column(Integer, ForeignKey("frigers.id"), nullable=False)
+    create_time = Column(DateTime, nullable=False)
+    recommend_recipes = Column(JSON, nullable=False)
+    recommend_recipes_more = Column(JSON, nullable=False)
