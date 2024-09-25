@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-const String apiUrl = 'http://127.0.0.1:8000'; // API URL
+const String apiUrl = 'http://127.0.0.1:8000';
 
 class UsePointsPage extends StatefulWidget {
   final int userId;
-  final Function() onRefresh; // 마이페이지 새로 고침을 위한 콜백 함수 추가
+  final Function() onRefresh;
 
   const UsePointsPage({super.key, required this.userId, required this.onRefresh});
 

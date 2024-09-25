@@ -4,7 +4,6 @@ import 'package:frontend/Pages/mypage/fridge_popup.dart';
 import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
 import 'user_points_page.dart';
-import 'dart:convert';
 
 const String apiUrl = 'http://127.0.0.1:8000';
 
@@ -74,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     } catch (error) {
       print('Error fetching scrap items: $error');
-      return _getDummyScrapItems(); // 더미 데이터 반환
+      return _getDummyScrapItems();
     }
   }
 

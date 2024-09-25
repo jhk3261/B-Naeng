@@ -14,7 +14,7 @@ class FridgePopup extends StatefulWidget {
 class _FridgePopupState extends State<FridgePopup> {
   List<dynamic> _fridges = [];
   bool _isLoading = true;
-  bool _useDummyData = false; // 더미 데이터 사용 여부
+  bool _useDummyData = false;
 
   @override
   void initState() {

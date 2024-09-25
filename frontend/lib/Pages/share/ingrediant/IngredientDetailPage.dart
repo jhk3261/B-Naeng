@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class IngredientDetailPage extends StatefulWidget {
-  final int ingredientId; // 식재료 ID
+  final int ingredientId;
   final String title;
   final String imageUrl;
   final String description;

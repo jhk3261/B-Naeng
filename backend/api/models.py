@@ -52,12 +52,12 @@ class User(Base):
     recommender = Column(String, nullable=True)
     location = Column(String, nullable=False)
 
-    owned_friger = relationship(
-        "Friger", back_populates="owner", cascade="all, delete-orphan"
-    )
-    frigers = relationship(
-        "Friger", secondary=friger_user_association, back_populates="users"
-    )
+    # owned_friger = relationship(
+    #     "Friger", back_populates="owner", cascade="all, delete-orphan"
+    # )
+    # frigers = relationship(
+    #     "Friger", secondary=friger_user_association, back_populates="users"
+    # )
     ingredients = relationship("Ingredient", back_populates="users")
 
     # MyPage와의 관계 설정
