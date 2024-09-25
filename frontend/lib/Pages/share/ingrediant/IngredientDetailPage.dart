@@ -8,7 +8,8 @@ class IngredientDetailPage extends StatefulWidget {
   final String imageUrl;
   final String description;
 
-  IngredientDetailPage({
+  const IngredientDetailPage({
+    super.key,
     required this.ingredientId,
     required this.title,
     required this.imageUrl,
@@ -26,7 +27,7 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
   int _scrapCount = 0;
   bool _isScrapped = false;
   final TextEditingController _commentController = TextEditingController();
-  List<String> _comments = []; // 댓글 목록
+  final List<String> _comments = []; // 댓글 목록
 
   @override
   void initState() {
@@ -37,7 +38,8 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
   Future<void> _toggleLike() async {
     try {
       final response = await http.post(
-        Uri.parse('http://your-api-url.com/ingredients/${widget.ingredientId}/likes'),
+        Uri.parse(
+            'http://your-api-url.com/ingredients/${widget.ingredientId}/likes'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'user_id': 1, // 예시
@@ -69,7 +71,8 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://your-api-url.com/ingredients/${widget.ingredientId}/comments'),
+        Uri.parse(
+            'http://your-api-url.com/ingredients/${widget.ingredientId}/comments'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'user_id': 1,
@@ -96,7 +99,8 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
   Future<void> _toggleScrap() async {
     try {
       final response = await http.post(
-        Uri.parse('http://your-api-url.com/ingredients/${widget.ingredientId}/scraps'),
+        Uri.parse(
+            'http://your-api-url.com/ingredients/${widget.ingredientId}/scraps'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'user_id': 1,
@@ -147,24 +151,24 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
+            icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {
               // 삭제 확인 대화상자
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('삭제 확인'),
-                    content: Text('이 글을 삭제하시겠습니까?'),
+                    title: const Text('삭제 확인'),
+                    content: const Text('이 글을 삭제하시겠습니까?'),
                     actions: [
                       TextButton(
-                        child: Text('취소'),
+                        child: const Text('취소'),
                         onPressed: () {
                           Navigator.of(context).pop(); // 대화상자 닫기
                         },
                       ),
                       TextButton(
-                        child: Text('삭제'),
+                        child: const Text('삭제'),
                         onPressed: () {
                           Navigator.of(context).pop(); // 대화상자 닫기
                           _deletePost(); // 글 삭제 호출
@@ -188,46 +192,50 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage: AssetImage('assets/images/profile.png'),
+                        backgroundImage:
+                            AssetImage('assets/images/profile.png'),
                         radius: 24,
                       ),
                       SizedBox(width: 8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('신지아', style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text('신지아',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                           Text('가좌동'),
                         ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   Text(
                     widget.title,
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Text(widget.description),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   TextField(
                     controller: _commentController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: '댓글을 작성하세요',
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   ElevatedButton(
                     onPressed: _addComment,
-                    child: Text('댓글 추가'),
+                    child: const Text('댓글 추가'),
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   // 댓글 목록 표시
-                  Text('댓글 목록', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ..._comments.map((comment) => ListTile(title: Text(comment))).toList(),
+                  const Text('댓글 목록',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  ..._comments.map((comment) => ListTile(title: Text(comment))),
                 ],
               ),
             ),
@@ -247,7 +255,7 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
             ),
             Text(_isLiked ? "$_likeCount" : "$_likeCount"),
             IconButton(
-              icon: Icon(Icons.chat_bubble_outline, color: Colors.green),
+              icon: const Icon(Icons.chat_bubble_outline, color: Colors.green),
               onPressed: () {},
             ),
             Text("$_commentCount"),

@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class WritePostPage extends StatefulWidget {
+  const WritePostPage({super.key});
+
   @override
   _WritePostPageState createState() => _WritePostPageState();
 }
@@ -45,7 +47,7 @@ class _WritePostPageState extends State<WritePostPage> {
         print('글이 성공적으로 작성되었습니다.');
         print('제목: $title');
         print('내용: $content');
-        
+
         if (_isShared) {
           print('나눔 완료된 글입니다.');
         }
@@ -63,30 +65,30 @@ class _WritePostPageState extends State<WritePostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('글 쓰기'),
+        title: const Text('글 쓰기'),
         actions: [
           IconButton(
-            icon: Icon(Icons.check, color: Colors.green),
+            icon: const Icon(Icons.check, color: Colors.green),
             onPressed: _submitPost,
           ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(hintText: '제목'),
+              decoration: const InputDecoration(hintText: '제목'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _contentController,
-              decoration: InputDecoration(hintText: '내용을 입력해 주세요.'),
+              decoration: const InputDecoration(hintText: '내용을 입력해 주세요.'),
               maxLines: 10,
             ),
             SwitchListTile(
-              title: Text("공유 여부"),
+              title: const Text("공유 여부"),
               value: _isShared,
               onChanged: (bool value) {
                 setState(() {
@@ -99,7 +101,7 @@ class _WritePostPageState extends State<WritePostPage> {
       ),
       bottomNavigationBar: BottomAppBar(
         child: IconButton(
-          icon: Icon(Icons.camera_alt, color: Colors.green),
+          icon: const Icon(Icons.camera_alt, color: Colors.green),
           onPressed: _pickImage,
         ),
       ),

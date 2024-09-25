@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/share/tips/tip_detail.dart';
-import 'package:frontend/Pages/share/tips/write_tip_page.dart';
 import 'package:http/http.dart' as http;
-import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
 import 'package:frontend/widgets/share/tips/receipe_element.dart';
 
 class ShareTips extends StatefulWidget {
