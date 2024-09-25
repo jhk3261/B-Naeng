@@ -11,8 +11,6 @@ import json
 import httpx
 from api.models import Recipe
 import requests
-
-
 from bs4 import BeautifulSoup
 
 # import pyautogui

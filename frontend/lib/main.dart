@@ -1,5 +1,4 @@
 import 'package:frontend/Pages/chating/chat_room.dart';
-import 'package:frontend/Pages/login/signup_complete.dart';
 import 'package:frontend/Pages/mypage/mypage.dart';
 import 'package:frontend/Pages/recipe/receipe_recommend.dart';
 import 'package:frontend/Pages/friger/friger.dart';

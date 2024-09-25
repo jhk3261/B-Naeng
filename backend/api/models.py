@@ -49,15 +49,16 @@ class User(Base):
     nickname = Column(String, nullable=False)
     birth = Column(DateTime, nullable=False)
     gender = Column(Integer, nullable=False)
-    recommender = Column(String, nullable=True)
+    recommender = Column(String, default="", nullable=True)
     location = Column(String, nullable=False)
+    green_points = Column(Integer, default=0, nullable=False)
 
-    owned_friger = relationship(
-        "Friger", back_populates="owner", cascade="all, delete-orphan"
-    )
-    frigers = relationship(
-        "Friger", secondary=friger_user_association, back_populates="users"
-    )
+    # owned_friger = relationship(
+    #     "Friger", back_populates="owner", cascade="all, delete-orphan"
+    # )
+    # frigers = relationship(
+    #     "Friger", secondary=friger_user_association, back_populates="users"
+    # )
     ingredients = relationship("Ingredient", back_populates="users")
 
     # MyPage와의 관계 설정
@@ -104,7 +105,6 @@ class Ingredient(Base):
     )
 
 
-
 # 냉장고 모델
 class Friger(Base):
     __tablename__ = "frigers"
@@ -112,10 +112,12 @@ class Friger(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)  # 냉장고 이름
     unique_code = Column(Integer, nullable=True)
-    #TO DO : 유저 아이디, 냉장고 코드
+    # TO DO : 유저 아이디, 냉장고 코드
 
-    inventory_list = relationship("Inventory", back_populates="friger", cascade="all, delete-orphan")
-    #TO DO : 유저 리스트 연결
+    inventory_list = relationship(
+        "Inventory", back_populates="friger", cascade="all, delete-orphan"
+    )
+    # TO DO : 유저 리스트 연결
 
 
 # 냉장고 인벤토리

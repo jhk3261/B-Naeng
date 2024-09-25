@@ -14,7 +14,7 @@ class FridgePopup extends StatefulWidget {
 class _FridgePopupState extends State<FridgePopup> {
   List<dynamic> _fridges = [];
   bool _isLoading = true;
-  bool _useDummyData = false; // 더미 데이터 사용 여부
+  // 더미 데이터 사용 여부
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _FridgePopupState extends State<FridgePopup> {
           {'name': '2번 냉장고', 'isSelected': false, 'owner_id': 2, 'current_user_id': 1},
           {'name': '3번 냉장고', 'isSelected': false, 'owner_id': 3, 'current_user_id': 1},
         ];
-        _useDummyData = true; // 더미 데이터 사용 플래그
+// 더미 데이터 사용 플래그
         _isLoading = false;
       });
       // 에러 발생 시 사용자에게 알림
