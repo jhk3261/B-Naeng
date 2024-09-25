@@ -28,41 +28,41 @@ class SignupTermsForm extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              checkColor: Color(0xfff9f9f9),
-              activeColor: Color(0xff8EC96D),
-              side: BorderSide(
+              checkColor: const Color(0xfff9f9f9),
+              activeColor: const Color(0xff8EC96D),
+              side: const BorderSide(
                 color: Color(0xffE5E5E5),
                 width: 1,
               ),
               materialTapTargetSize: MaterialTapTargetSize.padded,
             ),
-            SizedBox(
+            const SizedBox(
               width: 8,
             ),
-            Text(
+            const Text(
               '(필수)',
               style: TextStyle(
                 color: Color(0xff8EC96D),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 8,
             ),
             Text(
               termsTitle,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color(0xff232323),
               ),
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 5,
         ),
         Container(
           height: 100,
           // border 추가 필요
-          color: Color(0xfff9f9f9),
+          color: const Color(0xfff9f9f9),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Padding(
@@ -72,7 +72,7 @@ class SignupTermsForm extends StatelessWidget {
               ),
               child: Text(
                 termsDetail,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xffB4B4B4),
                 ),
               ),

@@ -53,7 +53,7 @@ class _FrigerChangeState extends State<FrigerChange> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           '현재 냉장고',
                           style: TextStyle(
                             fontSize: 24,
@@ -61,7 +61,7 @@ class _FrigerChangeState extends State<FrigerChange> {
                             color: Color(0xFF232323),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 12,
                         ),
                         frigerItem(
@@ -78,13 +78,13 @@ class _FrigerChangeState extends State<FrigerChange> {
                       ],
                     ),
                   )),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
-              Divider(
+              const Divider(
                 color: Color(0xFFDCDCDC),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Flexible(
@@ -94,14 +94,14 @@ class _FrigerChangeState extends State<FrigerChange> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           '포함된 냉장고',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 12,
                         ),
                         Expanded(
@@ -120,7 +120,7 @@ class _FrigerChangeState extends State<FrigerChange> {
                                   });
                             },
                             separatorBuilder: (context, index) {
-                              return Column(
+                              return const Column(
                                 children: [
                                   SizedBox(
                                     height: 8,
@@ -141,16 +141,16 @@ class _FrigerChangeState extends State<FrigerChange> {
                   )),
               Flexible(
                 flex: 1,
-                child: Container(
+                child: SizedBox(
                   width: 380,
                   height: 60,
                   child: ElevatedButton(
                     onPressed: () {
                       if (selectedFridge != null) {
                         setState(() {
-                          fridgeList.forEach((friger) {
+                          for (var friger in fridgeList) {
                             friger['iscurrent'] = false;
-                          });
+                          }
                           selectedFridge!['iscurrent'] = true;
                         });
 
@@ -158,11 +158,11 @@ class _FrigerChangeState extends State<FrigerChange> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF449C4A),
+                        backgroundColor: const Color(0xFF449C4A),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         )),
-                    child: Text(
+                    child: const Text(
                       '변경하기',
                       style: TextStyle(
                         fontSize: 20,

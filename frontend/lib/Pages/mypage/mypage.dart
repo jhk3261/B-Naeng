@@ -45,7 +45,8 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final response = await http.get(Uri.parse('$apiUrl/mypage/$userId'));
       if (response.statusCode == 200) {
-        return UserProfile.fromJson(jsonDecode(response.body));
+        return UserProfile.fromJson(
+            jsonDecode(utf8.decode(response.bodyBytes)));
       } else {
         throw Exception('Failed to load user profile');
       }
@@ -66,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final response = await http.get(Uri.parse('$apiUrl/scrap/$userId'));
       if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.body);
+        List<dynamic> data = jsonDecode((utf8.decode(response.bodyBytes)));
         return data.map((json) => ScrapItem.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load scrap items');
@@ -82,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ScrapItem(
         id: 1,
         title: '당근이 남아 돌 때 꿀 팁!!',
-        imageUrl: 'https://example.com/image1.jpg',
+        imageUrl: 'assets/images/img1.png',
         likeCount: 122,
         commentCount: 65,
         scrapCount: 45,
@@ -91,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ScrapItem(
         id: 2,
         title: '쌈 채소 드려요',
-        imageUrl: 'https://example.com/image2.jpg',
+        imageUrl: 'assets/images/img2.png',
         likeCount: 62,
         commentCount: 13,
         scrapCount: 22,
@@ -100,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ScrapItem(
         id: 3,
         title: '삼겹살 800g',
-        imageUrl: 'https://example.com/image3.jpg',
+        imageUrl: 'assets/images/img3.png',
         likeCount: 5,
         commentCount: 2,
         scrapCount: 9,
@@ -109,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ScrapItem(
         id: 4,
         title: '아보카도 덮밥 레시피',
-        imageUrl: 'https://example.com/image4.jpg',
+        imageUrl: 'assets/images/img4.png',
         likeCount: 100,
         commentCount: 10,
         scrapCount: 15,
@@ -168,7 +169,10 @@ class _ProfilePageState extends State<ProfilePage> {
         const SizedBox(height: 12),
         Text(
           profile.username ?? '기본 사용자',
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );
@@ -208,13 +212,31 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const Spacer(),
           TextButton(
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              // '사용하기' 페이지로 이동
+              final usedPoints = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UsePointsPage(userId: profile.userId),
+                  builder: (context) => UsePointsPage(
+                    userId: profile.userId,
+                    onRefresh: () {
+                      setState(() {
+                        userProfileFuture = fetchUserProfile(profile.userId);
+                      });
+                    },
+                  ),
                 ),
               );
+
+              // 사용한 포인트가 null이 아닐 경우
+              if (usedPoints != null) {
+                setState(() {
+                  // usedPoints를 int로 변환
+                  profile.greenPoints -= (usedPoints as num).toInt(); // 형 변환 추가
+                  // API를 호출하여 최신 사용자 정보를 가져올 수 있습니다.
+                  userProfileFuture = fetchUserProfile(profile.userId);
+                });
+              }
             },
             child: const Text(
               '사용하기',
@@ -316,19 +338,21 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬로 변경
               children: [
                 Image.asset(
                   'assets/images/star.png',
                   width: 18,
                   height: 18,
                 ),
+                const SizedBox(width: 8), // 이미지와 텍스트 사이 간격 추가
                 const Text(
                   '스크랩',
                   style: TextStyle(
                     fontSize: 15,
                   ),
                 ),
+                const Spacer(), // 텍스트와 아이콘 사이의 공간을 유지
                 Icon(
                   isScrapSectionOpen
                       ? Icons.keyboard_arrow_up
@@ -405,7 +429,7 @@ class UserProfile {
   final int userId;
   final String? username;
   final String? profileImageUrl;
-  final int greenPoints;
+  int greenPoints;
   final int fridgeCount;
 
   UserProfile({

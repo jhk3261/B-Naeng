@@ -57,14 +57,14 @@ class _FoodCreateState extends State<FoodCreate> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               height: 30,
                             ),
-                            InputLabel(
+                            const InputLabel(
                               content: '식재료명',
                               isVauable: true,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             TextFormField(
@@ -72,47 +72,47 @@ class _FoodCreateState extends State<FoodCreate> {
                               controller: nameController,
                               decoration: InputDecoration(
                                 filled: true,
-                                fillColor: Color(0xFFF9F9F9),
-                                contentPadding: EdgeInsets.only(
+                                fillColor: const Color(0xFFF9F9F9),
+                                contentPadding: const EdgeInsets.only(
                                   top: 30,
                                   left: 20,
                                   bottom: 10,
                                 ),
                                 hintText: '재료 이름을 입력해주세요 (ex-돼지고기 100g)',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   fontSize: 14,
                                   color: Color(0xFFB4B4B4),
                                 ),
-                                focusColor: Color(0xFF8EC96D),
+                                focusColor: const Color(0xFF8EC96D),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     color: Color(0xFF8EC96D),
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     color: Color(0xFFCBCBCB),
                                   ),
                                 ),
                                 counterText: '',
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
-                            InputLabel(
+                            const InputLabel(
                               content: '카테고리',
                               isVauable: true,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             DropdownButtonHideUnderline(
                               child: DropdownButton2<String>(
                                 isExpanded: true,
-                                hint: Text(
+                                hint: const Text(
                                   '카테고리를 선택해주세요 (없다면 기타 선택)',
                                   style: TextStyle(
                                     fontSize: 14,
@@ -125,7 +125,7 @@ class _FoodCreateState extends State<FoodCreate> {
                                         value: item,
                                         child: Text(
                                           item,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             color: Color(0xFF232323),
                                           ),
@@ -147,9 +147,9 @@ class _FoodCreateState extends State<FoodCreate> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
-                                      color: Color(0xFFCBCBCB),
+                                      color: const Color(0xFFCBCBCB),
                                     ),
-                                    color: Color(0xFFF9F9F9),
+                                    color: const Color(0xFFF9F9F9),
                                   ),
                                 ),
                                 iconStyleData: const IconStyleData(
@@ -163,10 +163,10 @@ class _FoodCreateState extends State<FoodCreate> {
                                   elevation: 0,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
-                                    color: Color(0xFFF9F9F9),
+                                    color: const Color(0xFFF9F9F9),
                                   ),
                                   scrollbarTheme: ScrollbarThemeData(
-                                    radius: Radius.circular(40),
+                                    radius: const Radius.circular(40),
                                     thickness:
                                         WidgetStateProperty.all<double>(6),
                                     thumbVisibility:
@@ -179,14 +179,14 @@ class _FoodCreateState extends State<FoodCreate> {
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
-                            InputLabel(
+                            const InputLabel(
                               content: '식재료 개수',
                               isVauable: true,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             FoodCounter(
@@ -197,14 +197,14 @@ class _FoodCreateState extends State<FoodCreate> {
                               },
                             ),
                             //TO DO : count 버튼
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
-                            InputLabel(
+                            const InputLabel(
                               content: '소비 기한',
                               isVauable: true,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             TextFormField(
@@ -212,27 +212,27 @@ class _FoodCreateState extends State<FoodCreate> {
                               controller: dateController,
                               decoration: InputDecoration(
                                 filled: true,
-                                fillColor: Color(0xFFF9F9F9),
-                                contentPadding: EdgeInsets.only(
+                                fillColor: const Color(0xFFF9F9F9),
+                                contentPadding: const EdgeInsets.only(
                                   top: 30,
                                   left: 20,
                                   bottom: 10,
                                 ),
                                 hintText: '식재료의 소비 기한을 설정해주세요.',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   fontSize: 14,
                                   color: Color(0xFFB4B4B4),
                                 ),
-                                focusColor: Color(0xFF8EC96D),
+                                focusColor: const Color(0xFF8EC96D),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     color: Color(0xFF8EC96D),
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     color: Color(0xFFCBCBCB),
                                   ),
                                 ),
@@ -249,13 +249,12 @@ class _FoodCreateState extends State<FoodCreate> {
                                   dateController.text = DateFormat('yyyy-MM-dd')
                                       .format(pickerdate);
                                 }
-                                ;
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
-                            Row(
+                            const Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 InputLabel(
@@ -274,7 +273,7 @@ class _FoodCreateState extends State<FoodCreate> {
                                 )
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             TextFormField(
@@ -282,27 +281,27 @@ class _FoodCreateState extends State<FoodCreate> {
                               controller: buyDateController,
                               decoration: InputDecoration(
                                 filled: true,
-                                fillColor: Color(0xFFF9F9F9),
-                                contentPadding: EdgeInsets.only(
+                                fillColor: const Color(0xFFF9F9F9),
+                                contentPadding: const EdgeInsets.only(
                                   top: 30,
                                   left: 20,
                                   bottom: 10,
                                 ),
                                 hintText: '식재료 구매 일자를 선택해주세요.',
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   fontSize: 14,
                                   color: Color(0xFFB4B4B4),
                                 ),
-                                focusColor: Color(0xFF8EC96D),
+                                focusColor: const Color(0xFF8EC96D),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     color: Color(0xFF8EC96D),
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                     color: Color(0xFFCBCBCB),
                                   ),
                                 ),
@@ -320,7 +319,6 @@ class _FoodCreateState extends State<FoodCreate> {
                                       DateFormat('yyyy-MM-dd')
                                           .format(pickerdate);
                                 }
-                                ;
                               },
                             ),
                           ]),
@@ -328,7 +326,7 @@ class _FoodCreateState extends State<FoodCreate> {
                   ],
                 )),
           ),
-          Flexible(
+          const Flexible(
             flex: 1,
             child: ConfirmBtn(content: '등록하기'),
           ),
@@ -354,11 +352,11 @@ class InputLabel extends StatelessWidget {
       children: [
         Text(
           content,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 5,
         ),
         isVauable
@@ -366,11 +364,11 @@ class InputLabel extends StatelessWidget {
                 height: 6,
                 width: 6,
                 decoration: BoxDecoration(
-                  color: Color(0xFFFF8686),
+                  color: const Color(0xFFFF8686),
                   borderRadius: BorderRadius.circular(10),
                 ),
               )
-            : Container(
+            : const SizedBox(
                 height: 0,
                 width: 0,
               )

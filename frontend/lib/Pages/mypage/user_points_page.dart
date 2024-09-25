@@ -6,8 +6,9 @@ const String apiUrl = 'http://127.0.0.1:8000'; // API URL
 
 class UsePointsPage extends StatefulWidget {
   final int userId;
+  final Function() onRefresh; // 마이페이지 새로 고침을 위한 콜백 함수 추가
 
-  const UsePointsPage({super.key, required this.userId});
+  const UsePointsPage({super.key, required this.userId, required this.onRefresh});
 
   @override
   _UsePointsPageState createState() => _UsePointsPageState();
@@ -88,6 +89,13 @@ class _UsePointsPageState extends State<UsePointsPage> {
               fontFamily: 'GmarketSansBold',
             )),
         centerTitle: true,
+        leading: IconButton( // 왼쪽 상단 나가기 아이콘 추가
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            widget.onRefresh(); // 마이페이지 새로 고침 호출
+            Navigator.pop(context); // 현재 페이지 닫기
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -140,9 +148,7 @@ class _UsePointsPageState extends State<UsePointsPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (selectedPoints > 0) {
-                          usePoints(profile.userId!, selectedPoints).then((_) {
-                            Navigator.pop(context, true); // true로 새로 고침 신호를 보냄
-                          });
+                          usePoints(profile.userId!, selectedPoints);
                         } else {
                           setState(() {
                             message = '유효한 포인트를 선택해주세요.';

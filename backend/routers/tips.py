@@ -74,7 +74,7 @@ class TipCreate(BaseModel):
 
 class TipResponse(TipCreate):
     id: int
-    pictures: list[str]
+    pictures: List[str]
 
 
 class TipResponseWithCounts(BaseModel):
@@ -123,7 +123,7 @@ async def create_tip(
     contents: str = Form(...),
     category: int = Form(...),
     locationDong: str = Form(...),
-    raw_picture_list: list[UploadFile] = None,
+    raw_picture_list: List[UploadFile] = None,
     # raw_picture_list: Optional[List[UploadFile]] = File([]),
     db: Session = Depends(get_db),
 ):

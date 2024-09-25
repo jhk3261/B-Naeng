@@ -26,7 +26,7 @@ settings = Settings()
 
 
 # < JWT 토큰 관련 함수 정의 >
-def create_access_token(user: str, exp: int):
+def create_access_token(user: str, exp: int = 2592000):
     expires = datetime.now(timezone.utc) + timedelta(seconds=exp)
 
     payload = {
@@ -84,7 +84,6 @@ router = APIRouter(tags=["User"])
 class UserLogin(BaseModel):
     email: str
     username: str
-
     nickname : str
     birth : datetime
     gender : int
@@ -126,14 +125,6 @@ async def login(
             access_token = create_access_token(new_user.email)
         
         response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite='Lax')
-
-        response.set_cookie(
-            key="access_token",
-            value=access_token,
-            httponly=True,
-            secure=True,
-            samesite="Lax",
-        )
 
         return {"access_token": access_token, "token_type": "Bearer"}
 

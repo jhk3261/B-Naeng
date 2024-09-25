@@ -28,19 +28,19 @@ class SignupFormBox extends StatelessWidget {
             Text(
               formTitle,
               style: TextStyle(
-                color: Color(0xFF232323),
+                color: const Color(0xFF232323),
                 fontWeight: FontWeight.w500,
                 fontSize: titleFontSize,
               ),
             ),
-            SizedBox(width: 5),
+            const SizedBox(width: 5),
             if (requiredField)
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
                   width: 4,
                   height: 4,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xffFF8686),
                     shape: BoxShape.circle,
                   ),
@@ -48,13 +48,13 @@ class SignupFormBox extends StatelessWidget {
               ),
           ],
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         TextFormField(
           controller: fieldController,
           decoration: InputDecoration(
             labelText: formGuide,
-            border: OutlineInputBorder(),
-            fillColor: Color(0xFFCBCBCB),
+            border: const OutlineInputBorder(),
+            fillColor: const Color(0xFFCBCBCB),
           ),
         ),
       ],
