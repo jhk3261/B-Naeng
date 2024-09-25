@@ -88,7 +88,7 @@ class _WritePostPageState extends State<WritePostPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.check, color: Colors.green),
-            onPressed: _submitPost, // 글 작성 버튼
+            onPressed: _submitPost,
           ),
         ],
       ),
@@ -98,18 +98,12 @@ class _WritePostPageState extends State<WritePostPage> {
           children: [
             TextField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                hintText: '제목',
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(hintText: '제목'),
             ),
             const SizedBox(height: 16.0),
             TextField(
               controller: _contentController,
-              decoration: const InputDecoration(
-                hintText: '내용을 입력해 주세요.',
-                border: OutlineInputBorder(),
-              ),
+              decoration: const InputDecoration(hintText: '내용을 입력해 주세요.'),
               maxLines: 10,
             ),
             const SizedBox(height: 16.0),
@@ -132,7 +126,7 @@ class _WritePostPageState extends State<WritePostPage> {
       bottomNavigationBar: BottomAppBar(
         child: IconButton(
           icon: const Icon(Icons.camera_alt, color: Colors.green),
-          onPressed: _pickImage, // 이미지 선택 버튼
+          onPressed: _pickImage,
         ),
       ),
     );
