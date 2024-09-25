@@ -7,7 +7,7 @@ import 'IngredientDetailPage.dart'; // 살세페이지
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const String baseUrl = 'http://172.17.114.116:22222';
+const String baseUrl = 'http://127.0.0.1:22222';
 
 // 식재료 생성 (POST 요청)
 Future<void> createIngredient(

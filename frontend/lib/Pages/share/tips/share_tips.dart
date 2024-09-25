@@ -26,7 +26,7 @@ class _ShareTipsState extends State<ShareTips> {
   }
 
   Future<void> fetchReceipes() async {
-    final url = Uri.parse('http://172.17.114.116:22222/tips');
+    final url = Uri.parse('http://127.0.0.1:22222/tips');
     try {
       final response = await http.get(url);
 
@@ -61,64 +61,61 @@ class _ShareTipsState extends State<ShareTips> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        body: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1,
-                        childAspectRatio: 1.5,
-                        crossAxisSpacing: 5,
-                        mainAxisSpacing: 5,
-                      ),
-                      itemCount: receipes.length,
-                      itemBuilder: (context, index) {
-                        final r = receipes[index];
-                        return GestureDetector(
-                          onTap: () {
-                            // 터치 시 ReceipeDetailPage로 이동하면서 id를 전달
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ReceipeDetailPage(id: r['id']),
-                              ),
-                            );
-                          },
-                          child: ReceipeShareElement(
-                            id: r['id'],
-                            // isShared: r['isShared'],
-                            title: r['title'],
-                            imgPath: r['pictures'].isNotEmpty
-                                ? r['pictures'][0]
-                                : "",
-                            locationDong: r['locationDong'],
-                            like_count: r['like_count'],
-                            comment_count: r['comment_count'],
-                            scrap_count: r['scrap_count'],
-                          ),
-                        );
-                      },
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      childAspectRatio: 1.5,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
                     ),
+                    itemCount: receipes.length,
+                    itemBuilder: (context, index) {
+                      final r = receipes[index];
+                      return GestureDetector(
+                        onTap: () {
+                          // 터치 시 ReceipeDetailPage로 이동하면서 id를 전달
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ReceipeDetailPage(id: r['id']),
+                            ),
+                          );
+                        },
+                        child: ReceipeShareElement(
+                          id: r['id'],
+                          // isShared: r['isShared'],
+                          title: r['title'],
+                          imgPath:
+                              r['pictures'].isNotEmpty ? r['pictures'][0] : "",
+                          locationDong: r['locationDong'],
+                          like_count: r['like_count'],
+                          comment_count: r['comment_count'],
+                          scrap_count: r['scrap_count'],
+                        ),
+                      );
+                    },
                   ),
-                  const SizedBox(
-                    height: 100,
-                  )
-                ],
-              ),
+                ),
+                const SizedBox(
+                  height: 100,
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
