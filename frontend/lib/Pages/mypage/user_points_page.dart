@@ -6,8 +6,9 @@ const String apiUrl = 'http://127.0.0.1:8000'; // API URL
 
 class UsePointsPage extends StatefulWidget {
   final int userId;
+  final Function() onRefresh; // 마이페이지 새로 고침을 위한 콜백 함수 추가
 
-  const UsePointsPage({super.key, required this.userId});
+  const UsePointsPage({super.key, required this.userId, required this.onRefresh});
 
   @override
   _UsePointsPageState createState() => _UsePointsPageState();
@@ -15,7 +16,7 @@ class UsePointsPage extends StatefulWidget {
 
 class _UsePointsPageState extends State<UsePointsPage> {
   late Future<UserProfile> userProfileFuture;
-  int selectedPoints = 10000; // 기본 선택 포인트
+  int selectedPoints = 10000;
   String? message;
 
   @override
@@ -83,9 +84,18 @@ class _UsePointsPageState extends State<UsePointsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text('사용하기', style: TextStyle(fontFamily: 'GmarketSansBold')),
+        title: const Text('사용하기',
+            style: TextStyle(
+              fontFamily: 'GmarketSansBold',
+            )),
         centerTitle: true,
+        leading: IconButton( // 왼쪽 상단 나가기 아이콘 추가
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            widget.onRefresh(); // 마이페이지 새로 고침 호출
+            Navigator.pop(context); // 현재 페이지 닫기
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

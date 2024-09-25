@@ -25,7 +25,7 @@ class FrigerFood extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       clipBehavior: Clip.none,
-      alignment: Alignment.topRight,
+      alignment: Alignment.center,
       children: [
         Container(
             width: 100,
@@ -62,16 +62,17 @@ class FrigerFood extends StatelessWidget {
                   Text(
                     food,
                     style: const TextStyle(
-                      fontFamily: 'GmarketSans',
+                      fontFamily: 'GmarketSansMedium',
                       fontSize: 10,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             )),
         Positioned(
-          top: -10,
-          right: -10,
+          top: 4,
+          right: 4,
           child: Container(
             width: 32,
             height: 32,

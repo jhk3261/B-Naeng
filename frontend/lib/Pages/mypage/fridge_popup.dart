@@ -13,6 +13,8 @@ class FridgePopup extends StatefulWidget {
 
 class _FridgePopupState extends State<FridgePopup> {
   List<dynamic> _fridges = [];
+  bool _isLoading = true;
+  bool _useDummyData = false; // 더미 데이터 사용 여부
 
   @override
   void initState() {
@@ -22,14 +24,32 @@ class _FridgePopupState extends State<FridgePopup> {
 
   // 냉장고 소유 목록 및 관리자 여부 가져오기
   Future<void> _fetchFridges() async {
-    final response = await http.get(Uri.parse('$apiUrl/frigers/my/'));
+    try {
+      final response = await http.get(Uri.parse('$apiUrl/frigers/my/'));
 
-    if (response.statusCode == 200) {
+      if (response.statusCode == 200) {
+        setState(() {
+          _fridges = jsonDecode(response.body);
+          _isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load fridges');
+      }
+    } catch (e) {
       setState(() {
-        _fridges = jsonDecode(response.body);
+        // 에러 시 더미 데이터 사용
+        _fridges = [
+          {'name': '현재 소유 중인 냉장고', 'isSelected': true, 'owner_id': 1, 'current_user_id': 1},
+          {'name': '2번 냉장고', 'isSelected': false, 'owner_id': 2, 'current_user_id': 1},
+          {'name': '3번 냉장고', 'isSelected': false, 'owner_id': 3, 'current_user_id': 1},
+        ];
+        _useDummyData = true; // 더미 데이터 사용 플래그
+        _isLoading = false;
       });
-    } else {
-      print('Failed to load fridges');
+      // 에러 발생 시 사용자에게 알림
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('냉장고 정보를 불러오는 데 실패했습니다. 더미 데이터를 사용합니다.')),
+      );
     }
   }
 
@@ -60,15 +80,22 @@ class _FridgePopupState extends State<FridgePopup> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: _fridges.length,
-                itemBuilder: (context, index) {
-                  final fridge = _fridges[index];
-                  bool isAdmin = fridge['owner_id'] == fridge['current_user_id'];
-                  return _buildFridgeItem(
-                      context, fridge['name'], fridge['isSelected'], isAdmin);
-                },
-              ),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      itemCount: _fridges.length,
+                      itemBuilder: (context, index) {
+                        final fridge = _fridges[index];
+                        bool isAdmin =
+                            fridge['owner_id'] == fridge['current_user_id'];
+                        return _buildFridgeItem(
+                          context,
+                          fridge['name'],
+                          fridge['isSelected'],
+                          isAdmin,
+                        );
+                      },
+                    ),
             ),
           ],
         ),
@@ -115,7 +142,8 @@ class _FridgePopupState extends State<FridgePopup> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('선택한 냉장고 이름', style: TextStyle(fontSize: 18)),
+                Text('선택한 냉장고: $fridgeName',
+                    style: const TextStyle(fontSize: 18)),
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView(
@@ -172,7 +200,8 @@ class _FridgePopupState extends State<FridgePopup> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('선택한 냉장고 이름', style: TextStyle(fontSize: 18)),
+                Text('선택한 냉장고: $fridgeName',
+                    style: const TextStyle(fontSize: 18)),
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView(
@@ -199,9 +228,9 @@ class _FridgePopupState extends State<FridgePopup> {
     );
   }
 
-  Widget _buildUserFridgeItem(String adminName) {
+  Widget _buildUserFridgeItem(String userName) {
     return ListTile(
-      title: Text(adminName),
+      title: Text(userName),
     );
   }
 }

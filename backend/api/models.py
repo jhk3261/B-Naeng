@@ -1,16 +1,28 @@
-from random import random
+from sqlalchemy import (
+    JSON,
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    Boolean,
+    DateTime,
+    Table,
+)
+
 from sqlalchemy import (
     JSON,
     Boolean,
     Column,
     Date,
+    ForeignKey,
     DateTime,
     Integer,
     String,
     Table,
     Text,
-    ForeignKey,
 )
+from random import random
 from config.database import Base
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.sqlite import JSON
@@ -92,22 +104,18 @@ class Ingredient(Base):
     )
 
 
+
 # 냉장고 모델
 class Friger(Base):
     __tablename__ = "frigers"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)  # 냉장고 이름
-    unique_code = Column(
-        Integer, unique=True, nullable=False, default=lambda: random.randint(1000, 9999)
-    )  # 고유번호
-    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # 대표 유저 ID
+    unique_code = Column(Integer, nullable=True)
+    #TO DO : 유저 아이디, 냉장고 코드
 
-    inventory_list = relationship("Inventory", back_populates="friger")
-    users = relationship(
-        "User", secondary=friger_user_association, back_populates="frigers"
-    )
-    owner = relationship("User", back_populates="owned_friger")
+    inventory_list = relationship("Inventory", back_populates="friger", cascade="all, delete-orphan")
+    #TO DO : 유저 리스트 연결
 
 
 # 냉장고 인벤토리
@@ -119,8 +127,8 @@ class Inventory(Base):
     quantity = Column(Integer)
     date = Column(Date, nullable=True)
     category = Column(String, nullable=False)
+    friger_id = Column(Integer, ForeignKey("frigers.id"), nullable=False)
 
-    friger_id = Column(Integer, ForeignKey("frigers.id"))
     friger = relationship("Friger", back_populates="inventory_list")
 
 
@@ -189,3 +197,13 @@ class Scrap(Base):
 
     tip = relationship("Tip", back_populates="scraps")
     ingredient = relationship("Ingredient", back_populates="scraps")
+
+
+class Recipe(Base):
+    __tablename__ = "recipes"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    friger_id = Column(Integer, ForeignKey("frigers.id"), nullable=False)
+    create_time = Column(DateTime, nullable=False)
+    recommend_recipes = Column(JSON, nullable=False)
+    recommend_recipes_more = Column(JSON, nullable=False)

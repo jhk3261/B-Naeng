@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/widgets/friger/food_element.dart';
 import 'package:camera/camera.dart';
-import '../tips/share_tips.dart';
-import 'WritePostPage.dart'; // 글쓰기
 import 'IngredientDetailPage.dart'; // 살세페이지
 import 'dart:convert';
 import 'package:http/http.dart' as http;

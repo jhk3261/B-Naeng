@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/Pages/mypage/fridge_popup.dart';
 import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
 import 'user_points_page.dart';
+import 'dart:convert';
 
 const String apiUrl = 'http://127.0.0.1:8000';
 
@@ -28,20 +30,23 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<UserProfile> userProfileFuture;
-  int userId = 1004;
-  bool isScrapExpanded = false;
+  int userId = 2024; // 테스트용 사용자 ID
+  bool isScrapSectionOpen = false;
+  List<ScrapItem> scrapItems = [];
 
   @override
   void initState() {
     super.initState();
     userProfileFuture = fetchUserProfile(userId);
+    fetchScrapItems(userId);
   }
 
   Future<UserProfile> fetchUserProfile(int userId) async {
     try {
       final response = await http.get(Uri.parse('$apiUrl/mypage/$userId'));
       if (response.statusCode == 200) {
-        return UserProfile.fromJson(jsonDecode(response.body));
+        return UserProfile.fromJson(
+            jsonDecode(utf8.decode(response.bodyBytes)));
       } else {
         throw Exception('Failed to load user profile');
       }
@@ -58,58 +63,92 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Future<List<ScrapItem>> fetchScrapItems(int? userId) async {
-    if (userId == null) {
-      return [];
-    }
-
+  Future<List<ScrapItem>> fetchScrapItems(int userId) async {
     try {
-      final response = await http.get(Uri.parse('$apiUrl/scrap_items/$userId'));
+      final response = await http.get(Uri.parse('$apiUrl/scrap/$userId'));
       if (response.statusCode == 200) {
-        List<dynamic> jsonList = jsonDecode(response.body);
-        return jsonList.map((json) => ScrapItem.fromJson(json)).toList();
+        List<dynamic> data = jsonDecode((utf8.decode(response.bodyBytes)));
+        return data.map((json) => ScrapItem.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load scrap items');
       }
     } catch (error) {
       print('Error fetching scrap items: $error');
-      return [];
+      return _getDummyScrapItems(); // 더미 데이터 반환
     }
+  }
+
+  List<ScrapItem> _getDummyScrapItems() {
+    return [
+      ScrapItem(
+        id: 1,
+        title: '당근이 남아 돌 때 꿀 팁!!',
+        imageUrl: 'assets/images/img1.png',
+        likeCount: 122,
+        commentCount: 65,
+        scrapCount: 45,
+        createdAt: '2023-06-28T00:00:00',
+      ),
+      ScrapItem(
+        id: 2,
+        title: '쌈 채소 드려요',
+        imageUrl: 'assets/images/img2.png',
+        likeCount: 62,
+        commentCount: 13,
+        scrapCount: 22,
+        createdAt: '2023-05-12T00:00:00',
+      ),
+      ScrapItem(
+        id: 3,
+        title: '삼겹살 800g',
+        imageUrl: 'assets/images/img3.png',
+        likeCount: 5,
+        commentCount: 2,
+        scrapCount: 9,
+        createdAt: '2023-07-02T00:00:00',
+      ),
+      ScrapItem(
+        id: 4,
+        title: '아보카도 덮밥 레시피',
+        imageUrl: 'assets/images/img4.png',
+        likeCount: 100,
+        commentCount: 10,
+        scrapCount: 15,
+        createdAt: '2023-04-25T00:00:00',
+      ),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 75),
-      child: Scaffold(
-        body: FutureBuilder<UserProfile>(
-          future: userProfileFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return const Center(child: Text('오류가 발생했습니다.'));
-            } else if (!snapshot.hasData || snapshot.data == null) {
-              return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
-            } else {
-              final profile = snapshot.data!;
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    buildProfileSection(profile),
-                    const SizedBox(height: 16),
-                    buildGreenPointsSection(profile),
-                    const SizedBox(height: 16),
-                    buildFridgeSection(profile),
-                    const SizedBox(height: 16),
-                    buildScrapSection(profile.userId),
-                  ],
-                ),
-              );
-            }
-          },
-        ),
+    return Scaffold(
+      body: FutureBuilder<UserProfile>(
+        future: userProfileFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('오류가 발생했습니다.'));
+          } else if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
+          } else {
+            final profile = snapshot.data!;
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  buildProfileSection(profile),
+                  const SizedBox(height: 16),
+                  buildGreenPointsSection(profile),
+                  const SizedBox(height: 16),
+                  buildFridgeSection(profile),
+                  const SizedBox(height: 16),
+                  buildScrapSection(context),
+                ],
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -130,7 +169,10 @@ class _ProfilePageState extends State<ProfilePage> {
         const SizedBox(height: 12),
         Text(
           profile.username ?? '기본 사용자',
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );
@@ -170,13 +212,31 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const Spacer(),
           TextButton(
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              // '사용하기' 페이지로 이동
+              final usedPoints = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UsePointsPage(userId: profile.userId),
+                  builder: (context) => UsePointsPage(
+                    userId: profile.userId,
+                    onRefresh: () {
+                      setState(() {
+                        userProfileFuture = fetchUserProfile(profile.userId);
+                      });
+                    },
+                  ),
                 ),
               );
+
+              // 사용한 포인트가 null이 아닐 경우
+              if (usedPoints != null) {
+                setState(() {
+                  // usedPoints를 int로 변환
+                  profile.greenPoints -= (usedPoints as num).toInt(); // 형 변환 추가
+                  // API를 호출하여 최신 사용자 정보를 가져올 수 있습니다.
+                  userProfileFuture = fetchUserProfile(profile.userId);
+                });
+              }
             },
             child: const Text(
               '사용하기',
@@ -191,188 +251,175 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  void showFridgePopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FridgePopup(); // 팝업으로 FridgePopup 호출
+      },
+    );
+  }
+
   Widget buildFridgeSection(UserProfile profile) {
-    return Container(
-      alignment: Alignment.center,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              const CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.transparent,
-                child: Image(
-                  image: AssetImage('assets/images/fridge.png'),
-                  width: 43,
-                  height: 43,
+    return GestureDetector(
+      onTap: () => showFridgePopup(context), // 팝업 호출
+      child: Container(
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Column(
+              children: [
+                const CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.transparent,
+                  child: Image(
+                    image: AssetImage('assets/images/fridge.png'),
+                    width: 43,
+                    height: 43,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    '냉장고',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${profile.fridgeCount}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      '냉장고',
+                      style: TextStyle(fontSize: 14),
                     ),
-                  ),
-                  const SizedBox(width: 4),
-                  const Text(
-                    '대',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(width: 16),
-          const Row(
-            children: [
-              SizedBox(width: 4),
-              Image(
-                image: AssetImage('assets/images/rightArrow.png'),
-                width: 18,
-                height: 18,
-              ),
-            ],
-          ),
-        ],
+                    const SizedBox(width: 4),
+                    Text(
+                      '${profile.fridgeCount}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    const Text(
+                      '대',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(width: 16),
+            const Row(
+              children: [
+                SizedBox(width: 4),
+                Image(
+                  image: AssetImage('assets/images/rightArrow.png'),
+                  width: 18,
+                  height: 18,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget buildScrapSection(int? userId) {
-    return FutureBuilder<List<ScrapItem>>(
-      future: fetchScrapItems(userId),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError || !snapshot.hasData) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE1EFE2),
-                  borderRadius: BorderRadius.circular(10),
+  Widget buildScrapSection(BuildContext context) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              isScrapSectionOpen = !isScrapSectionOpen; // 섹션 열기/닫기 토글
+            });
+          },
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE1EFE2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬로 변경
+              children: [
+                Image.asset(
+                  'assets/images/star.png',
+                  width: 18,
+                  height: 18,
                 ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Row(
-                      children: [
-                        Image(
-                          image: AssetImage('assets/images/star.png'),
-                          width: 16,
-                          height: 16,
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          '스크랩',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isScrapExpanded = !isScrapExpanded;
-                        });
-                      },
-                      child: Image(
-                        image: AssetImage(isScrapExpanded
-                            ? 'assets/images/upArrow.png'
-                            : 'assets/images/downArrow.png'),
-                        width: 16,
-                        height: 16,
-                      ),
-                    ),
-                  ],
+                const SizedBox(width: 8), // 이미지와 텍스트 사이 간격 추가
+                const Text(
+                  '스크랩',
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                '스크랩된 항목이 없습니다.',
-                style: TextStyle(
+                const Spacer(), // 텍스트와 아이콘 사이의 공간을 유지
+                Icon(
+                  isScrapSectionOpen
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  size: 24,
                   color: Colors.grey,
                 ),
-              ),
-            ],
-          );
-        } else {
-          List<ScrapItem> scrapItems = snapshot.data!;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE1EFE2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Row(
-                      children: [
-                        Image(
-                          image: AssetImage('assets/images/star.png'),
-                          width: 18,
-                          height: 18,
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          '스크랩',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isScrapExpanded = !isScrapExpanded;
-                        });
-                      },
-                      child: Image(
-                        image: AssetImage(isScrapExpanded
-                            ? 'assets/images/upArrow.png'
-                            : 'assets/images/downArrow.png'),
-                        width: 16,
-                        height: 16,
+              ],
+            ),
+          ),
+        ),
+        if (isScrapSectionOpen) ...[
+          FutureBuilder<List<ScrapItem>>(
+            future: fetchScrapItems(userId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return const Center(child: Text('오류가 발생했습니다.'));
+              } else if (!snapshot.hasData || snapshot.data == null) {
+                return const Center(child: Text('스크랩 항목이 없습니다.'));
+              } else {
+                scrapItems = snapshot.data!;
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: scrapItems.length,
+                  itemBuilder: (context, index) {
+                    final item = scrapItems[index];
+                    return ListTile(
+                      leading: Image.network(item.imageUrl ?? ''),
+                      title: Text(item.title),
+                      subtitle: Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/heart.png',
+                            width: 15,
+                            height: 15,
+                          ),
+                          const SizedBox(width: 5),
+                          Text('${item.likeCount}'),
+                          const SizedBox(width: 10),
+                          Image.asset(
+                            'assets/images/comment.png',
+                            width: 15,
+                            height: 15,
+                          ),
+                          const SizedBox(width: 5),
+                          Text('${item.commentCount}'),
+                          const SizedBox(width: 10),
+                          Image.asset(
+                            'assets/images/star.png',
+                            width: 15,
+                            height: 15,
+                          ),
+                          const SizedBox(width: 5),
+                          Text('${item.scrapCount}'),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              isScrapExpanded
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: scrapItems.map((item) {
-                        return ListTile(
-                          title: Text(item.title),
-                          subtitle: Text(item.description),
-                        );
-                      }).toList(),
-                    )
-                  : const SizedBox.shrink(),
-            ],
-          );
-        }
-      },
+                    );
+                  },
+                );
+              }
+            },
+          ),
+        ],
+      ],
     );
   }
 }
@@ -382,7 +429,7 @@ class UserProfile {
   final int userId;
   final String? username;
   final String? profileImageUrl;
-  final int greenPoints;
+  int greenPoints;
   final int fridgeCount;
 
   UserProfile({
@@ -407,15 +454,33 @@ class UserProfile {
 }
 
 class ScrapItem {
+  final int id;
   final String title;
-  final String description;
+  final String? imageUrl;
+  final int likeCount;
+  final int commentCount;
+  final int scrapCount;
+  final String createdAt;
 
-  ScrapItem({required this.title, required this.description});
+  ScrapItem({
+    required this.id,
+    required this.title,
+    this.imageUrl,
+    required this.likeCount,
+    required this.commentCount,
+    required this.scrapCount,
+    required this.createdAt,
+  });
 
   factory ScrapItem.fromJson(Map<String, dynamic> json) {
     return ScrapItem(
+      id: json['id'],
       title: json['title'],
-      description: json['description'],
+      imageUrl: json['image_url'],
+      likeCount: json['like_count'],
+      commentCount: json['comment_count'],
+      scrapCount: json['scrap_count'],
+      createdAt: json['created_at'],
     );
   }
 }
