@@ -5,13 +5,12 @@ from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 from typing import Optional
 from jose import jwt, JWTError
-from config.database import get_db, get_session
+from config.database import get_db
 from dotenv import load_dotenv
 from api.models import User
 from sqlalchemy.orm import Session
 
 load_dotenv()
-
 
 class Settings(BaseSettings):
     SECRET_KEY: str
@@ -21,9 +20,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
-
 settings = Settings()
-
 
 # < JWT 토큰 관련 함수 정의 >
 def create_access_token(user: str, exp: int = 2592000):
@@ -130,10 +127,3 @@ async def login(
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
-
-@router.get("/users")
-async def get_users_id_1(db : Session=Depends(get_db)):
-    user_1 = db.query(User).filter(User.id == 1).first()
-    return user_1
-

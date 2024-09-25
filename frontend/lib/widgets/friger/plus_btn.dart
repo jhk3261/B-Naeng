@@ -1,10 +1,12 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/Pages/friger/bill_scanner.dart';
 import 'package:frontend/Pages/friger/food_create.dart';
 
 class PlusBtn extends StatelessWidget {
-  // final List<CameraDescription> cameras;
+  final List<CameraDescription> cameras;
 
-  const PlusBtn({super.key});
+  const PlusBtn({super.key, required this.cameras});
 
   void CreateFood(BuildContext context) {
     showDialog<String>(
@@ -39,7 +41,15 @@ class PlusBtn extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const BillScan(
+                                cameras: [],
+                              )),
+                    );
+                  },
                   //TO DO : 영수증등록화면 네비게이션
                   child: const Text(
                     '영수증 등록',
@@ -89,17 +99,17 @@ class PlusBtn extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () => CreateFood(context),
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFF2F2F2),
+          backgroundColor: const Color(0xFF303030),
           shape: const CircleBorder(),
           padding: const EdgeInsets.all(5),
         ),
         child: Transform.translate(
-          offset: const Offset(0, -4),
+          offset: const Offset(0, 0),
           child: const Text(
             "+",
             style: TextStyle(
-                fontSize: 40,
-                color: Color(0xFFCBCBCB),
+                fontSize: 44,
+                color: Color(0xFF8DB600),
                 fontWeight: FontWeight.w600),
           ),
         ),
