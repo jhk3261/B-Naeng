@@ -17,21 +17,6 @@ def get_db():
     finally:
         db.close()
 
-
 def get_session():
     with Session(engine) as session:
         yield session
-
-
-def reset_database():
-    # 기존 테이블 삭제
-    Base.metadata.drop_all(bind=engine)
-    
-    # 테이블 재생성
-    Base.metadata.create_all(bind=engine)
-    
-    print("Database reset completed.")
-
-
-# 이 함수는 필요할 때 호출하여 데이터베이스를 초기화할 수 있습니다.
-#reset_database()

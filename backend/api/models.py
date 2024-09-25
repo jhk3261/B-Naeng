@@ -30,12 +30,12 @@ from datetime import datetime
 
 
 # 유저와 냉장고 관계 테이블 (다대다 관계 설정)
-# friger_user_association = Table(
-#     "friger_user_association",
-#     Base.metadata,
-#     Column("user_id", Integer, ForeignKey("users.id")),
-#     Column("friger_id", Integer, ForeignKey("frigers.id")),
-# )
+friger_user_association = Table(
+    "friger_user_association",
+    Base.metadata,
+    Column("user_id", Integer, ForeignKey("users.id")),
+    Column("friger_id", Integer, ForeignKey("frigers.id")),
+)
 
 
 # 유저 모델
@@ -52,12 +52,12 @@ class User(Base):
     recommender = Column(String, nullable=True)
     location = Column(String, nullable=False)
 
-    # owned_friger = relationship(
-    #     "Friger", back_populates="owner", cascade="all, delete-orphan"
-    # )
-    # frigers = relationship(
-    #     "Friger", back_populates="users"
-    # )
+    owned_friger = relationship(
+        "Friger", back_populates="owner", cascade="all, delete-orphan"
+    )
+    frigers = relationship(
+        "Friger", secondary=friger_user_association, back_populates="users"
+    )
     ingredients = relationship("Ingredient", back_populates="users")
 
     # MyPage와의 관계 설정
@@ -102,6 +102,7 @@ class Ingredient(Base):
     scraps = relationship(
         "Scrap", back_populates="ingredient", cascade="all, delete-orphan"
     )
+
 
 
 # 냉장고 모델
