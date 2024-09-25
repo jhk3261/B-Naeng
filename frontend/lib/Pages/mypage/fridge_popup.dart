@@ -39,9 +39,24 @@ class _FridgePopupState extends State<FridgePopup> {
       setState(() {
         // 에러 시 더미 데이터 사용
         _fridges = [
-          {'name': '현재 소유 중인 냉장고', 'isSelected': true, 'owner_id': 1, 'current_user_id': 1},
-          {'name': '2번 냉장고', 'isSelected': false, 'owner_id': 2, 'current_user_id': 1},
-          {'name': '3번 냉장고', 'isSelected': false, 'owner_id': 3, 'current_user_id': 1},
+          {
+            'name': '현재 소유 중인 냉장고',
+            'isSelected': true,
+            'owner_id': 1,
+            'current_user_id': 1
+          },
+          {
+            'name': '2번 냉장고',
+            'isSelected': false,
+            'owner_id': 2,
+            'current_user_id': 1
+          },
+          {
+            'name': '3번 냉장고',
+            'isSelected': false,
+            'owner_id': 3,
+            'current_user_id': 1
+          },
         ];
 // 더미 데이터 사용 플래그
         _isLoading = false;

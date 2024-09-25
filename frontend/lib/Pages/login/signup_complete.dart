@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:frontend/Pages/login/google_auth.dart';
 
-
 class SignupComplete extends StatelessWidget {
   const SignupComplete({super.key});
 
