@@ -73,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     } catch (error) {
       print('Error fetching scrap items: $error');
-      return _getDummyScrapItems(); // 더미 데이터 반환
+      return _getDummyScrapItems();
     }
   }
 

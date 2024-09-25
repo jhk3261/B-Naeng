@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'share_ingredient.dart'; // 나눔 페이지
 
 class WritePostPage extends StatefulWidget {
+  const WritePostPage({super.key});
+
   @override
   _WritePostPageState createState() => _WritePostPageState();
 }
@@ -10,12 +15,19 @@ class WritePostPage extends StatefulWidget {
 class _WritePostPageState extends State<WritePostPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-  String? _imageUrl;
+  File? _imageFile; // 이미지 파일 변수
   bool _isShared = false;
 
-  // 이미지 선택 함수 (추가 구현 필요)
-  void _pickImage() {
-    // TODO: 이미지 선택 구현
+  // 이미지 선택 함수 (image_picker 패키지 사용)
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path); // 선택한 이미지 파일 경로 저장
+      });
+    }
   }
 
   // 글 작성 API 호출
@@ -29,14 +41,17 @@ class _WritePostPageState extends State<WritePostPage> {
     }
 
     try {
+      // 이미지 URL이 없다면 기본 이미지로 설정
+      String? imageUrl = _imageFile?.path ?? 'assets/images/profile.jpg';
+
       final response = await http.post(
-        Uri.parse('http://your-api-url.com/ingredients/'),
+        Uri.parse('http://127.0.0.1:8000/ingredients/'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'user_id': 1,
+          'user_id': 2024, // 실제 유저 ID로 교체 필요
           'title': title,
           'contents': content,
-          'image_url': _imageUrl,
+          'image_url': imageUrl,
           'is_shared': _isShared,
         }),
       );
@@ -45,12 +60,18 @@ class _WritePostPageState extends State<WritePostPage> {
         print('글이 성공적으로 작성되었습니다.');
         print('제목: $title');
         print('내용: $content');
-        
+
         if (_isShared) {
           print('나눔 완료된 글입니다.');
         }
 
-        Navigator.pop(context);
+        // 글 작성 후 나눔 페이지로 이동
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ShareIngredient(cameras: []),
+          ),
+        );
       } else {
         print('글 작성에 실패했습니다.');
       }
@@ -63,30 +84,31 @@ class _WritePostPageState extends State<WritePostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('글 쓰기'),
+        title: const Text('글 쓰기'),
         actions: [
           IconButton(
-            icon: Icon(Icons.check, color: Colors.green),
+            icon: const Icon(Icons.check, color: Colors.green),
             onPressed: _submitPost,
           ),
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(hintText: '제목'),
+              decoration: const InputDecoration(hintText: '제목'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _contentController,
-              decoration: InputDecoration(hintText: '내용을 입력해 주세요.'),
+              decoration: const InputDecoration(hintText: '내용을 입력해 주세요.'),
               maxLines: 10,
             ),
+            const SizedBox(height: 16.0),
             SwitchListTile(
-              title: Text("공유 여부"),
+              title: const Text("공유 여부"),
               value: _isShared,
               onChanged: (bool value) {
                 setState(() {
@@ -94,12 +116,16 @@ class _WritePostPageState extends State<WritePostPage> {
                 });
               },
             ),
+            const SizedBox(height: 16.0),
+            _imageFile != null
+                ? Image.file(_imageFile!) // 선택된 이미지 보여주기
+                : const Text("이미지가 선택되지 않았습니다."),
           ],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
         child: IconButton(
-          icon: Icon(Icons.camera_alt, color: Colors.green),
+          icon: const Icon(Icons.camera_alt, color: Colors.green),
           onPressed: _pickImage,
         ),
       ),
