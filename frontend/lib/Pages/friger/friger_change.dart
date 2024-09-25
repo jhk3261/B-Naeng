@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/model/fridge_provider.dart';
 import 'package:frontend/widgets/friger/friger_item.dart';
+import 'package:provider/provider.dart';
 
 class FrigerChange extends StatefulWidget {
   const FrigerChange({super.key});
@@ -10,20 +12,27 @@ class FrigerChange extends StatefulWidget {
 
 class _FrigerChangeState extends State<FrigerChange> {
   //냉장고데이터(임시)
-  final List<Map<String, dynamic>> fridgeList = [
-    {'name': '홍길동', 'user_count': 1, 'iscurrent': true},
-    {'name': '이디야 초전점', 'user_count': 4, 'iscurrent': false},
-    {'name': '본가', 'user_count': 3, 'iscurrent': false},
-  ];
+  // final List<Map<String, dynamic>> fridgeList = [
+  //   {'name': '홍길동', 'user_count': 1, 'iscurrent': true},
+  //   {'name': '이디야 초전점', 'user_count': 4, 'iscurrent': false},
+  //   {'name': '본가', 'user_count': 3, 'iscurrent': false},
+  // ];
 
   Map<String, dynamic>? selectedFridge; // 선택된 냉장고 저장
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> currentFridge =
-        fridgeList.where((fridge) => fridge['iscurrent'] == true).toList();
-    List<Map<String, dynamic>> includedFridges =
-        fridgeList.where((fridge) => fridge['iscurrent'] == false).toList();
+    final fridgeProvider = Provider.of<FridgeProvider>(context);
+    final currentFridge = fridgeProvider.fridgeList
+        .firstWhere((fridge) => fridge['iscurrent']); // 현재 냉장고 찾기
+    final includedFridges = fridgeProvider.fridgeList
+        .where((fridge) => !fridge['iscurrent'])
+        .toList(); // 포함된 냉장고 목록
+
+    // List<Map<String, dynamic>> currentFridge =
+    //     fridgeList.where((fridge) => fridge['iscurrent'] == true).toList();
+    // List<Map<String, dynamic>> includedFridges =
+    //     fridgeList.where((fridge) => fridge['iscurrent'] == false).toList();
 
     return Scaffold(
         appBar: AppBar(
@@ -65,14 +74,12 @@ class _FrigerChangeState extends State<FrigerChange> {
                           height: 12,
                         ),
                         frigerItem(
-                            frigerData: currentFridge[0],
-                            isSelected: selectedFridge == null
-                                ? currentFridge[0] == currentFridge[0]
-                                : selectedFridge == currentFridge[0],
+                            frigerData: currentFridge,
+                            isSelected: selectedFridge == currentFridge,
                             onTap: () {
                               setState(() {
                                 selectedFridge =
-                                    currentFridge[0]; // 현재 냉장고를 선택 상태로 설정
+                                    currentFridge; // 현재 냉장고를 선택 상태로 설정
                               });
                             })
                       ],
@@ -115,7 +122,7 @@ class _FrigerChangeState extends State<FrigerChange> {
                                   isSelected: isSelected,
                                   onTap: () {
                                     setState(() {
-                                      selectedFridge = friger; //선택된 냉장고 업데이트
+                                      selectedFridge = friger; // 선택된 냉장고 업데이트
                                     });
                                   });
                             },
@@ -147,14 +154,9 @@ class _FrigerChangeState extends State<FrigerChange> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (selectedFridge != null) {
-                        setState(() {
-                          for (var friger in fridgeList) {
-                            friger['iscurrent'] = false;
-                          }
-                          selectedFridge!['iscurrent'] = true;
-                        });
-
-                        Navigator.pop(context, selectedFridge);
+                        fridgeProvider
+                            .changeCurrentFridge(selectedFridge!['name']);
+                        Navigator.pop(context, selectedFridge); // 선택된 냉장고 정보 전달
                       }
                     },
                     style: ElevatedButton.styleFrom(

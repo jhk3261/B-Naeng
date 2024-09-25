@@ -53,8 +53,8 @@ async def favicon():
     return FileResponse("favicon.ico")
 
 
-HOST = "172.17.114.116"
-PORT = 22222
+HOST = "127.0.0.1"
+PORT = 8000
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host=HOST, port=PORT, reload=True)

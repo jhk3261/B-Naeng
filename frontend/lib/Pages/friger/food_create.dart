@@ -27,7 +27,7 @@ class _FoodCreateState extends State<FoodCreate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 2,
+        elevation: 0,
         centerTitle: false,
         surfaceTintColor: Colors.white,
         shadowColor: Colors.black,
@@ -240,11 +240,40 @@ class _FoodCreateState extends State<FoodCreate> {
                               ),
                               onTap: () async {
                                 DateTime? pickerdate = await showDatePicker(
-                                  context: context,
-                                  firstDate: DateTime.now(),
-                                  lastDate: DateTime(2100),
-                                  initialDate: DateTime.now(),
-                                );
+                                    context: context,
+                                    firstDate: DateTime.now(),
+                                    lastDate: DateTime(2100),
+                                    initialDate: DateTime.now(),
+                                    builder: (context, Widget? child) => Theme(
+                                          data: ThemeData(
+                                            splashColor: Color(0xFF8EC96D),
+                                            textTheme: TextTheme(
+                                              titleMedium: TextStyle(
+                                                  color: Color(0xFF232323)),
+                                              labelLarge: TextStyle(
+                                                  color: Color(0xFF232323)),
+                                            ),
+                                            dialogBackgroundColor:
+                                                Color(0xFF449C4A),
+                                            colorScheme: ColorScheme.light(
+                                                    primary: Color(0xff8EC96D),
+                                                    onSecondary:
+                                                        Color(0xFF232323),
+                                                    onPrimary:
+                                                        Color(0xFFDCF0D1),
+                                                    surface: Color.fromARGB(
+                                                        255, 250, 255, 247),
+                                                    onSurface:
+                                                        Color(0xFF232323),
+                                                    secondary:
+                                                        Color(0xff232323))
+                                                .copyWith(
+                                                    primary: Color(0xff449C4A),
+                                                    secondary:
+                                                        Color(0xff8EC96D)),
+                                          ),
+                                          child: child ?? Text(""),
+                                        ));
                                 if (pickerdate != null) {
                                   dateController.text = DateFormat('yyyy-MM-dd')
                                       .format(pickerdate);
@@ -313,6 +342,30 @@ class _FoodCreateState extends State<FoodCreate> {
                                   firstDate: DateTime(2024),
                                   lastDate: DateTime(2100),
                                   initialDate: DateTime.now(),
+                                  builder: (context, Widget? child) => Theme(
+                                    data: ThemeData(
+                                      splashColor: Color(0xFF8EC96D),
+                                      textTheme: TextTheme(
+                                        titleMedium:
+                                            TextStyle(color: Color(0xFF232323)),
+                                        labelLarge:
+                                            TextStyle(color: Color(0xFF232323)),
+                                      ),
+                                      dialogBackgroundColor: Color(0xFF449C4A),
+                                      colorScheme: ColorScheme.light(
+                                              primary: Color(0xff8EC96D),
+                                              onSecondary: Color(0xFF232323),
+                                              onPrimary: Color(0xFFDCF0D1),
+                                              surface: Color.fromARGB(
+                                                  255, 250, 255, 247),
+                                              onSurface: Color(0xFF232323),
+                                              secondary: Color(0xff232323))
+                                          .copyWith(
+                                              primary: Color(0xff449C4A),
+                                              secondary: Color(0xff8EC96D)),
+                                    ),
+                                    child: child ?? Text(""),
+                                  ),
                                 );
                                 if (pickerdate != null) {
                                   buyDateController.text =
