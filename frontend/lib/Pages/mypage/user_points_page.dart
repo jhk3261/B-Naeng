@@ -15,7 +15,7 @@ class UsePointsPage extends StatefulWidget {
 
 class _UsePointsPageState extends State<UsePointsPage> {
   late Future<UserProfile> userProfileFuture;
-  int selectedPoints = 10000; // 기본 선택 포인트
+  int selectedPoints = 10000;
   String? message;
 
   @override
@@ -83,8 +83,10 @@ class _UsePointsPageState extends State<UsePointsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text('사용하기', style: TextStyle(fontFamily: 'GmarketSansBold')),
+        title: const Text('사용하기',
+            style: TextStyle(
+              fontFamily: 'GmarketSansBold',
+            )),
         centerTitle: true,
       ),
       body: Padding(
@@ -138,7 +140,9 @@ class _UsePointsPageState extends State<UsePointsPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (selectedPoints > 0) {
-                          usePoints(profile.userId!, selectedPoints);
+                          usePoints(profile.userId!, selectedPoints).then((_) {
+                            Navigator.pop(context, true); // true로 새로 고침 신호를 보냄
+                          });
                         } else {
                           setState(() {
                             message = '유효한 포인트를 선택해주세요.';
