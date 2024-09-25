@@ -1,18 +1,22 @@
 import 'package:frontend/Pages/chating/chat_room.dart';
 import 'package:frontend/Pages/mypage/mypage.dart';
 import 'package:frontend/Pages/recipe/receipe_recommend.dart';
-import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
 import 'package:frontend/Pages/friger/friger.dart';
 import 'package:frontend/Pages/share/share_parents.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:frontend/Pages/login/google_auth.dart';
-import 'package:frontend/Pages/login/signup.dart';
+import 'package:frontend/model/fridge_provider.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
-  runApp(MyApp(cameras: cameras));
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => FridgeProvider(),
+      child: MyApp(cameras: cameras),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -22,6 +26,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'GmarketSansMedium', // 여기서 폰트 패밀리 이름 설정
+        // 추가적으로 다른 테마 속성도 설정 가능
+      ),
       home: HomeScreen(cameras: cameras),
     );
   }

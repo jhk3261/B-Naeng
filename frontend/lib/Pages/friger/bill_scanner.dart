@@ -1,69 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:frontend/Pages/friger/friger.dart';
 
-class BillScan extends StatelessWidget {
+class BillScan extends StatefulWidget {
   final List<CameraDescription> cameras;
 
   const BillScan({super.key, required this.cameras});
 
   @override
+  State<BillScan> createState() => _BillScanState();
+}
+
+class _BillScanState extends State<BillScan> {
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        elevation: 2,
+        centerTitle: false,
+        surfaceTintColor: Colors.white,
+        shadowColor: Colors.black,
         backgroundColor: Colors.white,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 80),
-            Stack(
-              children: [
-                const Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "영수증 스캔",
-                    style: TextStyle(
-                      fontSize: 27,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Friger(cameras: cameras),
-                        ),
-                      );
-                    },
-                    child: const Row(
-                      children: [
-                        SizedBox(
-                          width: 50,
-                        ),
-                        Text(
-                          "<",
-                          style: TextStyle(
-                            color: Color(0xFF449c4a),
-                            fontSize: 25,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: CameraScreen(cameras: cameras), // 카메라 화면 추가
-            ),
-          ],
+        foregroundColor: Colors.black,
+        title: const Text(
+          "영수증 스캔",
+          style: TextStyle(
+              fontSize: 24,
+              fontFamily: 'GmarketSansMedium',
+              fontWeight: FontWeight.bold),
         ),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 80),
+          const SizedBox(height: 20),
+          Expanded(
+            child: CameraScreen(cameras: widget.cameras), // 카메라 화면 추가
+          ),
+        ],
       ),
     );
   }
