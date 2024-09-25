@@ -1,115 +1,187 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Dict, List
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from config.database import get_db
 import openai
 import os
 import json
 import httpx
+from api.models import Recipe
+import requests
+
 
 from bs4 import BeautifulSoup
 
 # import pyautogui
 # import openpyxl
 
-
 router = APIRouter(tags=["레시피"])
 isAuthenticated = False
 
-
 class IngredientInput(BaseModel):
-    ingredient: Dict[str, str]
+    ingredient: Dict[str, int]  
 
+class Recipes(BaseModel):
+    friger_unique_code : int
+    create_time : datetime
+    recommend_recipes : Dict[str, str]
+    recommend_recipes_more : Dict[str, str]
+
+class RecipesUpdate(BaseModel):
+    create_tiime : datetime
+    recommend_recipes : Dict[str, str]
+    recommend_recipes_more : Dict[str, str]
 
 # 레시피 추천 함수
-def recommend_recipe(ingredient: dict):
-    load_dotenv()
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+def recommend_recipe(ingredient_str : str):
     response = openai.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-3.5-turbo",
         messages=[
             {
-                "role": "system",
-                "content": "다음 재료를 사용하세요 : "
-                + ", ".join([f"{key} : {value}" for key, value in ingredient.items()]),
+                "role" : "system",
+                "content" : "가지고 있는 식재료만을 사용해서 레시피를 추천해줘"
             },
             {
-                "role": "user",
-                "content": "매개변수로 전달받은 재료만으로 만들 수 있는 요리 8가지 이름과 레시피, 재료에 대해서 dict 자료형으로 recipes = {'name' : '김치볶음밥', 'ingredients' : {'김치' : '1/2 포기', '양파' : '1개', '감자' : '1알'}, '레시피' : ['1. 양파를 얇게 썰어 팬에 볶습니다.', '2. 김치를 잘게 썰어 팬에 볶습니다.']}와 같은 형식으로, 그리고 한국어로 출력해줘.",
-            },
+                "role" : "user",
+                "content" : (
+                    f"해당 재료만을 사용해서 8종류의 음식 레시피를 알려줘. : {ingredient_str}, "
+                    "레시피는 5단계로 반환할 수 있도록 해줘. "
+                    "레시피를 json 형식으로 다음과 같이 반환해줘 : {{'요리 이름': '<Dish Name>', '재료': ['<ingredient1>', '<ingredient2>', ...], '레시피': ['<step1>', '<step2>', ...]}}"
+                )
+            }
         ],
+        response_format={"type" : "json_object"},
+        temperature=0,
+        n=1,
+        top_p = 1,
+        frequency_penalty = 0,
+        presence_penalty = 0,
     )
-    response_text = response.choices[0].message.content
-    start_idx = response_text.find("recipes = [")
-    if start_idx != -1:
-        recipes_text = response_text[start_idx:]
-        recipes_text = recipes_text.split("\n\n")[0]
-        try:
-            recipes_text = recipes_text.replace('"', "'")
-            # recipes_dict = json.loads(recipes_text)
 
-            # recipes_json = json.dumps(recipes_dict, ensure_ascii=False, indent=4)
-            return recipes_text
-        except (SyntaxError, ValueError):
-            return "파싱에러!!!!!!!"
-    else:
-        return "에러발생!! 에러발생!!"
+    return eval(response.choices[0].message.content)
 
 
 # 추가 레시피 추천 함수
-def recommend_additinoal_recipe(ingredient: dict):
-    load_dotenv()
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+def recommend_additional_recipe(ingredient_str : str):
     response = openai.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-3.5-turbo",
         messages=[
             {
-                "role": "system",
-                "content": "다음 재료를 사용하세요 : "
-                + ", ".join([f"{key} : {value}" for key, value in ingredient.items()]),
+                "role" : "system",
+                "content" : "가지고 있는 식재료만을 사용해서 레시피를 추천해줘"
             },
             {
-                "role": "user",
-                "content": "매개변수로 전달받은 재료에 추가로 1~2가지 재료를 구매하면 만들 수 있는 요리 8가지 이름과 레시피, 재료에 대해서 dict 자료형으로 recipes = {'name' : '김치볶음밥', 'ingredients' : {'김치' : '1/2 포기', '양파' : '1개', '감자' : '1알', '계란(추가)' : '2알'}, '레시피' : ['1. 양파를 얇게 썰어 팬에 볶습니다.', '2. 김치를 잘게 썰어 팬에 볶습니다.']}와 같은 형식으로, 그리고 한국어로 출력해줘.",
-            },
+                "role" : "user",
+                "content" : (
+                    f"해당 재료에 1~2가지의 재료를 구매하면 만들 수 있는 8종류의 음식 레시피를 알려줘. : {ingredient_str}, "
+                    "레시피는 5단계로 반환할 수 있도록 해줘."
+                    "레시피를 json 형식으로 다음과 같이 반환해줘 : {{'요리 이름': '<Dish Name>', '재료': ['<ingredient1>', '<ingredient2>', ...], '필요한 재료': ['<additional ingredient1>', '<additional ingredient2>', ...], '레시피': ['<step1>', '<step2>', ...]}}"
+                )
+            }
         ],
+        response_format={"type" : "json_object"},
+        temperature=0,
+        n=1,
+        top_p = 1,
+        frequency_penalty = 0,
+        presence_penalty = 0,
     )
-    response_text = response.choices[0].message.content
-    start_idx = response_text.find("recipes = [")
-    if start_idx != -1:
-        recipes_text = response_text[start_idx:]
-        recipes_text = recipes_text.split("\n\n")[0]
-        try:
-            recipes_text = recipes_text.replace('"', "'")
-            # recipes_dict = json.loads(recipes_text)
 
-            # recipes_json = json.dumps(recipes_dict, ensure_ascii=False, indent=4)
-            return recipes_text
-        except (SyntaxError, ValueError):
-            return "파싱에러!!!!!!!"
-    else:
-        return "에러발생!! 에러발생!!"
+    return response.choices[0].message.content
 
 
-# api 두개로 만들긴 했는데 추후에 수정 예정
-# 요리 이름만 출력하는 api 하나랑, 모달용 api가 필요할 듯 한데 로딩시간이 오래 걸려서 api 사용 제한을 걸거나 db에 저장하는 방식을 사용하는 것이 좋을 듯
-@router.post("/recommend/recipes")
-async def recommendRecipes(ingredient: IngredientInput):
-    recipes = recommend_recipe(ingredient.ingredient)
+def get_recipes(ingredient : dict):
+    load_dotenv()
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    ingredient_str = ", ".join([f"{key}: {value}" for key, value in ingredient.items()])
+    
+    recipes = recommend_recipe(ingredient_str)
+    if (len(recipes) != 8):
+        while(True):
+            recipes = recommend_recipe(ingredient_str)
+            if (len(eval(recipes)) == 8):
+                break
+    # additional_recipes = recommend_additional_recipe(ingredient_str)
+
+    # recipes_json = json.load(recipes)
+    # additional_recipes_json = json.load(additional_recipes)
+    
+    # if (len(additional_recipes_json) != 8):
+    #     while(True):
+    #         additional_recipes_json = recommend_recipe(ingredient_str)
+    #         if (len(eval(additional_recipes_json)) == 8):
+    #             break
+    return recipes
+
+@router.post("/recipes/recommend")
+async def recommendRecipes(response: Response, ingredient: IngredientInput, friger_id : int = 1, db: Session=Depends(get_db)):
+    try:
+        existing_recipes = db.query(Recipe).filter(Recipe.friger_id == friger_id).first()
+        # existing_recipes = db.query(Recipe).filter(Recipe.friger_unique_code == recipes.friger_unique_code).first()
+        if existing_recipes:
+            time_gap = datetime.now() - existing_recipes.create_time
+            if (time_gap <= timedelta(hours=1)):
+                response.status_code = status.HTTP_204_NO_CONTENT
+                return 
+            else:
+                recipes = get_recipes(ingredient.ingredient)
+                existing_recipes.recommend_recipes = recipes
+                existing_recipes.recommend_recipes_more = recipes
+                existing_recipes.create_time = datetime.now()
+                db.commit()
+                db.refresh(existing_recipes)
+        else:
+            recipes = get_recipes(ingredient.ingredient)
+            new_recipes = Recipe(
+                friger_id = friger_id,
+                create_time = datetime.now(),
+                recommend_recipes = recipes,
+                recommend_recipes_more = recipes
+            )
+            db.add(new_recipes)
+            db.commit()
+            db.refresh(new_recipes)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
     return recipes
 
 
-@router.post("/recommend/recipes/additional")
+# 수정 필요
+@router.get("/search/potato")
+async def search_potato():
+    try:
+        # 쿠팡의 검색 URL
+        url = "https://www.coupang.com/np/search?q=감자"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.82 Safari/537.36"
+        }
+        
+        response = requests.get(url, headers=headers)
+        
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, detail="Failed to retrieve data")
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        product_link = soup.find("a", class_="search-product-link")
+        
+        if product_link:
+            return {"url": product_link['href']} 
+        else:
+            return {"message": "No products found"}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/recipes/recommend/additional")
 async def recommendAdditinoalRecipes(ingredient: IngredientInput):
-    recipes = recommend_additinoal_recipe(ingredient.ingredient)
-    recipes_list = json.load(recipes)
-    additional_ingredient = []
-    for recipe in recipes_list:
-        ingredients = recipe["ingredients"]
-        for ingredient, amount in ingredients.items():
-            if "(추가)" in ingredient:
-                additional_ingredient.append(ingredient)
-    return recipes, additional_ingredient
+    recipes = recommend_additional_recipe(ingredient.ingredient)
+    return recipes
 
 
 @router.post("/additional/ingredient")
@@ -126,13 +198,3 @@ async def additional_ingredient(ingredients: List[str]):
                     product_url = "https://www.coupang.com" + first_product["href"]
                     additional_ingredient_list.append(product_url)
     return additional_ingredient_list
-
-
-# ingredient = {
-# "돼지고기" : "300g",
-# "사과" : "3개",
-# "양파" : "3개",
-# "양배추" : "100g",
-# "감자" : "5알",
-# "김치" : "1포기"
-# }

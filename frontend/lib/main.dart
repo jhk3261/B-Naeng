@@ -1,4 +1,5 @@
 import 'package:frontend/Pages/chating/chat_room.dart';
+import 'package:frontend/Pages/login/signup_complete.dart';
 import 'package:frontend/Pages/mypage/mypage.dart';
 import 'package:frontend/Pages/recipe/receipe_recommend.dart';
 import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
@@ -22,7 +23,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomeScreen(cameras: cameras),
+      // home: HomeScreen(cameras: cameras),
+      home: SignInPage(),
+      // home: SignupComplete(),
     );
   }
 }
