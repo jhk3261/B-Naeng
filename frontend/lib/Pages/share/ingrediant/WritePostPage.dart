@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'share_ingredient.dart';
 
 const String apiUrl = 'http://127.0.0.1:8000';
 
@@ -18,7 +17,7 @@ class _WritePostPageState extends State<WritePostPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _locationDongController =
-      TextEditingController(); // 추가
+      TextEditingController();
   List<File> _pictures = [];
   bool _isShared = false;
   final int userId = 0;

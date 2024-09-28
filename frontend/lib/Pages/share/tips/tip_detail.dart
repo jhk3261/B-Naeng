@@ -235,7 +235,6 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
           ),
           const SizedBox(height: 16),
           if (tip['pictures'] != null && tip['pictures'].isNotEmpty)
-            // ListView.builder를 사용하여 여러 이미지를 네트워크에서 불러옴
             ListView.builder(
               shrinkWrap: true, // 부모 크기에 맞춰줌
               physics:

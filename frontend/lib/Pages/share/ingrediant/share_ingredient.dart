@@ -52,9 +52,8 @@ class ShareIngredient extends StatelessWidget {
                         return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
                         return Center(
-                          child: Text(
-                              'Failed to load ingredients: ${snapshot.error}'),
-                        );
+                            child: Text(
+                                'Failed to load ingredients: ${snapshot.error}'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(
                             child: Text('No ingredients available.'));
@@ -67,16 +66,14 @@ class ShareIngredient extends StatelessWidget {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: 0.8,
-                          crossAxisSpacing: 5, // 간격 줄이기
-                          mainAxisSpacing: 5, // 간격 줄이기
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 5,
                         ),
                         itemCount: foodElements.length,
                         itemBuilder: (context, index) {
                           final food = foodElements[index];
-                          final List<dynamic> pictures =
-                              food['pictures'] ?? []; // pictures 리스트 가져오기
+                          final List<dynamic> pictures = food['pictures'] ?? [];
 
-                          print(food);
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -86,7 +83,8 @@ class ShareIngredient extends StatelessWidget {
                                     id: food['id'],
                                   ),
                                 ),
-                              );
+                              ).then((_) {
+                              });
                             },
                             child: FoodElement(
                               isShared: food['is_shared'],
