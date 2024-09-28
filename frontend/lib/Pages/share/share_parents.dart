@@ -34,12 +34,14 @@ class _ShareParentScreenState extends State<ShareParentScreen>
     if (_tabController.index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => WritePostPage()),
+        MaterialPageRoute(
+            builder: (context) => WritePostPage(after_write: initState)),
       );
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const WriteTipPage()),
+        MaterialPageRoute(
+            builder: (context) => WriteTipPage(after_write: initState)),
       );
     }
   }

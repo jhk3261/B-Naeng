@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:frontend/Pages/friger/food_create_with_cam.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // For jsonEncode
 // For File operations
@@ -34,15 +35,8 @@ class _BillScanState extends State<BillScan> {
               fontWeight: FontWeight.bold),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 80),
-          const SizedBox(height: 20),
-          Expanded(
-            child: CameraScreen(cameras: widget.cameras),
-          ),
-        ],
+      body: Expanded(
+        child: CameraScreen(cameras: widget.cameras),
       ),
     );
   }
@@ -60,6 +54,7 @@ class CameraScreen extends StatefulWidget {
 class CameraScreenState extends State<CameraScreen> {
   CameraController? _controller;
   bool _isCameraInitialized = false;
+  bool _isLoading = false; // Add this flag to manage loading state
 
   @override
   void initState() {
@@ -99,9 +94,15 @@ class CameraScreenState extends State<CameraScreen> {
 
     try {
       final XFile file = await _controller!.takePicture();
+      setState(() {
+        _isLoading = true; // Set loading state to true
+      });
       await _sendPicture(file);
     } catch (e) {
       print('Error: $e');
+      setState(() {
+        _isLoading = false; // Reset loading state on error
+      });
     }
   }
 
@@ -115,33 +116,39 @@ class CameraScreenState extends State<CameraScreen> {
       if (response.statusCode == 200) {
         var responseData = await response.stream.bytesToString();
         var decodedData = jsonDecode(responseData);
-        _showResponse(decodedData);
+
+        List<Map<String, dynamic>> ingredients = [];
+
+        for (Map<String, dynamic> element in decodedData) {
+          ingredients.add(element);
+        }
+
+        print(ingredients);
+
+        setState(() {
+          _isLoading = false; // Reset loading state
+        });
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => FoodCreateSwipe(
+                    frigerId: 1,
+                    ingredients: ingredients,
+                  )),
+        );
       } else {
         print('Failed to upload image. Status code: ${response.statusCode}');
+        setState(() {
+          _isLoading = false; // Reset loading state on failure
+        });
       }
     } catch (e) {
       print('Error: $e');
+      setState(() {
+        _isLoading = false; // Reset loading state on error
+      });
     }
-  }
-
-  void _showResponse(Map<String, dynamic> response) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Server Response'),
-          content: Text(response.toString()),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -156,37 +163,48 @@ class CameraScreenState extends State<CameraScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Stack(
-      children: [
-        CameraPreview(_controller!),
-        Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                width: 300,
-                height: 550,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 3),
-                  color: Colors.transparent,
-                ),
-              ),
-              GestureDetector(
-                onTap: _takePicture,
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
+    return SafeArea(
+      top: true,
+      bottom: false, // Set bottom to false to extend the preview to the bottom
+      child: Stack(
+        children: [
+          CameraPreview(_controller!),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  width: 300,
+                  height: 550,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 3),
+                    color: Colors.transparent,
                   ),
                 ),
-              ),
-            ],
+                GestureDetector(
+                  onTap: _takePicture,
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+          if (_isLoading)
+            Center(
+              child: Container(
+                color: Colors.black54,
+                child: const CircularProgressIndicator(),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

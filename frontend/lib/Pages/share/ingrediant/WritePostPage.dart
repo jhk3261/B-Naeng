@@ -6,7 +6,8 @@ import 'dart:io';
 import 'share_ingredient.dart'; // 나눔 페이지
 
 class WritePostPage extends StatefulWidget {
-  const WritePostPage({super.key});
+  final VoidCallback after_write;
+  const WritePostPage({super.key, required this.after_write});
 
   @override
   _WritePostPageState createState() => _WritePostPageState();
@@ -65,6 +66,7 @@ class _WritePostPageState extends State<WritePostPage> {
           print('나눔 완료된 글입니다.');
         }
 
+        widget.after_write();
         // 글 작성 후 나눔 페이지로 이동
         Navigator.pushReplacement(
           context,

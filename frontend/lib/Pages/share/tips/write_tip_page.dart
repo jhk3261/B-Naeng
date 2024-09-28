@@ -1,10 +1,13 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
 class WriteTipPage extends StatefulWidget {
-  const WriteTipPage({super.key});
+  final VoidCallback after_write;
+  const WriteTipPage({super.key, required this.after_write});
 
   @override
   _WriteTipPageState createState() => _WriteTipPageState();
@@ -66,6 +69,7 @@ class _WriteTipPageState extends State<WriteTipPage> {
       if (response.statusCode == 200) {
         final responseBody = await response.stream.bytesToString();
         print('Response: $responseBody');
+        widget.after_write();
         Navigator.pop(context);
       } else {
         final responseBody = await response.stream.bytesToString();
