@@ -108,7 +108,7 @@ class SignInPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Color(0xff8EC96D),
+      backgroundColor: const Color(0xff8EC96D),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

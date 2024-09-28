@@ -1,11 +1,16 @@
 import 'package:frontend/Pages/chating/chat_room.dart';
+import 'package:frontend/Pages/login/google_auth.dart';
+import 'package:frontend/Pages/login/signup.dart';
 import 'package:frontend/Pages/mypage/mypage.dart';
 import 'package:frontend/Pages/recipe/receipe_recommend.dart';
 import 'package:frontend/Pages/friger/friger.dart';
+import 'package:frontend/Pages/recipe/recipes.dart';
+import 'package:frontend/Pages/recipe/recipes_list.dart';
 import 'package:frontend/Pages/share/share_parents.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:frontend/model/fridge_provider.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -26,13 +31,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        fontFamily: 'GmarketSansMedium', // 여기서 폰트 패밀리 이름 설정
-        // 추가적으로 다른 테마 속성도 설정 가능
-      ),
-      home: HomeScreen(cameras: cameras),
-      // SignInPage(),
-    );
+        theme: ThemeData(
+          fontFamily: 'GmarketSansMedium', // 여기서 폰트 패밀리 이름 설정
+          // 추가적으로 다른 테마 속성도 설정 가능
+        ),
+        // home: RecipePage(),
+        // home: RecipesRecommend(cameras: cameras),
+        // home: SignInPage(),
+        home: SignupPage2(username: '지원', email: 'jiwon@gmail.com', nickname: 'jiwon', birth: DateTime.parse('1999-08-12'), gender: 1),
+        // home: RecipesRecommend(cameras: cameras),
+        // home: RecipesRecommendList(cameras: cameras),
+        // home: SignupPage2(
+        //   username: '서지원',
+        //   email: 'wldnjstj99@naver.com',
+        //   nickname: '침투부전문시청팀',
+        //   birth: DateTime.parse('1999-08-12'), // 생년월일을 DateTime 객체로 변환
+        //   gender: 1,
+        // )
+        // home: HomeScreen(cameras: cameras),
+        // SignInPage(),
+        );
   }
 }
 

@@ -45,7 +45,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
-    is_admin = Column(Boolean, default=False, nullable=False)
+    # is_admin = Column(Boolean, default=False, nullable=False)
     nickname = Column(String, nullable=False)
     birth = Column(DateTime, nullable=False)
     gender = Column(Integer, nullable=False)
@@ -209,3 +209,4 @@ class Recipe(Base):
     create_time = Column(DateTime, nullable=False)
     recommend_recipes = Column(JSON, nullable=False)
     recommend_recipes_more = Column(JSON, nullable=False)
+    
