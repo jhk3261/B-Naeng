@@ -76,7 +76,7 @@ class FrigerFood extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(
-                      height: 5,
+                      height: 6,
                     ),
                     Image.asset(
                       imagePath,

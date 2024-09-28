@@ -177,7 +177,7 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
             surfaceTintColor: Colors.white,
             // shadowColor: Colors.black,
             backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
+            foregroundColor: Color(0xFF232323),
             title: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(

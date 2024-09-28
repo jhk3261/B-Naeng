@@ -4,7 +4,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-
 class RecipesRecommend extends StatefulWidget {
   final List<CameraDescription> cameras;
   const RecipesRecommend({super.key, required this.cameras});
@@ -12,6 +11,7 @@ class RecipesRecommend extends StatefulWidget {
   @override
   _RecipesRecommend createState() => _RecipesRecommend();
 }
+
 class _RecipesRecommend extends State<RecipesRecommend> {
   int? focusedIndex;
   Future<Map<String, List<Map<String, dynamic>>>>? _recipesFuture;
@@ -144,7 +144,9 @@ class _RecipesRecommend extends State<RecipesRecommend> {
                         );
                       }),
                     ),
-                    SizedBox(height: screenWidth * 0.04,),
+                    SizedBox(
+                      height: screenWidth * 0.04,
+                    ),
                     Center(
                       child: Text(
                         '한 두개만 더 있다면',
@@ -155,7 +157,9 @@ class _RecipesRecommend extends State<RecipesRecommend> {
                         ),
                       ),
                     ), // 레시피와 추가 레시피 사이의 간격
-                    SizedBox(height: screenWidth * 0.04,),
+                    SizedBox(
+                      height: screenWidth * 0.04,
+                    ),
                     // 두 번째 Column: 추가 레시피
                     Column(
                       children:

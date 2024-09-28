@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:frontend/Pages/share/ingrediant/WritePostPage.dart';
 import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
 import 'package:frontend/Pages/share/tips/share_tips.dart';
@@ -29,18 +31,22 @@ class _ShareParentScreenState extends State<ShareParentScreen>
     super.dispose();
   }
 
-  void _onEditButtonPressed() {
-    // 현재 탭의 인덱스를 확인하여 조건에 맞게 페이지 전환
+  void _onEditButtonPressed() async {
+    bool? result;
     if (_tabController.index == 0) {
-      Navigator.push(
+      result = await Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => WritePostPage()),
+        MaterialPageRoute(builder: (context) => const WritePostPage()),
       );
     } else {
-      Navigator.push(
+      result = await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const WriteTipPage()),
       );
+    }
+
+    if (result == true) {
+      //
     }
   }
 
@@ -57,7 +63,7 @@ class _ShareParentScreenState extends State<ShareParentScreen>
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w800,
-              fontFamily: "GmarketSans",
+              fontFamily: "GmarketSansMedium",
             ),
           ),
         ),
@@ -81,11 +87,14 @@ class _ShareParentScreenState extends State<ShareParentScreen>
               labelStyle: const TextStyle(
                 fontSize: 20, // 선택된 탭 텍스트 크기
                 fontWeight: FontWeight.bold,
+                fontFamily: 'GmarketSansMedium',
               ),
               unselectedLabelStyle: const TextStyle(
                 fontSize: 20, // 선택되지 않은 탭 텍스트 크기
                 fontWeight: FontWeight.bold,
+                fontFamily: 'GmarketSansMedium',
               ),
+              overlayColor: WidgetStatePropertyAll(Colors.white),
               tabs: const [
                 Tab(text: "재료 나눔"),
                 Tab(text: "정보 나눔"),

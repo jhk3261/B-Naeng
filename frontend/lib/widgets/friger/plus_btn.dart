@@ -2,7 +2,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/friger/bill_scanner.dart';
 import 'package:frontend/Pages/friger/food_create.dart';
-import 'package:frontend/Pages/friger/food_create_with_cam.dart';
 
 class PlusBtn extends StatelessWidget {
   final List<CameraDescription> cameras;
@@ -15,15 +14,13 @@ class PlusBtn extends StatelessWidget {
       required this.currentFridgeId,
       required this.onFoodAdded});
 
+  static double scaleWidth(BuildContext context) {
+    const designGuideWidth = 430;
+    final diff = MediaQuery.of(context).size.width / designGuideWidth;
+    return diff;
+  }
+
   void CreateFood(BuildContext context) {
-    final List<Map<String, dynamic>> foodData = [
-      {"name": "종이컵(일반 750/50P/1줄)나", "quantity": 3},
-      {"name": "영실업 케이블CtoC 고속1M 한쪽 90도/코드웨이", "quantity": 1},
-      // {"name": "크리넥스디럭스미니맥시", "quantity": 1},
-      // {"name": "해피홈베이트작은바퀴용유한양행", "quantity": 1},
-      // {"name": "크리넥스수앤수코튼오리지널물티슈(72P)", "quantity": 6}
-    ];
-    int frigerId = 1;
     showDialog<String>(
         context: context,
         barrierDismissible: true,
@@ -66,10 +63,10 @@ class PlusBtn extends StatelessWidget {
                     );
                   },
                   //TO DO : 영수증등록화면 네비게이션
-                  child: const Text(
+                  child: Text(
                     '영수증 등록',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 24 * scaleWidth(context),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -98,10 +95,10 @@ class PlusBtn extends StatelessWidget {
                         ) // Callback 전달)),
                         );
                   },
-                  child: const Text(
+                  child: Text(
                     '직접 등록',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 24 * scaleWidth(context),
                       fontWeight: FontWeight.bold,
                     ),
                   ),

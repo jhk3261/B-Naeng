@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ReceipeDetailPage extends StatefulWidget {
   final int id;
@@ -101,40 +102,49 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        surfaceTintColor: Colors.white,
+        shadowColor: const Color(0xFF232323),
         backgroundColor: Colors.white,
-        surfaceTintColor: Colors.transparent,
-        title: const Align(
-          alignment: Alignment.centerLeft,
-          child: Text("정보 나눔터"),
+        foregroundColor: Colors.black,
+        title: const Text(
+          "정보 나눔터",
+          style: TextStyle(
+            fontSize: 24,
+          ),
         ),
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              children: [
-                FutureBuilder<Map<String, dynamic>>(
-                  future: _fetchTip(widget.id),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
-                      final tip = snapshot.data!;
-                      return Column(
-                        children: [
-                          _buildPost(tip),
-                          const Divider(),
-                          _buildCommentSection(tip['comments']),
-                        ],
-                      );
-                    } else {
-                      return const Center(child: Text('No data available'));
-                    }
-                  },
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ListView(
+                children: [
+                  FutureBuilder<Map<String, dynamic>>(
+                    future: _fetchTip(widget.id),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (snapshot.hasData) {
+                        final tip = snapshot.data!;
+                        return Column(
+                          children: [
+                            _buildPost(tip),
+                            const Divider(),
+                            _buildCommentSection(tip['comments']),
+                          ],
+                        );
+                      } else {
+                        return const Center(child: Text('No data available'));
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           const Divider(height: 1),
@@ -166,7 +176,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
     String category =
         tip["category"] == 0 ? "레시피" : (tip["category"] == 1 ? "관리" : "특가");
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -259,7 +269,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
               Row(
                 children: [
                   const Icon(
-                    size: 35,
+                    size: 28,
                     Icons.chat_bubble,
                     color: Color(0xff8EC96D),
                   ),
@@ -274,7 +284,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
                 children: [
                   IconButton(
                     icon: Icon(
-                      size: 35,
+                      size: 28,
                       isLiked ? Icons.favorite : Icons.favorite_rounded,
                       color: isLiked
                           ? const Color(0xff449C4A)
@@ -284,7 +294,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
                   ),
                   IconButton(
                     icon: Icon(
-                      size: 40,
+                      size: 32,
                       isScrapped ? Icons.star : Icons.star_rounded,
                       color: isScrapped
                           ? const Color(0xff449C4A)
@@ -318,7 +328,10 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
             child: Text((comment['user_id']).toString()),
           ),
           title: Text(comment['content']),
-          subtitle: Text(comment['created_at']),
+          subtitle: Text(
+            DateFormat('yyyy년 MM월 dd일 HH:mm')
+                .format(DateTime.parse(comment['created_at'])),
+          ),
         );
       }).toList(),
     );
@@ -333,7 +346,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Container(
-        padding: const EdgeInsets.only(left: 25, top: 5, bottom: 30),
+        padding: const EdgeInsets.only(left: 32, right: 16, top: 5, bottom: 30),
         color: const Color(0xff8EC96D),
         child: Row(
           children: [

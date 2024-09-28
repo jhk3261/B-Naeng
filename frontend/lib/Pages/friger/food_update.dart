@@ -124,9 +124,14 @@ class _FoodUpdateState extends State<FoodUpdate> {
     }
   }
 
+  static double scaleWidth(BuildContext context) {
+    const designGuideWidth = 430;
+    final diff = MediaQuery.of(context).size.width / designGuideWidth;
+    return diff;
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     getInventory(InventoryId, FrigerId);
@@ -159,9 +164,9 @@ class _FoodUpdateState extends State<FoodUpdate> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(
-                        right: 30,
-                        left: 30,
+                      padding: EdgeInsets.only(
+                        right: 30 * scaleWidth(context),
+                        left: 30 * scaleWidth(context),
                       ),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,8 +192,8 @@ class _FoodUpdateState extends State<FoodUpdate> {
                                   left: 20,
                                   bottom: 10,
                                 ),
-                                hintStyle: const TextStyle(
-                                  fontSize: 14,
+                                hintStyle: TextStyle(
+                                  fontSize: 14 * scaleWidth(context),
                                   color: Color(0xFFB4B4B4),
                                 ),
                                 focusColor: const Color(0xFF8EC96D),
@@ -226,8 +231,8 @@ class _FoodUpdateState extends State<FoodUpdate> {
                                         value: item,
                                         child: Text(
                                           item,
-                                          style: const TextStyle(
-                                            fontSize: 16,
+                                          style: TextStyle(
+                                            fontSize: 16 * scaleWidth(context),
                                             color: Color(0xFF232323),
                                           ),
                                           overflow: TextOverflow.ellipsis,
@@ -516,14 +521,20 @@ class InputLabel extends StatelessWidget {
   final String content;
   final bool isVauable;
 
+  static double scaleWidth(BuildContext context) {
+    const designGuideWidth = 430;
+    final diff = MediaQuery.of(context).size.width / designGuideWidth;
+    return diff;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Text(
           content,
-          style: const TextStyle(
-            fontSize: 18,
+          style: TextStyle(
+            fontSize: 18 * scaleWidth(context),
           ),
         ),
         const SizedBox(
@@ -531,8 +542,8 @@ class InputLabel extends StatelessWidget {
         ),
         isVauable
             ? Container(
-                height: 6,
-                width: 6,
+                height: 6 * scaleWidth(context),
+                width: 6 * scaleWidth(context),
                 decoration: BoxDecoration(
                   color: const Color(0xFFFF8686),
                   borderRadius: BorderRadius.circular(10),
