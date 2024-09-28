@@ -9,7 +9,7 @@ class FridgeProvider with ChangeNotifier {
 
   // 서버에서 냉장고 목록 가져오기
   Future<void> fetchFridgeList() async {
-    final url = Uri.parse('http://127.0.0.1:22222/frigers'); // 필요에 따라 URL 조정
+    final url = Uri.parse('http://127.0.0.1:8000/frigers'); // 필요에 따라 URL 조정
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

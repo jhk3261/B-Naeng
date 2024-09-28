@@ -20,7 +20,7 @@ class _FrigerChangeState extends State<FrigerChange> {
 
   //특정 냉장고 인벤토리 데이터 가져오는 함수
   Future FetchFrigerList() async {
-    final url = Uri.parse('http://127.0.0.1:22222/frigers/');
+    final url = Uri.parse('http://127.0.0.1:8000/frigers/');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

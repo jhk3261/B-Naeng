@@ -61,7 +61,7 @@ class _FoodUpdateState extends State<FoodUpdate> {
   //id에 맞는 인벤토리 데이터 불러오는 함수
   Future getInventory(int InventoryId, int FrigerId) async {
     final url = Uri.parse(
-        'http://127.0.0.1:22222/frigers/${FrigerId}/inventories/${InventoryId}/');
+        'http://127.0.0.1:8000/frigers/${FrigerId}/inventories/${InventoryId}/');
 
     try {
       final response = await http.get(url);
@@ -95,7 +95,7 @@ class _FoodUpdateState extends State<FoodUpdate> {
       // 데이터 유효성 검사 통과 시 서버로 전송
       final response = await http.put(
         Uri.parse(
-            'http://127.0.0.1:22222/frigers/$FrigerId/inventories/$InventoryId/?'
+            'http://127.0.0.1:8000/frigers/$FrigerId/inventories/$InventoryId/?'
             'name=${nameController.text}&'
             'quantity=$LocalVariable&'
             'date=${dateController.text}&'
