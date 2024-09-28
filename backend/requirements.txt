@@ -8,3 +8,6 @@ python-jose
 beautifulsoup4
 selenium
 webdriver-manager
+slugify
+genai
+google-generativeai

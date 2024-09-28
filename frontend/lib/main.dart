@@ -31,12 +31,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(
-          fontFamily: 'GmarketSansMedium', // 여기서 폰트 패밀리 이름 설정
-          // 추가적으로 다른 테마 속성도 설정 가능
-        ),
-        home: HomeScreen(cameras: cameras),
-        );
+      theme: ThemeData(
+        fontFamily: 'GmarketSansMedium', // 여기서 폰트 패밀리 이름 설정
+        // 추가적으로 다른 테마 속성도 설정 가능
+      ),
+      // home: SignInPage(cameras: cameras),
+      // home: RecipesRecommendList(cameras: cameras),
+      home: RecipesRecommend(cameras: cameras),
+      // home: HomeScreen(cameras: cameras),
+      // home: SignupPage1_1(username: 'username', email: 'email'),
+      // home: const SignupPage1(username: '홍길순', email: 'gildong123@gmail.com'),
+    );
   }
 }
 

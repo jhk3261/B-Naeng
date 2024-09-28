@@ -29,6 +29,12 @@ class FrigerFood extends StatelessWidget {
     required this.onFoodAdded,
   });
 
+  static double scaleWidth(BuildContext context) {
+    const designGuideWidth = 430;
+    final diff = MediaQuery.of(context).size.width / designGuideWidth;
+    return diff;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -48,8 +54,8 @@ class FrigerFood extends StatelessWidget {
                 ));
           },
           child: Container(
-              width: 100,
-              height: 100,
+              width: 100 * scaleWidth(context),
+              height: 100 * scaleWidth(context),
               decoration: BoxDecoration(
                   color: bgColor,
                   borderRadius: BorderRadius.circular(20),
@@ -65,7 +71,7 @@ class FrigerFood extends StatelessWidget {
                       "D-$day",
                       style: TextStyle(
                         fontFamily: 'GmarketSansBold',
-                        fontSize: 10,
+                        fontSize: 10 * scaleWidth(context),
                         color: ftColor,
                       ),
                     ),
@@ -74,16 +80,16 @@ class FrigerFood extends StatelessWidget {
                     ),
                     Image.asset(
                       imagePath,
-                      height: 40,
+                      height: 38 * scaleWidth(context),
                     ),
                     const SizedBox(
-                      height: 8,
+                      height: 6,
                     ),
                     Text(
                       food,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'GmarketSansMedium',
-                        fontSize: 10,
+                        fontSize: 10 * scaleWidth(context),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -95,8 +101,8 @@ class FrigerFood extends StatelessWidget {
           top: 4,
           right: 4,
           child: Container(
-            width: 32,
-            height: 32,
+            width: 32 * scaleWidth(context),
+            height: 32 * scaleWidth(context),
             decoration: BoxDecoration(
               color: bdColor,
               shape: BoxShape.circle,
@@ -104,9 +110,9 @@ class FrigerFood extends StatelessWidget {
             child: Center(
               child: Text(
                 num,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'GmarketSans',
-                  fontSize: 16,
+                  fontSize: 16 * scaleWidth(context),
                   fontWeight: FontWeight.w600,
                 ),
               ),

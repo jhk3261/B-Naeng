@@ -97,7 +97,7 @@ class TokenResponse(BaseModel):
 @router.post("/login", response_model=TokenResponse)
 async def login(
     body: UserLogin, response: Response, db: Session = Depends(get_db)
-) -> dict:
+) -> TokenResponse:
     try:
         # 이메일로 기존 유저 조회
         existing_user = db.query(User).filter(User.email == body.email).first()
@@ -124,7 +124,13 @@ async def login(
         
         response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite='Lax')
 
-        return {"access_token": access_token, "token_type": "Bearer"}
+        # return {"access_token": access_token, "token_type": "Bearer"}
+        return TokenResponse(access_token=access_token, token_type="Bearer")
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+@router.post("/verify-token")
+async def verify_token(token: str = Depends(oauth2_scheme)):
+    user = authenticate(token)
+    return {"user": user}

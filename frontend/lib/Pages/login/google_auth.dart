@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:frontend/Pages/login/signup.dart';
+import 'package:frontend/Pages/login/signup_complete.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:camera/camera.dart'; // 카메라 사용을 위한 패키지 추가
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -26,20 +29,11 @@ class DatabaseHelper {
       version: 1,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT)',
+          'CREATE TABLE users(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, nickname TEXT, birthday TEXT, gender TEXT, recommender TEXT)',
         );
       },
     );
   }
-
-  // Future<void> insertUser(String name, String email) async {
-  //   final db = await database;
-  //   await db.insert(
-  //     'users',
-  //     {'name': name, 'email': email},
-  //     conflictAlgorithm: ConflictAlgorithm.replace,
-  //   );
-  // }
 
   Future<void> insertUser(String name, String email, String nickname,
       String birthday, String gender, String recommender) async {
@@ -49,10 +43,10 @@ class DatabaseHelper {
       {
         'name': name,
         'email': email,
-        "nickname": nickname,
-        "birthday": birthday,
-        "gender": gender,
-        "recommender": recommender,
+        'nickname': nickname,
+        'birthday': birthday,
+        'gender': gender,
+        'recommender': recommender,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -72,21 +66,23 @@ class DatabaseHelper {
 class SignInPage extends StatelessWidget {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final DatabaseHelper _dbHelper = DatabaseHelper();
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
+  final List<CameraDescription> cameras; // cameras 리스트 추가
 
-  SignInPage({super.key});
+  SignInPage({super.key, required this.cameras}); // 생성자에 cameras 추가
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return; // 로그인 취소 시 null 반환
+      if (googleUser == null) return; // 로그인 취소
 
       final String username = googleUser.displayName ?? '';
       final String email = googleUser.email;
 
-      // SQLite에 사용자 정보 확인
+      // SQLite에서 기존 사용자 확인
       Map<String, dynamic>? existingUser = await _dbHelper.getUser(email);
       if (existingUser == null) {
-        // 회원가입 페이지로 이동
+        // 사용자가 존재하지 않으면 가입 페이지로 이동
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -94,12 +90,31 @@ class SignInPage extends StatelessWidget {
           ),
         );
       } else {
-        // 이미 존재하는 경우 로그인 처리
-        print("User already exists. Proceed with login.");
+        // 사용자가 존재하면 로그인 진행
+        print("사용자가 이미 존재합니다. 로그인 진행.");
+
+        // 서버에서 액세스 토큰 가져오기
+        final String accessToken = await _loginAndFetchToken(email);
+        if (accessToken.isNotEmpty) {
+          await storage.write(key: 'access_token', value: accessToken);
+
+          // 사용자가 이미 존재하므로 SignupComplete 페이지로 이동
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  SignupComplete(cameras: cameras), // 필요에 따라 cameras 전달
+            ),
+          );
+        }
       }
     } catch (error) {
-      print("Error signing in with Google: $error");
+      print("구글 로그인 중 오류 발생: $error");
     }
+  }
+
+  Future<String> _loginAndFetchToken(String email) async {
+    return "access_token 반환하도록 코드 수정";
   }
 
   @override
