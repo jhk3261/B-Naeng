@@ -7,18 +7,23 @@ import 'package:http/http.dart' as http;
 
 const String apiUrl = 'http://127.0.0.1:8000';
 
-// API에서 식재료 리스트 불러오기 (GET 요청)
 Future<List<dynamic>> fetchIngredients() async {
   final url = Uri.parse('$apiUrl/ingredients/');
 
-  final response =
-      await http.get(url, headers: {'Content-Type': 'application/json'});
+  try {
+    final response =
+        await http.get(url, headers: {'Content-Type': 'application/json'});
 
-  if (response.statusCode == 200) {
-    final List<dynamic> ingredients = jsonDecode(response.body);
-    return ingredients;
-  } else {
-    throw Exception('Failed to load ingredients');
+    if (response.statusCode == 200) {
+      final List<dynamic> ingredients =
+          jsonDecode((utf8.decode(response.bodyBytes)));
+      return ingredients;
+    } else {
+      throw Exception(
+          'Failed to load ingredients: ${response.statusCode} ${response.body}');
+    }
+  } catch (error) {
+    throw Exception('Failed to load ingredients: $error');
   }
 }
 
@@ -47,9 +52,8 @@ class ShareIngredient extends StatelessWidget {
                         return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
                         return Center(
-                          child: Text(
-                              'Failed to load ingredients: ${snapshot.error}'),
-                        );
+                            child: Text(
+                                'Failed to load ingredients: ${snapshot.error}'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(
                             child: Text('No ingredients available.'));
@@ -62,33 +66,33 @@ class ShareIngredient extends StatelessWidget {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: 0.8,
-                          crossAxisSpacing: 5, // 간격 줄이기
-                          mainAxisSpacing: 5, // 간격 줄이기
+                          crossAxisSpacing: 5,
+                          mainAxisSpacing: 5,
                         ),
                         itemCount: foodElements.length,
                         itemBuilder: (context, index) {
                           final food = foodElements[index];
+                          final List<dynamic> pictures = food['pictures'] ?? [];
+
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => IngredientDetailPage(
-                                    ingredientId: food['id'],
-                                    title: food['title'],
-                                    imageUrl: food['image_url'],
-                                    description: food['contents'],
+                                    id: food['id'],
                                   ),
                                 ),
-                              );
+                              ).then((_) {
+                              });
                             },
                             child: FoodElement(
                               isShared: food['is_shared'],
                               title: food['title'],
-                              imgPath: food['image_url'] ??
-                                  'assets/images/default.jpg',
-                              locationDong:
-                                  food['location_dong'] ?? 'Unknown location',
+                              imgPath: pictures.isNotEmpty
+                                  ? pictures[0]
+                                  : 'assets/images/noimg.jpg',
+                              locationDong: food['locationDong'],
                             ),
                           );
                         },

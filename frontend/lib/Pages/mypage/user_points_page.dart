@@ -8,7 +8,8 @@ class UsePointsPage extends StatefulWidget {
   final int userId;
   final Function() onRefresh;
 
-  const UsePointsPage({super.key, required this.userId, required this.onRefresh});
+  const UsePointsPage(
+      {super.key, required this.userId, required this.onRefresh});
 
   @override
   _UsePointsPageState createState() => _UsePointsPageState();
@@ -89,7 +90,8 @@ class _UsePointsPageState extends State<UsePointsPage> {
               fontFamily: 'GmarketSansBold',
             )),
         centerTitle: true,
-        leading: IconButton( // 왼쪽 상단 나가기 아이콘 추가
+        leading: IconButton(
+          // 왼쪽 상단 나가기 아이콘 추가
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             widget.onRefresh(); // 마이페이지 새로 고침 호출

@@ -1,7 +1,17 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from routers import auth, tips, ingredients, kakao_auth, users, recipe, mypage, friger
+from routers import (
+    auth,
+    tips,
+    ingredients,
+    kakao_auth,
+    users,
+    recipe,
+    mypage,
+    friger,
+    bill,
+)
 from config.database import engine, Base
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -46,6 +56,7 @@ app.include_router(users.router)
 app.include_router(recipe.router)
 app.include_router(friger.router)
 app.include_router(mypage.router)
+app.include_router(bill.router)
 
 
 @app.get("/favicon.ico", include_in_schema=False)
@@ -54,7 +65,7 @@ async def favicon():
 
 
 HOST = "127.0.0.1"
-PORT = 22222
+PORT = 8000
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host=HOST, port=PORT, reload=True)

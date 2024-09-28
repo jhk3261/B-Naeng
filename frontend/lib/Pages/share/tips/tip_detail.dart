@@ -39,7 +39,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
       isLiked = !isLiked;
     });
 
-    final url = Uri.parse('http://127.0.0.1:22222/tips/${widget.id}/likes');
+    final url = Uri.parse('http://127.0.0.1:8000/tips/${widget.id}/likes');
     try {
       await http.post(
         url,
@@ -63,7 +63,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
       isScrapped = !isScrapped;
     });
 
-    final url = Uri.parse('http://127.0.0.1:22222/tips/${widget.id}/scraps');
+    final url = Uri.parse('http://127.0.0.1:8000/tips/${widget.id}/scraps');
     try {
       await http.post(
         url,
@@ -83,7 +83,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
 
   // 댓글 요청
   Future<void> _sendComment(String content) async {
-    final url = Uri.parse('http://127.0.0.1:22222/tips/${widget.id}/comments');
+    final url = Uri.parse('http://127.0.0.1:8000/tips/${widget.id}/comments');
     try {
       await http.post(
         url,
@@ -146,7 +146,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
 
   // HTTP 요청을 통해 게시글 데이터를 가져오는 함수
   Future<Map<String, dynamic>> _fetchTip(int id) async {
-    final url = Uri.parse('http://127.0.0.1:22222/tips/$id');
+    final url = Uri.parse('http://127.0.0.1:8000/tips/$id');
     try {
       final response = await http.get(url);
 
@@ -235,7 +235,6 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
           ),
           const SizedBox(height: 16),
           if (tip['pictures'] != null && tip['pictures'].isNotEmpty)
-            // ListView.builder를 사용하여 여러 이미지를 네트워크에서 불러옴
             ListView.builder(
               shrinkWrap: true, // 부모 크기에 맞춰줌
               physics:
@@ -245,7 +244,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
                 final pictureUrl = tip['pictures'][index];
                 print(pictureUrl);
                 final fullUrl =
-                    "http://127.0.0.1:22222/tip_image?file_path=$pictureUrl";
+                    "http://127.0.0.1:8000/tip_image?file_path=$pictureUrl";
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),

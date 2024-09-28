@@ -271,3 +271,32 @@ def add_scrap(tip_id: int, scrap: ScrapCreate, db: Session = Depends(get_db)):
     db.add(db_scrap)
     db.commit()
     return db_scrap
+
+
+# 9. 특정 사용자의 스크랩 조회
+@router.get("/users/{user_id}/scraps", response_model=List[TipResponseWithCounts])
+def get_user_scraps(user_id: int, db: Session = Depends(get_db)):
+    scraps = db.query(Scrap).filter(Scrap.user_id == user_id).all()
+
+    if not scraps:
+        raise HTTPException(status_code=404, detail="No scraps found.")
+
+    # 스크랩한 팁 정보 가져오기
+    result = []
+    for scrap in scraps:
+        tip = db.query(Tip).filter(Tip.id == scrap.tip_id).first()
+        if tip:
+            result.append(
+                TipResponseWithCounts(
+                    id=tip.id,
+                    title=tip.title,
+                    contents=tip.contents,
+                    category=tip.category,
+                    pictures=tip.pictures,
+                    locationDong=tip.locationDong,
+                    like_count=len(tip.likes),
+                    comment_count=len(tip.comments),
+                    scrap_count=len(tip.scraps),
+                )
+            )
+    return result

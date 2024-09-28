@@ -29,7 +29,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<UserProfile> userProfileFuture;
-  int userId = 2024; // 테스트용 사용자 ID
+  int userId = 0;
   bool isScrapSectionOpen = false;
   List<ScrapItem> scrapItems = [];
 
@@ -64,90 +64,63 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<List<ScrapItem>> fetchScrapItems(int userId) async {
     try {
-      final response = await http.get(Uri.parse('$apiUrl/scrap/$userId'));
+      final response =
+          await http.get(Uri.parse('$apiUrl/users/$userId/scraps'));
+
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode((utf8.decode(response.bodyBytes)));
+        if (data.isEmpty) {
+          return [];
+        }
         return data.map((json) => ScrapItem.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load scrap items');
       }
     } catch (error) {
       print('Error fetching scrap items: $error');
-      return _getDummyScrapItems();
+      return Future.error('스크랩 항목을 불러오는 데 오류가 발생했습니다.');
     }
-  }
-
-  List<ScrapItem> _getDummyScrapItems() {
-    return [
-      ScrapItem(
-        id: 1,
-        title: '당근이 남아 돌 때 꿀 팁!!',
-        imageUrl: 'assets/images/img1.png',
-        likeCount: 122,
-        commentCount: 65,
-        scrapCount: 45,
-        createdAt: '2023-06-28T00:00:00',
-      ),
-      ScrapItem(
-        id: 2,
-        title: '쌈 채소 드려요',
-        imageUrl: 'assets/images/img2.png',
-        likeCount: 62,
-        commentCount: 13,
-        scrapCount: 22,
-        createdAt: '2023-05-12T00:00:00',
-      ),
-      ScrapItem(
-        id: 3,
-        title: '삼겹살 800g',
-        imageUrl: 'assets/images/img3.png',
-        likeCount: 5,
-        commentCount: 2,
-        scrapCount: 9,
-        createdAt: '2023-07-02T00:00:00',
-      ),
-      ScrapItem(
-        id: 4,
-        title: '아보카도 덮밥 레시피',
-        imageUrl: 'assets/images/img4.png',
-        likeCount: 100,
-        commentCount: 10,
-        scrapCount: 15,
-        createdAt: '2023-04-25T00:00:00',
-      ),
-    ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<UserProfile>(
-        future: userProfileFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text('오류가 발생했습니다.'));
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
-          } else {
-            final profile = snapshot.data!;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  buildProfileSection(profile),
-                  const SizedBox(height: 16),
-                  buildGreenPointsSection(profile),
-                  const SizedBox(height: 16),
-                  buildFridgeSection(profile),
-                  const SizedBox(height: 16),
-                  buildScrapSection(context),
-                ],
-              ),
-            );
-          }
-        },
+      backgroundColor: Colors.white, // 배경색을 흰색으로 설정
+      body: Column(
+        children: [
+          // 위쪽 여백을 조정하는 SizedBox 추가
+          const SizedBox(height: 16), // 16만큼 여백 추가
+          Expanded(
+            child: FutureBuilder<UserProfile>(
+              future: userProfileFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data == null) {
+                  return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
+                } else {
+                  final profile = snapshot.data!;
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        buildProfileSection(profile),
+                        const SizedBox(height: 16),
+                        buildGreenPointsSection(profile),
+                        const SizedBox(height: 16),
+                        buildFridgeSection(profile),
+                        const SizedBox(height: 16),
+                        buildScrapSection(context),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -212,7 +185,6 @@ class _ProfilePageState extends State<ProfilePage> {
           const Spacer(),
           TextButton(
             onPressed: () async {
-              // '사용하기' 페이지로 이동
               final usedPoints = await Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -227,12 +199,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               );
 
-              // 사용한 포인트가 null이 아닐 경우
               if (usedPoints != null) {
                 setState(() {
-                  // usedPoints를 int로 변환
-                  profile.greenPoints -= (usedPoints as num).toInt(); // 형 변환 추가
-                  // API를 호출하여 최신 사용자 정보를 가져올 수 있습니다.
+                  profile.greenPoints -= (usedPoints as num).toInt();
                   userProfileFuture = fetchUserProfile(profile.userId);
                 });
               }
@@ -254,14 +223,14 @@ class _ProfilePageState extends State<ProfilePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return FridgePopup(); // 팝업으로 FridgePopup 호출
+        return const FridgePopup();
       },
     );
   }
 
   Widget buildFridgeSection(UserProfile profile) {
     return GestureDetector(
-      onTap: () => showFridgePopup(context), // 팝업 호출
+      onTap: () => showFridgePopup(context),
       child: Container(
         alignment: Alignment.center,
         child: Row(
@@ -326,7 +295,7 @@ class _ProfilePageState extends State<ProfilePage> {
         GestureDetector(
           onTap: () {
             setState(() {
-              isScrapSectionOpen = !isScrapSectionOpen; // 섹션 열기/닫기 토글
+              isScrapSectionOpen = !isScrapSectionOpen;
             });
           },
           child: Container(
@@ -337,21 +306,21 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬로 변경
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Image.asset(
                   'assets/images/star.png',
                   width: 18,
                   height: 18,
                 ),
-                const SizedBox(width: 8), // 이미지와 텍스트 사이 간격 추가
+                const SizedBox(width: 8),
                 const Text(
                   '스크랩',
                   style: TextStyle(
                     fontSize: 15,
                   ),
                 ),
-                const Spacer(), // 텍스트와 아이콘 사이의 공간을 유지
+                const Spacer(),
                 Icon(
                   isScrapSectionOpen
                       ? Icons.keyboard_arrow_up
@@ -370,7 +339,7 @@ class _ProfilePageState extends State<ProfilePage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return const Center(child: Text('오류가 발생했습니다.'));
+                return Center(child: Text('오류가 발생했습니다.  ${snapshot.error}'));
               } else if (!snapshot.hasData || snapshot.data == null) {
                 return const Center(child: Text('스크랩 항목이 없습니다.'));
               } else {
@@ -381,8 +350,22 @@ class _ProfilePageState extends State<ProfilePage> {
                   itemCount: scrapItems.length,
                   itemBuilder: (context, index) {
                     final item = scrapItems[index];
+
+                    String imageUrl = item.imageUrl != null
+                        ? "http://127.0.0.1:8000/scrap_image?file_path=${item.imageUrl}"
+                        : "assets/images/noimg.png";
+
+                    print(imageUrl);
+
                     return ListTile(
-                      leading: Image.network(item.imageUrl ?? ''),
+                      leading: SizedBox(
+                        width: 80,
+                        height: 60,
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                       title: Text(item.title),
                       subtitle: Row(
                         children: [
@@ -455,7 +438,7 @@ class UserProfile {
 class ScrapItem {
   final int id;
   final String title;
-  final String? imageUrl;
+  final String? imageUrl; // nullable String
   final int likeCount;
   final int commentCount;
   final int scrapCount;
@@ -472,14 +455,18 @@ class ScrapItem {
   });
 
   factory ScrapItem.fromJson(Map<String, dynamic> json) {
+    String? imageUrl = (json['pictures'] != null && json['pictures'].isNotEmpty)
+        ? '${json['pictures'][0].replaceAll("\\", "/")}'
+        : null;
+
     return ScrapItem(
       id: json['id'],
       title: json['title'],
-      imageUrl: json['image_url'],
+      imageUrl: imageUrl,
       likeCount: json['like_count'],
       commentCount: json['comment_count'],
       scrapCount: json['scrap_count'],
-      createdAt: json['created_at'],
+      createdAt: json['created_at'] ?? '',
     );
   }
 }

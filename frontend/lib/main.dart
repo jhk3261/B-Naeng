@@ -35,21 +35,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'GmarketSansMedium', // 여기서 폰트 패밀리 이름 설정
           // 추가적으로 다른 테마 속성도 설정 가능
         ),
-        // home: RecipePage(),
-        // home: RecipesRecommend(cameras: cameras),
-        // home: SignInPage(),
-        home: SignupPage2(username: '지원', email: 'jiwon@gmail.com', nickname: 'jiwon', birth: DateTime.parse('1999-08-12'), gender: 1),
-        // home: RecipesRecommend(cameras: cameras),
-        // home: RecipesRecommendList(cameras: cameras),
-        // home: SignupPage2(
-        //   username: '서지원',
-        //   email: 'wldnjstj99@naver.com',
-        //   nickname: '침투부전문시청팀',
-        //   birth: DateTime.parse('1999-08-12'), // 생년월일을 DateTime 객체로 변환
-        //   gender: 1,
-        // )
-        // home: HomeScreen(cameras: cameras),
-        // SignInPage(),
+        home: HomeScreen(cameras: cameras),
         );
   }
 }
