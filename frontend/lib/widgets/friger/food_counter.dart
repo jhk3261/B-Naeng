@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class FoodCounter extends StatefulWidget {
   final int minValue;
   final int maxValue;
+  final int initialValue;
 
   final ValueChanged<int> onChanged;
 
@@ -11,6 +12,7 @@ class FoodCounter extends StatefulWidget {
     required this.minValue,
     required this.maxValue,
     required this.onChanged,
+    required this.initialValue,
   });
 
   @override
@@ -18,7 +20,14 @@ class FoodCounter extends StatefulWidget {
 }
 
 class _FoodCounterState extends State<FoodCounter> {
-  int counter = 0;
+  late int counter;
+
+  @override
+  void initState() {
+    super.initState();
+    counter = widget.initialValue; // 초기값을 설정합니다.
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(

@@ -1,24 +1,33 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/material.dart';
 import 'package:frontend/widgets/friger/food_counter.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
-class FoodCreate extends StatefulWidget {
-  final int currentFrige;
+class FoodUpdate extends StatefulWidget {
+  final int inventoryId;
+  final int currentFrigerId;
   final VoidCallback onFoodAdded; // Callback 추가
 
-  const FoodCreate(
-      {super.key, required this.currentFrige, required this.onFoodAdded});
+  const FoodUpdate(
+      {super.key,
+      required this.inventoryId,
+      required this.currentFrigerId,
+      required this.onFoodAdded});
 
   @override
-  State<FoodCreate> createState() => _FoodCreateState();
+  State<FoodUpdate> createState() => _FoodUpdateState();
 }
 
-class _FoodCreateState extends State<FoodCreate> {
-  // Callback 추가
+class _FoodUpdateState extends State<FoodUpdate> {
   final _formKey = GlobalKey<FormState>();
+  // 상태 변수 추가
+  Inventory? _selectedInventory;
+
+  int get InventoryId => widget.inventoryId; //현재 iventory id
+  int get FrigerId => widget.currentFrigerId;
 
   final List<String> categories = ['육류', '소스', '유제품', '채소', '음료', '기타'];
   String? selectCategory;
@@ -27,51 +36,100 @@ class _FoodCreateState extends State<FoodCreate> {
   TextEditingController dateController = TextEditingController();
   TextEditingController buyDateController = TextEditingController();
 
-  int LocalVariable = 0;
+  int? LocalVariable;
+  DateTime selectedDate = DateTime.now();
 
-  int get FrigerId => widget.currentFrige;
+  late final List<CameraDescription> cameras;
+
+  //날짜선택함수
+  Future<void> selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        dateController.text = DateFormat('yyyy-MM-dd')
+            .format(selectedDate); // 날짜를 'YYYY-MM-DD' 형식으로 변환하여 텍스트 필드에 설정
+      });
+    }
+  }
+
+  //id에 맞는 인벤토리 데이터 불러오는 함수
+  Future getInventory(int InventoryId, int FrigerId) async {
+    final url = Uri.parse(
+        'http://127.0.0.1:22222/frigers/${FrigerId}/inventories/${InventoryId}/');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        // JSON이 단일 객체 형태로 반환되는 경우
+        Map<String, dynamic> jsonMap =
+            jsonDecode(utf8.decode(response.bodyBytes));
+
+        // Inventory 객체로 변환
+        Inventory inventory = Inventory.fromJson(jsonMap);
+
+        setState(() {
+          _selectedInventory = inventory; // 상태 변수에 저장
+          nameController.text = inventory.name;
+          selectCategory = inventory.category;
+          LocalVariable = inventory.quantity;
+          dateController.text =
+              DateFormat('yyyy-MM-dd').format(inventory.date!);
+        });
+      } else {
+        throw Exception('Failed to load friger');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
 
   Future<void> submitData() async {
     if (_formKey.currentState!.validate()) {
       // 데이터 유효성 검사 통과 시 서버로 전송
-      final response = await http.post(
+      final response = await http.put(
         Uri.parse(
-            'http://127.0.0.1:22222/frigers/${FrigerId}/inventories/'), // 실제 API URL로 변경
+            'http://127.0.0.1:22222/frigers/$FrigerId/inventories/$InventoryId/?'
+            'name=${nameController.text}&'
+            'quantity=$LocalVariable&'
+            'date=${dateController.text}&'
+            'category=${selectCategory ?? '기타'}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode({
-          'friger_id': FrigerId, // 적절한 friger_id로 수정
-          'name': nameController.text,
-          'quantity': LocalVariable,
-          'date': dateController.text,
-          'category': selectCategory ?? '기타',
-        }),
       );
 
       if (response.statusCode == 200) {
         // 성공적으로 등록된 경우
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('식재료가 등록되었습니다.')),
+          const SnackBar(content: Text('식재료가 수정되었습니다.')),
         );
 
         widget.onFoodAdded();
-        Navigator.pop(context);
-        // 입력값 초기화
-        nameController.clear();
-        dateController.clear();
-        buyDateController.clear();
-        setState(() {
-          selectCategory = null;
-          LocalVariable = 0;
-        });
+        Navigator.pop(context, true);
+        // });
       } else {
         // 에러 처리
+        print('Error: ${response.statusCode} - ${response.body}'); // 오류 로그 추가
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('식재료 등록에 실패했습니다.')),
+          const SnackBar(content: Text('식재료 수정에 실패했습니다.')),
         );
       }
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getInventory(InventoryId, FrigerId);
   }
 
   @override
@@ -85,7 +143,7 @@ class _FoodCreateState extends State<FoodCreate> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         title: const Text(
-          "식재료 등록",
+          "식재료 수정",
           style: TextStyle(
             fontSize: 24,
           ),
@@ -129,7 +187,6 @@ class _FoodCreateState extends State<FoodCreate> {
                                   left: 20,
                                   bottom: 10,
                                 ),
-                                hintText: '재료 이름을 입력해주세요 (ex-돼지고기 100g)',
                                 hintStyle: const TextStyle(
                                   fontSize: 14,
                                   color: Color(0xFFB4B4B4),
@@ -163,13 +220,6 @@ class _FoodCreateState extends State<FoodCreate> {
                             DropdownButtonHideUnderline(
                               child: DropdownButton2<String>(
                                 isExpanded: true,
-                                hint: const Text(
-                                  '카테고리를 선택해주세요 (없다면 기타 선택)',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFFB4B4B4),
-                                  ),
-                                ),
                                 items: categories
                                     .map(
                                       (String item) => DropdownMenuItem(
@@ -243,7 +293,7 @@ class _FoodCreateState extends State<FoodCreate> {
                             FoodCounter(
                               minValue: 0,
                               maxValue: 50,
-                              initialValue: 0,
+                              initialValue: LocalVariable ?? 0,
                               onChanged: (value) {
                                 LocalVariable = value;
                               },
@@ -270,11 +320,6 @@ class _FoodCreateState extends State<FoodCreate> {
                                   left: 20,
                                   bottom: 10,
                                 ),
-                                hintText: '식재료의 소비 기한을 설정해주세요.',
-                                hintStyle: const TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFFB4B4B4),
-                                ),
                                 focusColor: const Color(0xFF8EC96D),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -295,7 +340,8 @@ class _FoodCreateState extends State<FoodCreate> {
                                     context: context,
                                     firstDate: DateTime.now(),
                                     lastDate: DateTime(2100),
-                                    initialDate: DateTime.now(),
+                                    initialDate:
+                                        DateTime.parse(dateController.text),
                                     builder: (context, Widget? child) => Theme(
                                           data: ThemeData(
                                             splashColor: Color(0xFF8EC96D),
@@ -444,7 +490,7 @@ class _FoodCreateState extends State<FoodCreate> {
                       borderRadius: BorderRadius.circular(10),
                     )),
                 child: const Text(
-                  '등록하기',
+                  '변경하기',
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
@@ -497,6 +543,31 @@ class InputLabel extends StatelessWidget {
                 width: 0,
               )
       ],
+    );
+  }
+}
+
+class Inventory {
+  final int id;
+  final String name;
+  final int quantity;
+  final String category;
+  final DateTime? date;
+
+  Inventory(
+      {required this.id,
+      required this.name,
+      required this.quantity,
+      required this.category,
+      required this.date});
+
+  factory Inventory.fromJson(Map<String, dynamic> json) {
+    return Inventory(
+      id: json['id'],
+      name: json['name'],
+      quantity: json['quantity'],
+      category: json['category'],
+      date: json['date'] != null ? DateTime.parse(json['date']) : null,
     );
   }
 }

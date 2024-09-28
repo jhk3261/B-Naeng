@@ -5,8 +5,14 @@ import 'package:frontend/Pages/friger/food_create.dart';
 
 class PlusBtn extends StatelessWidget {
   final List<CameraDescription> cameras;
+  final int currentFridgeId;
+  final VoidCallback onFoodAdded; // Callback 추가
 
-  const PlusBtn({super.key, required this.cameras});
+  const PlusBtn(
+      {super.key,
+      required this.cameras,
+      required this.currentFridgeId,
+      required this.onFoodAdded});
 
   void CreateFood(BuildContext context) {
     showDialog<String>(
@@ -74,10 +80,14 @@ class PlusBtn extends StatelessWidget {
                   onPressed: () {
                     Navigator.of(context).pop();
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const FoodCreate()),
-                    );
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FoodCreate(
+                            currentFrige: currentFridgeId,
+                            onFoodAdded: onFoodAdded,
+                          ),
+                        ) // Callback 전달)),
+                        );
                   },
                   child: const Text(
                     '직접 등록',
