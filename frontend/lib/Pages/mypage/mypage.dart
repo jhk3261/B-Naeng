@@ -29,7 +29,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<UserProfile> userProfileFuture;
-  int userId = 2024; // 테스트용 사용자 ID
+  int userId = 0; // 테스트용 사용자 ID
   bool isScrapSectionOpen = false;
   List<ScrapItem> scrapItems = [];
 
@@ -341,8 +341,15 @@ class _ProfilePageState extends State<ProfilePage> {
                   itemCount: scrapItems.length,
                   itemBuilder: (context, index) {
                     final item = scrapItems[index];
+
+                    String imageUrl = item.imageUrl != null
+                        ? "http://127.0.0.1:8000/scrap_image?file_path=${item.imageUrl}"
+                        : "assets/images/noimg.png";
+
+                    print(imageUrl);
+
                     return ListTile(
-                      leading: Image.network(item.imageUrl ?? ''),
+                      leading: Image.network(imageUrl),
                       title: Text(item.title),
                       subtitle: Row(
                         children: [
@@ -433,7 +440,7 @@ class ScrapItem {
 
   factory ScrapItem.fromJson(Map<String, dynamic> json) {
     String? imageUrl = (json['pictures'] != null && json['pictures'].isNotEmpty)
-        ? 'http://127.0.0.1:8000/${json['pictures'][0].replaceAll("\\", "/")}'
+        ? '${json['pictures'][0].replaceAll("\\", "/")}'
         : null;
 
     return ScrapItem(

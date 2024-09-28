@@ -1,4 +1,6 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
 from typing import Optional, List
@@ -55,6 +57,16 @@ class ScrapItemResponse(BaseModel):
 class UsePointsRequest(BaseModel):
     user_id: int
     points: int
+
+
+@router.get("/scrap_image")
+async def get_tip_image(file_path: str):
+    # 파일이 존재하는지 확인
+    if os.path.exists(file_path):
+        print("파일 보냅니다~")
+        return FileResponse(file_path)
+    else:
+        return {"error": "File not found"}
 
 
 # 마이페이지 생성

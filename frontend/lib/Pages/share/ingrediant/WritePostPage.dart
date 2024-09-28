@@ -17,19 +17,22 @@ class WritePostPage extends StatefulWidget {
 class _WritePostPageState extends State<WritePostPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-  final TextEditingController _locationDongController = TextEditingController(); // 추가
+  final TextEditingController _locationDongController =
+      TextEditingController(); // 추가
   List<File> _pictures = [];
   bool _isShared = false;
-  final int userId = 2024;
+  final int userId = 0;
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFiles = await picker.pickMultiImage();
 
     setState(() {
-      _pictures = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList(); // 선택한 이미지 파일 리스트 저장
+      _pictures = pickedFiles
+          .map((pickedFile) => File(pickedFile.path))
+          .toList(); // 선택한 이미지 파일 리스트 저장
     });
-    }
+  }
 
   // 글 작성 API 호출
   Future<void> _submitPost() async {
@@ -45,7 +48,8 @@ class _WritePostPageState extends State<WritePostPage> {
     }
 
     try {
-      var request = http.MultipartRequest('POST', Uri.parse('$apiUrl/ingredients/'));
+      var request =
+          http.MultipartRequest('POST', Uri.parse('$apiUrl/ingredients/'));
 
       request.fields['user_id'] = userId.toString();
       request.fields['title'] = title;
@@ -55,7 +59,8 @@ class _WritePostPageState extends State<WritePostPage> {
 
       // 이미지 파일 추가 (선택사항)
       for (var file in _pictures) {
-        request.files.add(await http.MultipartFile.fromPath('pictures', file.path));
+        request.files
+            .add(await http.MultipartFile.fromPath('pictures', file.path));
       }
 
       // 요청 데이터 확인을 위해 출력
@@ -76,16 +81,11 @@ class _WritePostPageState extends State<WritePostPage> {
         }
 
         // 글 작성 후 나눔 페이지로 이동
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ShareIngredient(cameras: []),
-          ),
-        );
+        Navigator.pop(context);
       } else {
         print('글 작성에 실패했습니다: ${response.statusCode}');
         print('응답 본문: ${response.body}');
-        
+
         String errorMessage = '글 작성에 실패했습니다.';
         try {
           final responseBody = jsonDecode(response.body);
@@ -123,7 +123,8 @@ class _WritePostPageState extends State<WritePostPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView( // 스크롤 가능하도록 변경
+        child: SingleChildScrollView(
+          // 스크롤 가능하도록 변경
           child: Column(
             children: [
               TextField(
@@ -157,10 +158,13 @@ class _WritePostPageState extends State<WritePostPage> {
               // 선택된 이미지 리스트 보여주기
               _pictures.isNotEmpty
                   ? Column(
-                      children: _pictures.map((file) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Image.file(file),
-                      )).toList(),
+                      children: _pictures
+                          .map((file) => Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4.0),
+                                child: Image.file(file),
+                              ))
+                          .toList(),
                     )
                   : const Text("이미지가 선택되지 않았습니다."),
             ],

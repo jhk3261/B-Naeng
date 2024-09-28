@@ -76,6 +76,7 @@ class ShareIngredient extends StatelessWidget {
                           final List<dynamic> pictures =
                               food['pictures'] ?? []; // pictures 리스트 가져오기
 
+                          print(food);
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -98,8 +99,7 @@ class ShareIngredient extends StatelessWidget {
                               imgPath: pictures.isNotEmpty
                                   ? pictures[0]
                                   : 'assets/images/beef.jpg',
-                              locationDong:
-                                  food['locationDong'],
+                              locationDong: food['locationDong'],
                             ),
                           );
                         },
