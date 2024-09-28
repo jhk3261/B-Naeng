@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from api.models import Friger, Inventory, User
 from config.database import get_db
 from routers.users import authenticate
+from datetime import date
+
 
 router = APIRouter(tags=["식재료, 냉장고"])
 
@@ -16,7 +18,7 @@ class InventoryCreate(BaseModel):
     friger_id : int
     name: str
     quantity: int
-    date: str = None
+    date: date
     category: str
 
 class InventoryResponse(BaseModel):
@@ -24,7 +26,7 @@ class InventoryResponse(BaseModel):
     name: str
     quantity: int
     category: str
-    date: str = None
+    date: date
 
     class Config:
         from_attributes = True
@@ -102,7 +104,8 @@ def get_friger(friger_id: int, db: Session = Depends(get_db)):
     return FrigerResponse(
                 id=db_friger.id,
                 name=db_friger.name,
-                inverntory_list= [
+                unique_code=db_friger.unique_code,
+                inventory_list=[
                     InventoryResponse (
                         id = inventory.id,
                         name = inventory.name,
@@ -110,7 +113,7 @@ def get_friger(friger_id: int, db: Session = Depends(get_db)):
                         category = inventory.category,
                         date= inventory.date,
                     )
-                    for inventory in db_friger.inverntory_list
+                    for inventory in db_friger.inventory_list
                 ],
                 #users = [user.id for user in db_friger.users] #유저 스키마 추가 후 수정 필요
             )
@@ -192,7 +195,7 @@ def get_frigers_inventories(friger_id: int, db: Session = Depends(get_db)):
 
 
 # 8. 특정 Inventory 조회
-@router.get("/frigers/{friger_id}/inventories/{inventory_id}")
+@router.get("/frigers/{friger_id}/inventories/{inventory_id}/")
 def get_inventory(friger_id: int, inventory_id: int, db: Session = Depends(get_db)):
     inventory = (
         db.query(Inventory)
@@ -212,25 +215,25 @@ def get_inventory(friger_id: int, inventory_id: int, db: Session = Depends(get_d
 
 
 # 9. Inventory 수정
-@router.put("/frigers/{friger_id}/inventories/{inventory_id}")
+@router.put("/frigers/{friger_id}/inventories/{inventory_id}/")
 def update_inventory(
     friger_id: int,
     inventory_id: int,
-    inventory_update: InventoryCreate,
+    name:str,
+    quantity: int,
+    date: date,
+    category: str,
     db: Session = Depends(get_db),
-):
-    inventory = (
-        db.query(Inventory)
-        .filter(Inventory.id == inventory_id, Inventory.friger_id == friger_id)
-        .first()
-    )
+):    
+    inventory = db.query(Inventory).filter(Inventory.id == inventory_id, Inventory.friger_id == friger_id).first()
     if not inventory:
         raise HTTPException(status_code=404, detail="Inventory not found")
 
-    inventory.name = inventory_update.name
-    inventory.quantity = inventory_update.quantity
-    inventory.category = inventory_update.category
-    inventory.date = inventory_update.date
+    inventory.name = name
+    inventory.quantity = quantity
+    inventory.category = category
+    inventory.date = date
+
     db.commit()
     db.refresh(inventory)
     return inventory

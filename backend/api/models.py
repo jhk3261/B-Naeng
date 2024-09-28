@@ -37,8 +37,9 @@ class User(Base):
     nickname = Column(String, nullable=False)
     birth = Column(DateTime, nullable=False)
     gender = Column(Integer, nullable=False)
-    recommender = Column(String, nullable=True)
+    recommender = Column(String, default="", nullable=True)
     location = Column(String, nullable=False)
+    green_points = Column(Integer, default=0, nullable=False)
 
     # owned_friger = relationship(
     #     "Friger", back_populates="owner", cascade="all, delete-orphan"
@@ -197,3 +198,6 @@ class Recipe(Base):
     create_time = Column(DateTime, nullable=False)
     recommend_recipes = Column(JSON, nullable=False)
     recommend_recipes_more = Column(JSON, nullable=False)
+
+
+

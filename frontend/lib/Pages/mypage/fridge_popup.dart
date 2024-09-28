@@ -14,6 +14,10 @@ class FridgePopup extends StatefulWidget {
 class _FridgePopupState extends State<FridgePopup> {
   List<dynamic> _fridges = [];
   bool _isLoading = true;
+<<<<<<< HEAD
+=======
+  // 더미 데이터 사용 여부
+>>>>>>> 4535d06e62dd71ead61f69e16b972335fa0def2f
 
   @override
   void initState() {
@@ -37,10 +41,29 @@ class _FridgePopupState extends State<FridgePopup> {
     } catch (e) {
       setState(() {
         _fridges = [
-          {'name': '현재 소유 중인 냉장고', 'isSelected': true, 'owner_id': 1, 'current_user_id': 1},
-          {'name': '2번 냉장고', 'isSelected': false, 'owner_id': 2, 'current_user_id': 1},
-          {'name': '3번 냉장고', 'isSelected': false, 'owner_id': 3, 'current_user_id': 1},
+          {
+            'name': '현재 소유 중인 냉장고',
+            'isSelected': true,
+            'owner_id': 1,
+            'current_user_id': 1
+          },
+          {
+            'name': '2번 냉장고',
+            'isSelected': false,
+            'owner_id': 2,
+            'current_user_id': 1
+          },
+          {
+            'name': '3번 냉장고',
+            'isSelected': false,
+            'owner_id': 3,
+            'current_user_id': 1
+          },
         ];
+<<<<<<< HEAD
+=======
+// 더미 데이터 사용 플래그
+>>>>>>> 4535d06e62dd71ead61f69e16b972335fa0def2f
         _isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
