@@ -36,11 +36,13 @@ class InventoryResponse(BaseModel):
 class FrigerCreate(BaseModel):
     name: str
     unique_code : int
+    owner_id: int  # 냉장고 소유자 ID 추가
 
 
 class FrigerResponse(FrigerCreate):
     name: str
     inventory_list: List[InventoryResponse]
+    user_list: List[int]  # 냉장고 사용자의 ID 리스트 추가
 
     class Config:
         from_attributes = True
@@ -54,6 +56,8 @@ class FrigerResponseWithCount(BaseModel):
     id: int
     name: str
     inventory_count: int
+    owner_id: int  # 소유자 ID 추가
+    user_count: int
 
     class Config:
         from_attributes = True
@@ -64,10 +68,15 @@ class FrigerResponseWithCount(BaseModel):
 
 # 1. Friger 생성
 @router.post("/frigers/")
-async def create_friger(name : str =Form(...), unique_code: int = Form(...), db: Session = Depends(get_db)):
+# async def create_friger(name : str, unique_code: int, db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
+async def create_friger(name : str, unique_code: int, db: Session = Depends(get_db)):
+
+    # 임시
     new_friger = Friger(
         name=name,
         unique_code = unique_code,
+        owner_id = 1,
+        user_id = 1,
     )
     db.add(new_friger)
     db.commit()
@@ -86,8 +95,9 @@ def get_frigers(db: Session = Depends(get_db)):
             FrigerResponseWithCount(
                 id = friger.id,
                 name = friger.name,
-
                 inventory_count= len(friger.inventory_list),
+                owner_id = friger.owner_id,
+                user_count= len(friger.user_list) if isinstance(friger.user_list, list) else 1,
             )
         )
     
@@ -105,6 +115,8 @@ def get_friger(friger_id: int, db: Session = Depends(get_db)):
                 id=db_friger.id,
                 name=db_friger.name,
                 unique_code=db_friger.unique_code,
+                owner_id= db_friger.owner_id,
+                user_id = db_friger.user_id,
                 inventory_list=[
                     InventoryResponse (
                         id = inventory.id,
@@ -115,6 +127,7 @@ def get_friger(friger_id: int, db: Session = Depends(get_db)):
                     )
                     for inventory in db_friger.inventory_list
                 ],
+                user_list=[1],
                 #users = [user.id for user in db_friger.users] #유저 스키마 추가 후 수정 필요
             )
     #         for inventory in db_friger.inverntory_list

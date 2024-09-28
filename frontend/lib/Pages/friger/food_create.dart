@@ -122,6 +122,12 @@ class _FoodCreateState extends State<FoodCreate> {
     }
   }
 
+  static double scaleWidth(BuildContext context) {
+    const designGuideWidth = 430;
+    final diff = MediaQuery.of(context).size.width / designGuideWidth;
+    return diff;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,11 +135,11 @@ class _FoodCreateState extends State<FoodCreate> {
         elevation: 0,
         centerTitle: false,
         surfaceTintColor: Colors.white,
-        shadowColor: Colors.black,
+        shadowColor: Color(0xFF232323),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         title: const Text(
-          "식재료 등록",
+          "식재료 추가",
           style: TextStyle(
             fontSize: 24,
           ),
@@ -148,8 +154,9 @@ class _FoodCreateState extends State<FoodCreate> {
               key: _formKey,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 30 * scaleWidth(context),
+                      vertical: 20 * scaleWidth(context)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -170,8 +177,8 @@ class _FoodCreateState extends State<FoodCreate> {
                             bottom: 10,
                           ),
                           hintText: '재료 이름을 입력해주세요 (ex-돼지고기 100g)',
-                          hintStyle: const TextStyle(
-                            fontSize: 14,
+                          hintStyle: TextStyle(
+                            fontSize: 14 * scaleWidth(context),
                             color: Color(0xFFB4B4B4),
                           ),
                           focusColor: const Color(0xFF8EC96D),
@@ -196,7 +203,7 @@ class _FoodCreateState extends State<FoodCreate> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20),
                       const InputLabel(
                         content: '카테고리',
                         isVauable: true,
@@ -205,10 +212,10 @@ class _FoodCreateState extends State<FoodCreate> {
                       DropdownButtonHideUnderline(
                         child: DropdownButton2<String>(
                           isExpanded: true,
-                          hint: const Text(
+                          hint: Text(
                             '카테고리를 선택해주세요 (없다면 기타 선택)',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 14 * scaleWidth(context),
                               color: Color(0xFFB4B4B4),
                             ),
                           ),
@@ -218,8 +225,8 @@ class _FoodCreateState extends State<FoodCreate> {
                                   value: item,
                                   child: Text(
                                     item,
-                                    style: const TextStyle(
-                                      fontSize: 16,
+                                    style: TextStyle(
+                                      fontSize: 16 * scaleWidth(context),
                                       color: Color(0xFF232323),
                                     ),
                                     overflow: TextOverflow.ellipsis,
@@ -304,8 +311,8 @@ class _FoodCreateState extends State<FoodCreate> {
                             bottom: 10,
                           ),
                           hintText: '식재료의 소비 기한을 설정해주세요.',
-                          hintStyle: const TextStyle(
-                            fontSize: 14,
+                          hintStyle: TextStyle(
+                            fontSize: 14 * scaleWidth(context),
                             color: Color(0xFFB4B4B4),
                           ),
                           focusColor: const Color(0xFF8EC96D),
@@ -367,7 +374,7 @@ class _FoodCreateState extends State<FoodCreate> {
                         },
                       ),
                       const SizedBox(height: 20),
-                      const Row(
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           InputLabel(
@@ -378,7 +385,7 @@ class _FoodCreateState extends State<FoodCreate> {
                           Text(
                             '(선택)',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 16 * scaleWidth(context),
                               color: Color(0xFFA6A6A6),
                             ),
                           )
@@ -397,8 +404,8 @@ class _FoodCreateState extends State<FoodCreate> {
                             bottom: 10,
                           ),
                           hintText: '식재료 구매 일자를 선택해주세요.',
-                          hintStyle: const TextStyle(
-                            fontSize: 14,
+                          hintStyle: TextStyle(
+                            fontSize: 14 * scaleWidth(context),
                             color: Color(0xFFB4B4B4),
                           ),
                           focusColor: const Color(0xFF8EC96D),
@@ -471,10 +478,10 @@ class _FoodCreateState extends State<FoodCreate> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     )),
-                child: const Text(
+                child: Text(
                   '등록하기',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 20 * scaleWidth(context),
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                   ),
