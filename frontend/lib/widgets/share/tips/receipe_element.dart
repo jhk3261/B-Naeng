@@ -39,7 +39,7 @@ class ReceipeShareElement extends StatelessWidget {
                   image: imgPath == ""
                       ? const AssetImage("assets/images/noimg.png") // 기본 이미지 경로
                       : NetworkImage(
-                          "http://127.0.0.1:22222/tip_image?file_path=$imgPath"), // 네트워크 이미지
+                          "http://127.0.0.1:8000/tip_image?file_path=$imgPath"), // 네트워크 이미지
                   fit: BoxFit.cover, // 이미지 비율 유지, 잘라내기
                 ),
               ),

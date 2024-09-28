@@ -107,7 +107,7 @@ class CameraScreenState extends State<CameraScreen> {
 
   Future<void> _sendPicture(XFile file) async {
     try {
-      final uri = Uri.parse('http://192.168.0.2:22222/process_bill');
+      final uri = Uri.parse('http://127.0.0.1:8000/process_bill');
       var request = http.MultipartRequest('POST', uri);
       request.files.add(await http.MultipartFile.fromPath('file', file.path));
       var response = await request.send();

@@ -10,6 +10,14 @@ class PlusBtn extends StatelessWidget {
   const PlusBtn({super.key, required this.cameras});
 
   void CreateFood(BuildContext context) {
+    final List<Map<String, dynamic>> foodData = [
+      {"name": "종이컵(일반 750/50P/1줄)나", "quantity": 3},
+      {"name": "영실업 케이블CtoC 고속1M 한쪽 90도/코드웨이", "quantity": 1},
+      // {"name": "크리넥스디럭스미니맥시", "quantity": 1},
+      // {"name": "해피홈베이트작은바퀴용유한양행", "quantity": 1},
+      // {"name": "크리넥스수앤수코튼오리지널물티슈(72P)", "quantity": 6}
+    ];
+    int frigerId = 1;
     showDialog<String>(
         context: context,
         barrierDismissible: true,
@@ -77,7 +85,12 @@ class PlusBtn extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const FoodCreate()),
+                        builder: (context) => const FoodCreate(),
+                        // builder: (context) => FoodCreateSwipe(
+                        //   ingredients: foodData,
+                        //   frigerId: frigerId,
+                        // ),
+                      ),
                     );
                   },
                   child: const Text(

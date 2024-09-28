@@ -407,7 +407,7 @@ class _FoodCreateSwipeState extends State<FoodCreateSwipe> {
   void _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       final String baseUrl =
-          'http://127.0.0.1:22222/frigers/${widget.frigerId}/inventories/';
+          'http://127.0.0.1:8000/frigers/${widget.frigerId}/inventories/';
 
       for (int i = 0; i < widget.ingredients.length; i++) {
         final Map<String, dynamic> data = {

@@ -29,7 +29,7 @@ class _WriteTipPageState extends State<WriteTipPage> {
   }
 
   Future<void> _submitPost() async {
-    final uri = Uri.parse('http://127.0.0.1:22222/tips/');
+    final uri = Uri.parse('http://127.0.0.1:8000/tips/');
 
     final jsonData = {
       'title': _titleController.text,
