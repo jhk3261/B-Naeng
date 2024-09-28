@@ -7,8 +7,7 @@ import 'dart:io';
 const String apiUrl = 'http://127.0.0.1:8000';
 
 class WritePostPage extends StatefulWidget {
-  final VoidCallback after_write;
-  const WritePostPage({super.key, required this.after_write});
+  const WritePostPage({super.key});
 
   @override
   _WritePostPageState createState() => _WritePostPageState();
@@ -17,8 +16,7 @@ class WritePostPage extends StatefulWidget {
 class _WritePostPageState extends State<WritePostPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-  final TextEditingController _locationDongController =
-      TextEditingController();
+  final TextEditingController _locationDongController = TextEditingController();
   List<File> _pictures = [];
   bool _isShared = false;
   final int userId = 0;
@@ -80,7 +78,7 @@ class _WritePostPageState extends State<WritePostPage> {
           print('나눔 완료된 글입니다.');
         }
 
-        widget.after_write();
+        super.initState();
         // 글 작성 후 나눔 페이지로 이동
         Navigator.pop(context);
       } else {
@@ -113,7 +111,13 @@ class _WritePostPageState extends State<WritePostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        surfaceTintColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: Color(0xFF232323),
         title: const Text('글 쓰기'),
         actions: [
           IconButton(
@@ -124,56 +128,94 @@ class _WritePostPageState extends State<WritePostPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          // 스크롤 가능하도록 변경
-          child: Column(
-            children: [
-              TextField(
-                controller: _titleController,
-                decoration: const InputDecoration(hintText: '제목'),
-              ),
-              const SizedBox(height: 16.0),
-              TextField(
-                controller: _contentController,
-                decoration: const InputDecoration(hintText: '내용을 입력해 주세요.'),
-                maxLines: 10,
-              ),
-              const SizedBox(height: 16.0),
-              TextField(
-                controller: _locationDongController,
-                decoration: const InputDecoration(
-                  hintText: '지역(동)을 입력해 주세요.',
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SingleChildScrollView(
+            // 스크롤 가능하도록 변경
+            child: Column(
+              children: [
+                TextField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xFF449C4A),
+                            width: 2.0), // 포커스 시 테두리 색상
+                      ),
+                      focusColor: Color(0xFF449C4A),
+                      hintText: '제목',
+                      hintStyle: TextStyle(
+                        color: Color(0xffB7B7B7),
+                      )),
                 ),
-              ),
-              const SizedBox(height: 16.0),
-              SwitchListTile(
-                title: const Text("공유 여부"),
-                value: _isShared,
-                onChanged: (bool value) {
-                  setState(() {
-                    _isShared = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 16.0),
-              // 선택된 이미지 리스트 보여주기
-              _pictures.isNotEmpty
-                  ? Column(
-                      children: _pictures
-                          .map((file) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4.0),
-                                child: Image.file(file),
-                              ))
-                          .toList(),
-                    )
-                  : const Text("이미지가 선택되지 않았습니다."),
-            ],
+                const SizedBox(height: 16.0),
+                TextField(
+                  controller: _contentController,
+                  decoration: const InputDecoration(
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xFF449C4A),
+                            width: 2.0), // 포커스 시 테두리 색상
+                      ),
+                      hintText: '내용을 입력해 주세요.',
+                      hintStyle: TextStyle(
+                        color: Color(0xffB7B7B7),
+                      ),
+                      focusColor: Color(0xFF449C4A),
+                      hoverColor: Color(0xFF449C4A)),
+                  maxLines: 10,
+                ),
+                const SizedBox(height: 16.0),
+                TextField(
+                  controller: _locationDongController,
+                  decoration: const InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Color(0xFF449C4A), width: 2.0), // 포커스 시 테두리 색상
+                    ),
+                    hintText: '지역(동)을 입력해 주세요.',
+                    hintStyle: TextStyle(
+                      color: Color(0xffB7B7B7),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                SwitchListTile(
+                  activeTrackColor: Color(0xFF449C4A),
+                  inactiveTrackColor: Color.fromARGB(255, 229, 229, 229),
+                  selectedTileColor: Colors.white,
+                  title: const Text("공유 여부"),
+                  value: _isShared,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _isShared = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16.0),
+                // 선택된 이미지 리스트 보여주기
+                _pictures.isNotEmpty
+                    ? Column(
+                        children: _pictures
+                            .map((file) => Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: Image.file(file),
+                                ))
+                            .toList(),
+                      )
+                    : const Text("이미지가 선택되지 않았습니다."),
+              ],
+            ),
           ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+        elevation: 1,
+        shadowColor: Color(0xffd2d2d2),
+        color: Color(0xFFF6FAF6),
         child: IconButton(
+          iconSize: 36,
           icon: const Icon(Icons.camera_alt, color: Colors.green),
           onPressed: _pickImage,
         ),

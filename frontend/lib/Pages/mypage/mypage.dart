@@ -29,7 +29,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<UserProfile> userProfileFuture;
-  int userId = 0;
+  int userId = 1;
   bool isScrapSectionOpen = false;
   List<ScrapItem> scrapItems = [];
 
@@ -52,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (error) {
       print('Error fetching user profile: $error');
       return UserProfile(
-        id: 0,
+        id: 1,
         userId: userId,
         username: '기본 사용자',
         profileImageUrl: null,

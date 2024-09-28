@@ -37,7 +37,7 @@ class _RecipesRecommend extends State<RecipesRecommend> {
   final int frigerId = 1; // 테스트용으로 frigerId를 1로 설정
   Future<Map<String, List<Map<String, dynamic>>>> fetchRecipes() async {
     final response = await http.get(Uri.parse(
-        'http://127.0.0.1:22222/recipes/recommend?friger_id=$frigerId'));
+        'http://127.0.0.1:8000/recipes/recommend?friger_id=$frigerId'));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));

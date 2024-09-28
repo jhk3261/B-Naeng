@@ -24,7 +24,7 @@ class _ShareTipsState extends State<ShareTips> {
   }
 
   Future<void> fetchReceipes() async {
-    final url = Uri.parse('http://127.0.0.1:22222/tips');
+    final url = Uri.parse('http://127.0.0.1:8000/tips');
     try {
       final response = await http.get(url);
 
@@ -83,6 +83,7 @@ class _ShareTipsState extends State<ShareTips> {
                     itemCount: receipes.length,
                     itemBuilder: (context, index) {
                       final r = receipes[index];
+
                       return GestureDetector(
                         onTap: () {
                           // 터치 시 ReceipeDetailPage로 이동하면서 id를 전달
@@ -109,9 +110,6 @@ class _ShareTipsState extends State<ShareTips> {
                     },
                   ),
                 ),
-                const SizedBox(
-                  height: 100,
-                )
               ],
             ),
           ),
