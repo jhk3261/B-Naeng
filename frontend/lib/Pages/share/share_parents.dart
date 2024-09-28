@@ -57,7 +57,7 @@ class _ShareParentScreenState extends State<ShareParentScreen>
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w800,
-              fontFamily: "GmarketSans",
+              fontFamily: "GmarketSansMedium",
             ),
           ),
         ),
@@ -81,10 +81,12 @@ class _ShareParentScreenState extends State<ShareParentScreen>
               labelStyle: const TextStyle(
                 fontSize: 20, // 선택된 탭 텍스트 크기
                 fontWeight: FontWeight.bold,
+                fontFamily: 'GmarketSansMedium',
               ),
               unselectedLabelStyle: const TextStyle(
                 fontSize: 20, // 선택되지 않은 탭 텍스트 크기
                 fontWeight: FontWeight.bold,
+                fontFamily: 'GmarketSansMedium',
               ),
               tabs: const [
                 Tab(text: "재료 나눔"),

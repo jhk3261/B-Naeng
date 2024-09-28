@@ -27,9 +27,9 @@ class ChatRoom extends StatelessWidget {
                         Text(
                           "채팅",
                           style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.w800,
-                            fontFamily: "GmarketSans",
+                            fontSize: 24,
+                            fontFamily: "GmarketSansMedium",
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],

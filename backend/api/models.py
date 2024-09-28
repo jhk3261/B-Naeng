@@ -17,15 +17,6 @@ from sqlalchemy.dialects.sqlite import JSON
 from datetime import datetime
 
 
-# 유저와 냉장고 관계 테이블 (다대다 관계 설정)
-friger_user_association = Table(
-    "friger_user_association",
-    Base.metadata,
-    Column("user_id", Integer, ForeignKey("users.id")),
-    Column("friger_id", Integer, ForeignKey("frigers.id")),
-)
-
-
 # 유저 모델
 class User(Base):
     __tablename__ = "users"
@@ -41,12 +32,10 @@ class User(Base):
     location = Column(String, nullable=False)
     green_points = Column(Integer, default=0, nullable=False)
 
-    # owned_friger = relationship(
-    #     "Friger", back_populates="owner", cascade="all, delete-orphan"
-    # )
-    # frigers = relationship(
-    #     "Friger", secondary=friger_user_association, back_populates="users"
-    # )
+    #냉장고와의 관계 설정
+    frigers = relationship(
+        "Friger", back_populates="user_list", cascade="all, delete-orphan"
+    )
     ingredients = relationship("Ingredient", back_populates="users")
 
     # MyPage와의 관계 설정
@@ -101,12 +90,15 @@ class Friger(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)  # 냉장고 이름
     unique_code = Column(Integer, nullable=True)
-    # TO DO : 유저 아이디, 냉장고 코드
+    owner_id = Column(Integer, nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     inventory_list = relationship(
         "Inventory", back_populates="friger", cascade="all, delete-orphan"
     )
-    # TO DO : 유저 리스트 연결
+    user_list = relationship(
+        "User", back_populates="frigers",
+    )
 
 
 # 냉장고 인벤토리
@@ -198,3 +190,4 @@ class Recipe(Base):
     create_time = Column(DateTime, nullable=False)
     recommend_recipes = Column(JSON, nullable=False)
     recommend_recipes_more = Column(JSON, nullable=False)
+
