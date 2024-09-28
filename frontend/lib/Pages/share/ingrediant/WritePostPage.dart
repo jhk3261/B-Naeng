@@ -7,8 +7,7 @@ import 'dart:io';
 const String apiUrl = 'http://127.0.0.1:8000';
 
 class WritePostPage extends StatefulWidget {
-  final VoidCallback after_write;
-  const WritePostPage({super.key, required this.after_write});
+  const WritePostPage({super.key});
 
   @override
   _WritePostPageState createState() => _WritePostPageState();
@@ -17,8 +16,7 @@ class WritePostPage extends StatefulWidget {
 class _WritePostPageState extends State<WritePostPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
-  final TextEditingController _locationDongController =
-      TextEditingController();
+  final TextEditingController _locationDongController = TextEditingController();
   List<File> _pictures = [];
   bool _isShared = false;
   final int userId = 0;
@@ -80,7 +78,7 @@ class _WritePostPageState extends State<WritePostPage> {
           print('나눔 완료된 글입니다.');
         }
 
-        widget.after_write();
+        super.initState();
         // 글 작성 후 나눔 페이지로 이동
         Navigator.pop(context);
       } else {

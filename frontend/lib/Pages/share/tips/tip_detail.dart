@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ReceipeDetailPage extends StatefulWidget {
   final int id;
@@ -104,7 +105,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
         elevation: 0,
         centerTitle: false,
         surfaceTintColor: Colors.white,
-        shadowColor: Color(0xFF232323),
+        shadowColor: const Color(0xFF232323),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         title: const Text(
@@ -327,7 +328,10 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
             child: Text((comment['user_id']).toString()),
           ),
           title: Text(comment['content']),
-          subtitle: Text(comment['created_at']),
+          subtitle: Text(
+            DateFormat('yyyy년 MM월 dd일 HH:mm')
+                .format(DateTime.parse(comment['created_at'])),
+          ),
         );
       }).toList(),
     );
