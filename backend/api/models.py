@@ -1,17 +1,5 @@
 from sqlalchemy import (
     JSON,
-    Column,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-    Boolean,
-    DateTime,
-    Table,
-)
-
-from sqlalchemy import (
-    JSON,
     Boolean,
     Column,
     Date,
@@ -72,11 +60,11 @@ class MyPage(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     username = Column(Text, nullable=False)
     profile_image_url = Column(String, nullable=True)
-    green_points = Column(Integer, default=0, nullable=False)  # 그린 포인트
-    fridge_count = Column(Integer, default=0, nullable=False)  # 냉장고 개수
+    green_points = Column(Integer, default=0, nullable=False)
+    fridge_count = Column(Integer, default=0, nullable=False)
     scrap_expanded = Column(
         Boolean, default=False, nullable=False
-    )  # 스크랩 섹션 확장 여부
+    )
 
     user = relationship("User", back_populates="mypage")
 
@@ -89,8 +77,9 @@ class Ingredient(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String, nullable=False)
     contents = Column(Text, nullable=False)
-    image_url = Column(String, nullable=True)
+    pictures = Column(JSON, nullable=True)
     is_shared = Column(Boolean, default=False, nullable=False)
+    locationDong = Column(Text, nullable=False)
 
     users = relationship("User", back_populates="ingredients")
     likes = relationship(

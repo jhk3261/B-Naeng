@@ -60,7 +60,6 @@ class UsePointsRequest(BaseModel):
 # 마이페이지 생성
 @router.post("/mypage/", response_model=MyPageResponse)
 def create_my_page(mypage: MyPageCreate, db: Session = Depends(get_db)):
-    # 유저네임을 UTF-8로 인코딩 후 디코딩
     username = (
         mypage.username.encode("utf-8").decode("utf-8") if mypage.username else None
     )

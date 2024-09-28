@@ -7,18 +7,23 @@ import 'package:http/http.dart' as http;
 
 const String apiUrl = 'http://127.0.0.1:8000';
 
-// API에서 식재료 리스트 불러오기 (GET 요청)
 Future<List<dynamic>> fetchIngredients() async {
   final url = Uri.parse('$apiUrl/ingredients/');
 
-  final response =
-      await http.get(url, headers: {'Content-Type': 'application/json'});
+  try {
+    final response =
+        await http.get(url, headers: {'Content-Type': 'application/json'});
 
-  if (response.statusCode == 200) {
-    final List<dynamic> ingredients = jsonDecode(response.body);
-    return ingredients;
-  } else {
-    throw Exception('Failed to load ingredients');
+    if (response.statusCode == 200) {
+      final List<dynamic> ingredients =
+          jsonDecode((utf8.decode(response.bodyBytes)));
+      return ingredients;
+    } else {
+      throw Exception(
+          'Failed to load ingredients: ${response.statusCode} ${response.body}');
+    }
+  } catch (error) {
+    throw Exception('Failed to load ingredients: $error');
   }
 }
 
@@ -68,6 +73,9 @@ class ShareIngredient extends StatelessWidget {
                         itemCount: foodElements.length,
                         itemBuilder: (context, index) {
                           final food = foodElements[index];
+                          final List<dynamic> pictures =
+                              food['pictures'] ?? []; // pictures 리스트 가져오기
+
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -76,7 +84,9 @@ class ShareIngredient extends StatelessWidget {
                                   builder: (context) => IngredientDetailPage(
                                     ingredientId: food['id'],
                                     title: food['title'],
-                                    imageUrl: food['image_url'],
+                                    images: pictures
+                                        .map((img) => img.toString())
+                                        .toList(),
                                     description: food['contents'],
                                   ),
                                 ),
@@ -85,10 +95,11 @@ class ShareIngredient extends StatelessWidget {
                             child: FoodElement(
                               isShared: food['is_shared'],
                               title: food['title'],
-                              imgPath: food['image_url'] ??
-                                  'assets/images/default.jpg',
+                              imgPath: pictures.isNotEmpty
+                                  ? pictures[0]
+                                  : 'assets/images/beef.jpg',
                               locationDong:
-                                  food['location_dong'] ?? 'Unknown location',
+                                  food['locationDong'],
                             ),
                           );
                         },

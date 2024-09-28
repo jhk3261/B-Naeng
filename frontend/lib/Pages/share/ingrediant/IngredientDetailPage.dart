@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+const String apiUrl = 'http://127.0.0.1:8000';
+
 class IngredientDetailPage extends StatefulWidget {
   final int ingredientId;
   final String title;
-  final String imageUrl;
   final String description;
+  final List<String> images;
 
   const IngredientDetailPage({
     super.key,
     required this.ingredientId,
     required this.title,
-    required this.imageUrl,
     required this.description,
+    required this.images,
   });
 
   @override
@@ -27,120 +29,134 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
   int _scrapCount = 0;
   bool _isScrapped = false;
   final TextEditingController _commentController = TextEditingController();
-  final List<String> _comments = []; // 댓글 목록
+  final List<String> _comments = [];
+  
+  // 실제 유저 ID로 변경 필요
+  final int _userId = 2024;
 
   @override
   void initState() {
     super.initState();
+    _fetchInitialData();
   }
 
-  // 좋아요 추가/제거 API 호출
+  String getImageUrl(String imagePath) {
+    return '$apiUrl/assets/uploads/$imagePath';
+  }
+
+  Future<void> _fetchInitialData() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$apiUrl/ingredients/${widget.ingredientId}?user_id=$_userId'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final ingredientResponse = IngredientResponse.fromJson(data);
+        setState(() {
+          _likeCount = ingredientResponse.likeCount ?? 0;
+          _commentCount = ingredientResponse.commentCount ?? 0;
+          _scrapCount = ingredientResponse.scrapCount ?? 0;
+          _isLiked = ingredientResponse.isLiked ?? false;
+          _isScrapped = ingredientResponse.isScrapped ?? false;
+          _comments.addAll(ingredientResponse.comments ?? []);
+        });
+      } else {
+        _showErrorSnackBar('초기 데이터 불러오기 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      _showErrorSnackBar('오류 발생: $e');
+    }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   Future<void> _toggleLike() async {
     try {
       final response = await http.post(
-        Uri.parse(
-            'http://your-api-url.com/ingredients/${widget.ingredientId}/likes'),
+        Uri.parse('$apiUrl/ingredients/${widget.ingredientId}/likes'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'user_id': 1, // 예시
-        }),
+        body: jsonEncode({'user_id': _userId}),
       );
 
       if (response.statusCode == 200) {
         setState(() {
-          if (_isLiked) {
-            _likeCount--;
-          } else {
-            _likeCount++;
-          }
           _isLiked = !_isLiked;
+          _likeCount += _isLiked ? 1 : -1;
         });
-        print(_isLiked ? '좋아요 추가됨' : '좋아요 취소됨');
       } else {
-        print('좋아요 처리 실패');
+        _showErrorSnackBar('좋아요 처리 실패: ${response.statusCode}');
       }
     } catch (e) {
-      print('오류 발생: $e');
+      _showErrorSnackBar('오류 발생: $e');
     }
   }
 
-  // 댓글 추가 API 호출
   Future<void> _addComment() async {
-    final content = _commentController.text;
-    if (content.isEmpty) return;
+    final content = _commentController.text.trim();
+    if (content.isEmpty) {
+      _showErrorSnackBar('댓글 내용을 입력하세요.');
+      return;
+    }
 
     try {
       final response = await http.post(
-        Uri.parse(
-            'http://your-api-url.com/ingredients/${widget.ingredientId}/comments'),
+        Uri.parse('$apiUrl/ingredients/${widget.ingredientId}/comments'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'user_id': 1,
-          'content': content,
-        }),
+        body: jsonEncode({'user_id': _userId, 'content': content}),
       );
 
       if (response.statusCode == 200) {
         setState(() {
-          _comments.add(content); // 댓글을 목록에 추가
-          _commentCount++; // 댓글 개수 증가
+          _comments.add(content);
+          _commentCount++;
+          _commentController.clear();
         });
-        _commentController.clear();
-        print('댓글 추가됨: $content'); // 댓글 내용 터미널에 출력
       } else {
-        print('댓글 추가 실패');
+        _showErrorSnackBar('댓글 추가 실패: ${response.statusCode}');
       }
     } catch (e) {
-      print('오류 발생: $e');
+      _showErrorSnackBar('오류 발생: $e');
     }
   }
 
-  // 스크랩 추가/제거 API 호출
   Future<void> _toggleScrap() async {
     try {
       final response = await http.post(
-        Uri.parse(
-            'http://your-api-url.com/ingredients/${widget.ingredientId}/scraps'),
+        Uri.parse('$apiUrl/ingredients/${widget.ingredientId}/scraps'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'user_id': 1,
-        }),
+        body: jsonEncode({'user_id': _userId}),
       );
 
       if (response.statusCode == 200) {
         setState(() {
-          if (_isScrapped) {
-            _scrapCount--;
-          } else {
-            _scrapCount++;
-          }
           _isScrapped = !_isScrapped;
+          _scrapCount += _isScrapped ? 1 : -1;
         });
-        print(_isScrapped ? '스크랩 추가됨' : '스크랩 취소됨');
       } else {
-        print('스크랩 처리 실패');
+        _showErrorSnackBar('스크랩 처리 실패: ${response.statusCode}');
       }
     } catch (e) {
-      print('오류 발생: $e');
+      _showErrorSnackBar('오류 발생: $e');
     }
   }
 
-  // 글 삭제 API 호출
   Future<void> _deletePost() async {
     try {
       final response = await http.delete(
-        Uri.parse('http://your-api-url.com/ingredients/${widget.ingredientId}'),
+        Uri.parse('$apiUrl/ingredients/${widget.ingredientId}'),
         headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
-        print('삭제되었습니다.'); // 삭제 성공 시 터미널 출력
-        Navigator.pop(context); // 페이지 닫기
+        Navigator.pop(context);
       } else {
-        print('글 삭제 실패');
+        _showErrorSnackBar('글 삭제 실패: ${response.statusCode}');
       }
     } catch (e) {
-      print('오류 발생: $e');
+      _showErrorSnackBar('오류 발생: $e');
     }
   }
 
@@ -153,7 +169,6 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
           IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {
-              // 삭제 확인 대화상자
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -163,15 +178,13 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
                     actions: [
                       TextButton(
                         child: const Text('취소'),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // 대화상자 닫기
-                        },
+                        onPressed: () => Navigator.of(context).pop(),
                       ),
                       TextButton(
                         child: const Text('삭제'),
                         onPressed: () {
-                          Navigator.of(context).pop(); // 대화상자 닫기
-                          _deletePost(); // 글 삭제 호출
+                          Navigator.of(context).pop();
+                          _deletePost();
                         },
                       ),
                     ],
@@ -186,7 +199,28 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(widget.imageUrl, fit: BoxFit.cover),
+            widget.images.isNotEmpty
+                ? Image.network(
+                    getImageUrl(widget.images[0]),
+                    fit: BoxFit.cover,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      );
+                    },
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      return Image.asset('assets/images/default.jpg');
+                    },
+                  )
+                : Image.asset('assets/images/default.jpg'),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -195,27 +229,22 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
                   const Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage:
-                            AssetImage('assets/images/profile.png'),
+                        backgroundImage: AssetImage('assets/images/profile.png'),
                         radius: 24,
                       ),
                       SizedBox(width: 8),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('신지아',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text('신지아', style: TextStyle(fontWeight: FontWeight.bold)),
                           Text('가좌동'),
                         ],
                       ),
                     ],
                   ),
                   const SizedBox(height: 16.0),
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
+                  Text(widget.title,
+                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8.0),
                   Text(widget.description),
                   const SizedBox(height: 16.0),
@@ -232,9 +261,7 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
                     child: const Text('댓글 추가'),
                   ),
                   const SizedBox(height: 16.0),
-                  // 댓글 목록 표시
-                  const Text('댓글 목록',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Text('댓글 목록', style: TextStyle(fontWeight: FontWeight.bold)),
                   ..._comments.map((comment) => ListTile(title: Text(comment))),
                 ],
               ),
@@ -253,12 +280,12 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
               ),
               onPressed: _toggleLike,
             ),
-            Text(_isLiked ? "$_likeCount" : "$_likeCount"),
+            Text('$_likeCount'),
             IconButton(
               icon: const Icon(Icons.chat_bubble_outline, color: Colors.green),
               onPressed: () {},
             ),
-            Text("$_commentCount"),
+            Text('$_commentCount'),
             IconButton(
               icon: Icon(
                 _isScrapped ? Icons.bookmark : Icons.bookmark_border,
@@ -266,10 +293,39 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
               ),
               onPressed: _toggleScrap,
             ),
-            Text(_isScrapped ? "$_scrapCount" : "$_scrapCount"),
+            Text('$_scrapCount'),
           ],
         ),
       ),
+    );
+  }
+}
+
+class IngredientResponse {
+  final int? likeCount;
+  final int? commentCount;
+  final int? scrapCount;
+  final bool? isLiked;
+  final bool? isScrapped;
+  final List<String>? comments;
+
+  IngredientResponse({
+    this.likeCount,
+    this.commentCount,
+    this.scrapCount,
+    this.isLiked,
+    this.isScrapped,
+    this.comments,
+  });
+
+  factory IngredientResponse.fromJson(Map<String, dynamic> json) {
+    return IngredientResponse(
+      likeCount: json['like_count'] as int?,
+      commentCount: json['comment_count'] as int?,
+      scrapCount: json['scrap_count'] as int?,
+      isLiked: json['is_liked'] as bool?,
+      isScrapped: json['is_scrapped'] as bool?,
+      comments: List<String>.from(json['comments']?.map((x) => x as String) ?? []),
     );
   }
 }
