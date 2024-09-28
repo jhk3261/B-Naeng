@@ -1,17 +1,25 @@
+// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
+
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:frontend/widgets/friger/confirm_btn.dart';
 import 'package:frontend/widgets/friger/food_counter.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class FoodCreate extends StatefulWidget {
-  const FoodCreate({super.key});
+  final int currentFrige;
+  final VoidCallback onFoodAdded; // Callback 추가
+
+  const FoodCreate(
+      {super.key, required this.currentFrige, required this.onFoodAdded});
 
   @override
   State<FoodCreate> createState() => _FoodCreateState();
 }
 
 class _FoodCreateState extends State<FoodCreate> {
+  // Callback 추가
   final _formKey = GlobalKey<FormState>();
 
   final List<String> categories = ['육류', '소스', '유제품', '채소', '음료', '기타'];
@@ -23,12 +31,94 @@ class _FoodCreateState extends State<FoodCreate> {
 
   int _localVariable = 0;
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       // Handle form submission logic here
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('식재료가 성공적으로 등록되었습니다!')),
       );
+      final response = await http.post(
+        Uri.parse(
+            'http://127.0.0.1:8000/frigers/$FrigerId/inventories/'), // 실제 API URL로 변경
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'friger_id': FrigerId, // 적절한 friger_id로 수정
+          'name': nameController.text,
+          'quantity': _localVariable,
+          'date': dateController.text,
+          'category': selectCategory ?? '기타',
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // 성공적으로 등록된 경우
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('식재료가 등록되었습니다.')),
+        );
+
+        widget.onFoodAdded();
+        Navigator.pop(context);
+        // 입력값 초기화
+        nameController.clear();
+        dateController.clear();
+        buyDateController.clear();
+        setState(() {
+          selectCategory = null;
+          _localVariable = 0;
+        });
+      } else {
+        // 에러 처리
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('식재료 등록에 실패했습니다.')),
+        );
+      }
+    }
+  }
+
+  int get FrigerId => widget.currentFrige;
+
+  Future<void> submitData() async {
+    if (_formKey.currentState!.validate()) {
+      // 데이터 유효성 검사 통과 시 서버로 전송
+      final response = await http.post(
+        Uri.parse(
+            'http://127.0.0.1:8000/frigers/$FrigerId/inventories/'), // 실제 API URL로 변경
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'friger_id': FrigerId, // 적절한 friger_id로 수정
+          'name': nameController.text,
+          'quantity': _localVariable,
+          'date': dateController.text,
+          'category': selectCategory ?? '기타',
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // 성공적으로 등록된 경우
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('식재료가 등록되었습니다.')),
+        );
+
+        widget.onFoodAdded();
+        Navigator.pop(context);
+        // 입력값 초기화
+        nameController.clear();
+        dateController.clear();
+        buyDateController.clear();
+        setState(() {
+          selectCategory = null;
+          _localVariable = 0;
+        });
+      } else {
+        // 에러 처리
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('식재료 등록에 실패했습니다.')),
+        );
+      }
     }
   }
 
@@ -371,9 +461,25 @@ class _FoodCreateState extends State<FoodCreate> {
           ),
           Flexible(
             flex: 1,
-            child: GestureDetector(
-              onTap: _submitForm,
-              child: const ConfirmBtn(content: '등록하기'),
+            child: SizedBox(
+              width: 380,
+              height: 60,
+              child: ElevatedButton(
+                onPressed: _submitForm,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF449C4A),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )),
+                child: const Text(
+                  '등록하기',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

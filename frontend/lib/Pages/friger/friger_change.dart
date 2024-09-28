@@ -1,38 +1,79 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:frontend/model/fridge_provider.dart';
 import 'package:frontend/widgets/friger/friger_item.dart';
-import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class FrigerChange extends StatefulWidget {
-  const FrigerChange({super.key});
+  final int currentFridgeId;
+
+  const FrigerChange({super.key, required this.currentFridgeId});
 
   @override
   State<FrigerChange> createState() => _FrigerChangeState();
 }
 
 class _FrigerChangeState extends State<FrigerChange> {
-  //냉장고데이터(임시)
-  // final List<Map<String, dynamic>> fridgeList = [
-  //   {'name': '홍길동', 'user_count': 1, 'iscurrent': true},
-  //   {'name': '이디야 초전점', 'user_count': 4, 'iscurrent': false},
-  //   {'name': '본가', 'user_count': 3, 'iscurrent': false},
-  // ];
+  List<Map<String, dynamic>> _frigerList = [];
 
-  Map<String, dynamic>? selectedFridge; // 선택된 냉장고 저장
+  int get currentFridgeId => widget.currentFridgeId; //현재 냉장고 id
+  Map<String, dynamic>? selectedFridge;
+
+  //특정 냉장고 인벤토리 데이터 가져오는 함수
+  Future FetchFrigerList() async {
+    final url = Uri.parse('http://127.0.0.1:22222/frigers/');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        // JSON이 List 형태로 반환되는 경우
+        List<dynamic> jsonList = jsonDecode(utf8.decode(response.bodyBytes));
+        // 각 리스트 아이템을 getFrigerList 객체로 변환
+        return jsonList.map((json) => getFrigerList.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load list');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+    return null;
+  }
+
+  // 서버에서 데이터를 가져와 _inventoryList를 업데이트하는 함수
+  void fetchData() async {
+    // FetchInventory 함수 호출
+    List<getFrigerList>? FrigerList = await FetchFrigerList();
+
+    if (FrigerList != null && FrigerList.isNotEmpty) {
+      // 서버에서 받은 데이터를 _frigerList로 변환 및 업데이트
+      setState(() {
+        _frigerList = FrigerList.map((friger) => {
+              "id": friger.id,
+              "name": friger.name,
+              "inventory_count": friger.inventory_count,
+            }).toList();
+      });
+      // 현재 냉장고를 선택된 냉장고로 설정
+      selectedFridge = _frigerList.firstWhere(
+        (fridge) => fridge['id'] == currentFridgeId,
+      );
+    } else {
+      print('No data found');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final fridgeProvider = Provider.of<FridgeProvider>(context);
-    final currentFridge = fridgeProvider.fridgeList
-        .firstWhere((fridge) => fridge['iscurrent']); // 현재 냉장고 찾기
-    final includedFridges = fridgeProvider.fridgeList
-        .where((fridge) => !fridge['iscurrent'])
-        .toList(); // 포함된 냉장고 목록
+    final currentFridge = _frigerList.isNotEmpty
+        ? _frigerList.firstWhere((fridge) => fridge['id'] == currentFridgeId)
+        : {'id': 0, 'name': '데이터 로드 중...', 'inventory_count': 0}; // 데이터 로드 중 상태
 
-    // List<Map<String, dynamic>> currentFridge =
-    //     fridgeList.where((fridge) => fridge['iscurrent'] == true).toList();
-    // List<Map<String, dynamic>> includedFridges =
-    //     fridgeList.where((fridge) => fridge['iscurrent'] == false).toList();
+    final includedFridges =
+        _frigerList.where((fridge) => fridge['id'] != currentFridgeId).toList();
 
     return Scaffold(
         appBar: AppBar(
@@ -123,6 +164,7 @@ class _FrigerChangeState extends State<FrigerChange> {
                                   onTap: () {
                                     setState(() {
                                       selectedFridge = friger; // 선택된 냉장고 업데이트
+                                      print(selectedFridge);
                                     });
                                   });
                             },
@@ -154,9 +196,8 @@ class _FrigerChangeState extends State<FrigerChange> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (selectedFridge != null) {
-                        fridgeProvider
-                            .changeCurrentFridge(selectedFridge!['name']);
-                        Navigator.pop(context, selectedFridge); // 선택된 냉장고 정보 전달
+                        Navigator.pop(
+                            context, selectedFridge!['id']); // 선택된 냉장고 정보 전달
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -178,5 +219,22 @@ class _FrigerChangeState extends State<FrigerChange> {
             ],
           ),
         ));
+  }
+}
+
+class getFrigerList {
+  final int id;
+  final String name;
+  final int inventory_count;
+
+  getFrigerList(
+      {required this.id, required this.name, required this.inventory_count});
+
+  factory getFrigerList.fromJson(Map<String, dynamic> json) {
+    return getFrigerList(
+      id: json['id'],
+      name: json['name'],
+      inventory_count: json["inventory_count"],
+    );
   }
 }

@@ -195,7 +195,7 @@ def get_frigers_inventories(friger_id: int, db: Session = Depends(get_db)):
 
 
 # 8. 특정 Inventory 조회
-@router.get("/frigers/{friger_id}/inventories/{inventory_id}")
+@router.get("/frigers/{friger_id}/inventories/{inventory_id}/")
 def get_inventory(friger_id: int, inventory_id: int, db: Session = Depends(get_db)):
     inventory = (
         db.query(Inventory)
@@ -215,7 +215,7 @@ def get_inventory(friger_id: int, inventory_id: int, db: Session = Depends(get_d
 
 
 # 9. Inventory 수정
-@router.put("/frigers/{friger_id}/inventories/{inventory_id}")
+@router.put("/frigers/{friger_id}/inventories/{inventory_id}/")
 def update_inventory(
     friger_id: int,
     inventory_id: int,

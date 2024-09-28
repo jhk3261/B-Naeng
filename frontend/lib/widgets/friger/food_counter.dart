@@ -4,15 +4,16 @@ class FoodCounter extends StatefulWidget {
   final int minValue;
   final int maxValue;
   final int initialValue;
+
   final ValueChanged<int> onChanged;
 
   const FoodCounter({
-    Key? key,
+    super.key,
     required this.minValue,
     required this.maxValue,
     required this.initialValue,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<FoodCounter> createState() => _FoodCounterState();
