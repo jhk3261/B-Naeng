@@ -60,6 +60,12 @@ class _FrigerChangeState extends State<FrigerChange> {
     }
   }
 
+  static double scaleWidth(BuildContext context) {
+    const designGuideWidth = 430;
+    final diff = MediaQuery.of(context).size.width / designGuideWidth;
+    return diff;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -103,10 +109,10 @@ class _FrigerChangeState extends State<FrigerChange> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           '현재 냉장고',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 24 * scaleWidth(context),
                             fontWeight: FontWeight.w700,
                             color: Color(0xFF232323),
                           ),
@@ -142,10 +148,10 @@ class _FrigerChangeState extends State<FrigerChange> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           '포함된 냉장고',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 24 * scaleWidth(context),
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -205,10 +211,10 @@ class _FrigerChangeState extends State<FrigerChange> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         )),
-                    child: const Text(
+                    child: Text(
                       '변경하기',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 20 * scaleWidth(context),
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),

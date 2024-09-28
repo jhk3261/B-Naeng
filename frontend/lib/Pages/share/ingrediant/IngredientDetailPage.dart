@@ -1,274 +1,400 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+
+// Ingredient 클래스 정의
+class Ingredient {
+  final int id;
+  final String title;
+  final String contents;
+  final bool isShared;
+  final List<String> pictures;
+  final int likeCount;
+  final int commentCount;
+  final int scrapCount;
+  final bool isLiked;
+  final bool isScrapped;
+  final List<String> comments;
+  final String locationDong;
+
+  Ingredient({
+    required this.id,
+    required this.title,
+    required this.contents,
+    required this.isShared,
+    required this.pictures,
+    required this.likeCount,
+    required this.commentCount,
+    required this.scrapCount,
+    required this.isLiked,
+    required this.isScrapped,
+    required this.comments,
+    required this.locationDong,
+  });
+
+  factory Ingredient.fromJson(Map<String, dynamic> json) {
+    var picturesFromJson = json['pictures'] as List<dynamic>;
+    var commentsFromJson = json['comments'] as List<dynamic>;
+
+    List<String> picturesList =
+        picturesFromJson.map((i) => i as String).toList();
+    List<String> commentsList =
+        commentsFromJson.map((i) => i as String).toList();
+
+    return Ingredient(
+      id: json['id'],
+      title: json['title'],
+      contents: json['contents'],
+      isShared: json['is_shared'],
+      pictures: picturesList,
+      likeCount: json['like_count'],
+      commentCount: json['comment_count'],
+      scrapCount: json['scrap_count'],
+      isLiked: json['is_liked'],
+      isScrapped: json['is_scrapped'],
+      comments: commentsList,
+      locationDong: json['locationDong'] ?? "", // null 처리
+    );
+  }
+}
 
 class IngredientDetailPage extends StatefulWidget {
-  final int ingredientId;
-  final String title;
-  final String imageUrl;
-  final String description;
+  final int id;
 
-  const IngredientDetailPage({
-    super.key,
-    required this.ingredientId,
-    required this.title,
-    required this.imageUrl,
-    required this.description,
-  });
+  const IngredientDetailPage({super.key, required this.id});
 
   @override
   _IngredientDetailPageState createState() => _IngredientDetailPageState();
 }
 
 class _IngredientDetailPageState extends State<IngredientDetailPage> {
-  int _likeCount = 0;
-  bool _isLiked = false;
-  int _commentCount = 0;
-  int _scrapCount = 0;
-  bool _isScrapped = false;
-  final TextEditingController _commentController = TextEditingController();
-  final List<String> _comments = []; // 댓글 목록
+  bool isLiked = false;
+  bool isScrapped = false;
+  final int userId = 0; // 현재 유저 아이디(0으로 고정)
 
   @override
   void initState() {
     super.initState();
+    _checkInitialStates();
   }
 
-  // 좋아요 추가/제거 API 호출
+  Future<void> _checkInitialStates() async {
+    final ingredient = await _fetchIngredient(widget.id);
+    setState(() {
+      isLiked = ingredient.isLiked;
+      isScrapped = ingredient.isScrapped;
+    });
+  }
+
   Future<void> _toggleLike() async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-            'http://your-api-url.com/ingredients/${widget.ingredientId}/likes'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'user_id': 1, // 예시
-        }),
-      );
+    setState(() {
+      isLiked = !isLiked;
+    });
 
-      if (response.statusCode == 200) {
-        setState(() {
-          if (_isLiked) {
-            _likeCount--;
-          } else {
-            _likeCount++;
-          }
-          _isLiked = !_isLiked;
-        });
-        print(_isLiked ? '좋아요 추가됨' : '좋아요 취소됨');
-      } else {
-        print('좋아요 처리 실패');
-      }
+    final url =
+        Uri.parse('http://127.0.0.1:8000/ingredients/${widget.id}/likes');
+    try {
+      await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({"user_id": userId}),
+      );
     } catch (e) {
-      print('오류 발생: $e');
+      print('Error liking post: $e');
+      setState(() {
+        isLiked = !isLiked;
+      });
     }
   }
 
-  // 댓글 추가 API 호출
-  Future<void> _addComment() async {
-    final content = _commentController.text;
-    if (content.isEmpty) return;
-
-    try {
-      final response = await http.post(
-        Uri.parse(
-            'http://your-api-url.com/ingredients/${widget.ingredientId}/comments'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'user_id': 1,
-          'content': content,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          _comments.add(content); // 댓글을 목록에 추가
-          _commentCount++; // 댓글 개수 증가
-        });
-        _commentController.clear();
-        print('댓글 추가됨: $content'); // 댓글 내용 터미널에 출력
-      } else {
-        print('댓글 추가 실패');
-      }
-    } catch (e) {
-      print('오류 발생: $e');
-    }
-  }
-
-  // 스크랩 추가/제거 API 호출
   Future<void> _toggleScrap() async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-            'http://your-api-url.com/ingredients/${widget.ingredientId}/scraps'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'user_id': 1,
-        }),
-      );
+    setState(() {
+      isScrapped = !isScrapped;
+    });
 
-      if (response.statusCode == 200) {
-        setState(() {
-          if (_isScrapped) {
-            _scrapCount--;
-          } else {
-            _scrapCount++;
-          }
-          _isScrapped = !_isScrapped;
-        });
-        print(_isScrapped ? '스크랩 추가됨' : '스크랩 취소됨');
-      } else {
-        print('스크랩 처리 실패');
-      }
+    final url =
+        Uri.parse('http://127.0.0.1:8000/ingredients/${widget.id}/scraps');
+    try {
+      await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({"user_id": userId}),
+      );
     } catch (e) {
-      print('오류 발생: $e');
+      print('Error scrapping post: $e');
+      setState(() {
+        isScrapped = !isScrapped;
+      });
     }
   }
 
-  // 글 삭제 API 호출
-  Future<void> _deletePost() async {
+  Future<void> _sendComment(String content) async {
+    final url =
+        Uri.parse('http://127.0.0.1:8000/ingredients/${widget.id}/comments');
     try {
-      final response = await http.delete(
-        Uri.parse('http://your-api-url.com/ingredients/${widget.ingredientId}'),
+      await http.post(
+        url,
         headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({"user_id": userId, "content": content}),
       );
-
-      if (response.statusCode == 200) {
-        print('삭제되었습니다.'); // 삭제 성공 시 터미널 출력
-        Navigator.pop(context); // 페이지 닫기
-      } else {
-        print('글 삭제 실패');
-      }
+      setState(() {}); // 댓글 추가 후 화면 갱신
     } catch (e) {
-      print('오류 발생: $e');
+      print('Error sending comment: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              // 삭제 확인 대화상자
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text('삭제 확인'),
-                    content: const Text('이 글을 삭제하시겠습니까?'),
-                    actions: [
-                      TextButton(
-                        child: const Text('취소'),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // 대화상자 닫기
-                        },
-                      ),
-                      TextButton(
-                        child: const Text('삭제'),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // 대화상자 닫기
-                          _deletePost(); // 글 삭제 호출
-                        },
-                      ),
-                    ],
+        elevation: 0,
+        centerTitle: false,
+        surfaceTintColor: Colors.white,
+        shadowColor: Color(0xFF232323),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        title: const Text(
+          "재료 나눔터",
+          style: TextStyle(
+            fontSize: 24,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  FutureBuilder<Ingredient>(
+                    future: _fetchIngredient(widget.id),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (snapshot.hasData) {
+                        final ingredient = snapshot.data!;
+                        return Column(
+                          children: [
+                            _buildPost(ingredient),
+                            const Divider(),
+                            _buildCommentSection(ingredient.comments),
+                          ],
+                        );
+                      } else {
+                        return const Center(child: Text('No data available'));
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            _buildCommentInputBar(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<Ingredient> _fetchIngredient(int id) async {
+    final url = Uri.parse('http://127.0.0.1:8000/ingredients/$id');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData =
+            jsonDecode(utf8.decode(response.bodyBytes));
+        return Ingredient.fromJson(jsonData); // Ingredient 객체 반환
+      } else {
+        throw Exception('Failed to load ingredient');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      rethrow;
+    }
+  }
+
+  // 이미지를 불러오는 메서드
+  Future<List<String>> _fetchImages(List<String> imagePaths) async {
+    List<String> fullUrls = [];
+    for (String path in imagePaths) {
+      final fullUrl = 'http://127.0.0.1:8000/ingredient_image?file_path=.$path';
+      fullUrls.add(fullUrl);
+    }
+    return fullUrls; // URL 목록 반환
+  }
+
+  Widget _buildPost(Ingredient ingredient) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            ingredient.title,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            ingredient.contents,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w100),
+          ),
+          const SizedBox(height: 16),
+
+          // 이미지 목록 표시
+          if (ingredient.pictures.isNotEmpty)
+            FutureBuilder<List<String>>(
+              future: _fetchImages(ingredient.pictures), // 이미지 URL을 가져옴
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  final imageUrls = snapshot.data!;
+                  print(imageUrls);
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: imageUrls.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Image.network(
+                          imageUrls[index],
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
+                                    : null,
+                              ),
+                            );
+                          },
+                          errorBuilder: (BuildContext context, Object error,
+                              StackTrace? stackTrace) {
+                            return const Text('이미지를 불러오는 데 실패했습니다.');
+                          },
+                        ),
+                      );
+                    },
                   );
-                },
+                } else {
+                  return const Center(child: Text('No images available'));
+                }
+              },
+            ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.chat_bubble, color: Color(0xff8EC96D)),
+                  const SizedBox(width: 5),
+                  Text(
+                    "${ingredient.commentCount}",
+                    style: const TextStyle(fontSize: 20, color: Colors.grey),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      isLiked ? Icons.favorite : Icons.favorite_border,
+                      color: isLiked
+                          ? const Color(0xffEC5A49)
+                          : const Color(0xffDFDFDF),
+                    ),
+                    onPressed: _toggleLike,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      isScrapped ? Icons.star : Icons.star_border,
+                      color: isScrapped
+                          ? const Color(0xff449C4A)
+                          : const Color(0xffDFDFDF),
+                    ),
+                    onPressed: _toggleScrap,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 댓글 목록을 표시하는 위젯
+  Widget _buildCommentSection(List<String> comments) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            '댓글',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: comments.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(comments[index]),
               );
             },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(widget.imageUrl, fit: BoxFit.cover),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage:
-                            AssetImage('assets/images/profile.png'),
-                        radius: 24,
-                      ),
-                      SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('신지아',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          Text('가좌동'),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    widget.title,
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(widget.description),
-                  const SizedBox(height: 16.0),
-                  TextField(
-                    controller: _commentController,
-                    decoration: const InputDecoration(
-                      labelText: '댓글을 작성하세요',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  ElevatedButton(
-                    onPressed: _addComment,
-                    child: const Text('댓글 추가'),
-                  ),
-                  const SizedBox(height: 16.0),
-                  // 댓글 목록 표시
-                  const Text('댓글 목록',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  ..._comments.map((comment) => ListTile(title: Text(comment))),
-                ],
+    );
+  }
+
+  // 댓글 입력 필드
+  Widget _buildCommentInputBar(BuildContext context) {
+    final TextEditingController commentController = TextEditingController();
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: commentController,
+              decoration: InputDecoration(
+                hintText: '댓글을 입력하세요.',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: const BorderSide(),
+                ),
               ),
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: Icon(
-                _isLiked ? Icons.favorite : Icons.favorite_border,
-                color: Colors.green,
-              ),
-              onPressed: _toggleLike,
-            ),
-            Text(_isLiked ? "$_likeCount" : "$_likeCount"),
-            IconButton(
-              icon: const Icon(Icons.chat_bubble_outline, color: Colors.green),
-              onPressed: () {},
-            ),
-            Text("$_commentCount"),
-            IconButton(
-              icon: Icon(
-                _isScrapped ? Icons.bookmark : Icons.bookmark_border,
-                color: Colors.green,
-              ),
-              onPressed: _toggleScrap,
-            ),
-            Text(_isScrapped ? "$_scrapCount" : "$_scrapCount"),
-          ],
-        ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: () {
+              if (commentController.text.isNotEmpty) {
+                _sendComment(commentController.text);
+                commentController.clear();
+              }
+            },
+          ),
+        ],
       ),
     );
   }

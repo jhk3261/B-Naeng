@@ -1,17 +1,5 @@
 from sqlalchemy import (
     JSON,
-    Column,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-    Boolean,
-    DateTime,
-    Table,
-)
-
-from sqlalchemy import (
-    JSON,
     Boolean,
     Column,
     Date,
@@ -29,15 +17,6 @@ from sqlalchemy.dialects.sqlite import JSON
 from datetime import datetime
 
 
-# 유저와 냉장고 관계 테이블 (다대다 관계 설정)
-friger_user_association = Table(
-    "friger_user_association",
-    Base.metadata,
-    Column("user_id", Integer, ForeignKey("users.id")),
-    Column("friger_id", Integer, ForeignKey("frigers.id")),
-)
-
-
 # 유저 모델
 class User(Base):
     __tablename__ = "users"
@@ -45,7 +24,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
-    is_admin = Column(Boolean, default=False, nullable=False)
+    # is_admin = Column(Boolean, default=False, nullable=False)
     nickname = Column(String, nullable=False)
     birth = Column(DateTime, nullable=False)
     gender = Column(Integer, nullable=False)
@@ -53,12 +32,10 @@ class User(Base):
     location = Column(String, nullable=False)
     green_points = Column(Integer, default=0, nullable=False)
 
-    # owned_friger = relationship(
-    #     "Friger", back_populates="owner", cascade="all, delete-orphan"
-    # )
-    # frigers = relationship(
-    #     "Friger", secondary=friger_user_association, back_populates="users"
-    # )
+    #냉장고와의 관계 설정
+    frigers = relationship(
+        "Friger", back_populates="user_list", cascade="all, delete-orphan"
+    )
     ingredients = relationship("Ingredient", back_populates="users")
 
     # MyPage와의 관계 설정
@@ -73,11 +50,11 @@ class MyPage(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     username = Column(Text, nullable=False)
     profile_image_url = Column(String, nullable=True)
-    green_points = Column(Integer, default=0, nullable=False)  # 그린 포인트
-    fridge_count = Column(Integer, default=0, nullable=False)  # 냉장고 개수
+    green_points = Column(Integer, default=0, nullable=False)
+    fridge_count = Column(Integer, default=0, nullable=False)
     scrap_expanded = Column(
         Boolean, default=False, nullable=False
-    )  # 스크랩 섹션 확장 여부
+    )
 
     user = relationship("User", back_populates="mypage")
 
@@ -90,8 +67,9 @@ class Ingredient(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String, nullable=False)
     contents = Column(Text, nullable=False)
-    image_url = Column(String, nullable=True)
+    pictures = Column(JSON, nullable=True)
     is_shared = Column(Boolean, default=False, nullable=False)
+    locationDong = Column(Text, nullable=False)
 
     users = relationship("User", back_populates="ingredients")
     likes = relationship(
@@ -112,12 +90,15 @@ class Friger(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)  # 냉장고 이름
     unique_code = Column(Integer, nullable=True)
-    # TO DO : 유저 아이디, 냉장고 코드
+    owner_id = Column(Integer, nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     inventory_list = relationship(
         "Inventory", back_populates="friger", cascade="all, delete-orphan"
     )
-    # TO DO : 유저 리스트 연결
+    user_list = relationship(
+        "User", back_populates="frigers",
+    )
 
 
 # 냉장고 인벤토리
@@ -209,6 +190,4 @@ class Recipe(Base):
     create_time = Column(DateTime, nullable=False)
     recommend_recipes = Column(JSON, nullable=False)
     recommend_recipes_more = Column(JSON, nullable=False)
-
-
 

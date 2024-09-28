@@ -66,12 +66,17 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/login")
 
 # 토큰을 받아서 유효검사 후 payload의 user 필드 반환
 async def authenticate(token: str = Depends(oauth2_scheme)) -> str:
+
+    print("유효성검사 시작")
     if not token:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Sign in for access"
         )
 
+    print("디코딩 시작")
     decode_token = verify_access_token(token)
+
+    print("리턴 시작")
     return decode_token["user"]
 
 
@@ -115,6 +120,7 @@ async def login(
                 gender=body.gender,
                 recommender=body.recommender,
                 location=body.location,
+                green_points = 0, # 추가 기본 0
             )
             db.add(new_user)
             db.commit()

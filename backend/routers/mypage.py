@@ -1,4 +1,6 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
 from typing import Optional, List
@@ -57,10 +59,19 @@ class UsePointsRequest(BaseModel):
     points: int
 
 
+@router.get("/scrap_image")
+async def get_tip_image(file_path: str):
+    # 파일이 존재하는지 확인
+    if os.path.exists(file_path):
+        print("파일 보냅니다~")
+        return FileResponse(file_path)
+    else:
+        return {"error": "File not found"}
+
+
 # 마이페이지 생성
 @router.post("/mypage/", response_model=MyPageResponse)
 def create_my_page(mypage: MyPageCreate, db: Session = Depends(get_db)):
-    # 유저네임을 UTF-8로 인코딩 후 디코딩
     username = (
         mypage.username.encode("utf-8").decode("utf-8") if mypage.username else None
     )

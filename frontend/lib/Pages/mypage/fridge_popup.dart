@@ -37,7 +37,6 @@ class _FridgePopupState extends State<FridgePopup> {
       }
     } catch (e) {
       setState(() {
-        // 에러 시 더미 데이터 사용
         _fridges = [
           {
             'name': '현재 소유 중인 냉장고',
@@ -61,7 +60,6 @@ class _FridgePopupState extends State<FridgePopup> {
 // 더미 데이터 사용 플래그
         _isLoading = false;
       });
-      // 에러 발생 시 사용자에게 알림
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('냉장고 정보를 불러오는 데 실패했습니다. 더미 데이터를 사용합니다.')),
       );

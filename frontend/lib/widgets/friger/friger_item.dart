@@ -12,6 +12,12 @@ class frigerItem extends StatelessWidget {
     required this.onTap,
   });
 
+  static double scaleWidth(BuildContext context) {
+    const designGuideWidth = 430;
+    final diff = MediaQuery.of(context).size.width / designGuideWidth;
+    return diff;
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -23,7 +29,7 @@ class frigerItem extends StatelessWidget {
             height: 56,
           ),
           SizedBox(
-            width: 16,
+            width: 16 * scaleWidth(context),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,14 +38,14 @@ class frigerItem extends StatelessWidget {
               Text(
                 '${frigerData['name']} 냉장고',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 20 * scaleWidth(context),
                   color: isSelected ? Color(0xFF449C4A) : Color(0xFF232323),
                 ),
               ),
               Text(
                 '멤버(${frigerData['user_count']}명)',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16 * scaleWidth(context),
                   color: Color(0xFFCBCBCB),
                 ),
               ),
