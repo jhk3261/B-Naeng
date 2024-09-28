@@ -115,6 +115,7 @@ async def login(
                 gender=body.gender,
                 recommender=body.recommender,
                 location=body.location,
+                green_points = 0, # 추가 기본 0
             )
             db.add(new_user)
             db.commit()
