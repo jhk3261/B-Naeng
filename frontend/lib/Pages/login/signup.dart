@@ -590,7 +590,9 @@ class _SignupPage1 extends State<SignupPage1> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SignupComplete(cameras: [],),
+                              builder: (context) => const SignupComplete(
+                                cameras: [],
+                              ),
                             ),
                           );
                         }
