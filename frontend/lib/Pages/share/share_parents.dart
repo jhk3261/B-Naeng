@@ -88,6 +88,7 @@ class _ShareParentScreenState extends State<ShareParentScreen>
                 fontWeight: FontWeight.bold,
                 fontFamily: 'GmarketSansMedium',
               ),
+              overlayColor: WidgetStatePropertyAll(Colors.white),
               tabs: const [
                 Tab(text: "재료 나눔"),
                 Tab(text: "정보 나눔"),

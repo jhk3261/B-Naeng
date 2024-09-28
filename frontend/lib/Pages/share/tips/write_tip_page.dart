@@ -80,7 +80,13 @@ class _WriteTipPageState extends State<WriteTipPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        surfaceTintColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: Color(0xFF232323),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -107,59 +113,75 @@ class _WriteTipPageState extends State<WriteTipPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('분류', style: TextStyle(fontSize: 16)),
-                Row(
-                  children: [
-                    _buildCategoryChip('레시피', const Color(0xffD1D1D1)),
-                    const SizedBox(width: 10),
-                    _buildCategoryChip('관리', const Color(0xffD1D1D1)),
-                    const SizedBox(width: 10),
-                    _buildCategoryChip('특가', const Color(0xffD1D1D1)),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: '제목',
-                border: UnderlineInputBorder(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('분류', style: TextStyle(fontSize: 16)),
+                  Row(
+                    children: [
+                      _buildCategoryChip('레시피', const Color(0xffD1D1D1)),
+                      const SizedBox(width: 10),
+                      _buildCategoryChip('관리', const Color(0xffD1D1D1)),
+                      const SizedBox(width: 10),
+                      _buildCategoryChip('특가', const Color(0xffD1D1D1)),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: TextField(
-                controller: _contentController,
-                maxLines: null,
+              const SizedBox(height: 10),
+              TextField(
+                controller: _titleController,
+                cursorColor: Color(0xFF232323),
                 decoration: const InputDecoration(
-                  hintText: '내용을 입력해 주세요.',
-                  border: InputBorder.none,
+                  labelText: '제목',
+                  labelStyle: TextStyle(
+                    color: Color(0xffB7B7B7),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Color(0xFF449C4A), width: 2.0), // 포커스 시 테두리 색상
+                  ),
+                  border: UnderlineInputBorder(),
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              children: _selectedImages
-                  .map((image) => Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.file(image, width: 100, height: 100),
-                      ))
-                  .toList(),
-            )
-          ],
+              const SizedBox(height: 20),
+              Expanded(
+                child: TextField(
+                  controller: _contentController,
+                  maxLines: null,
+                  cursorColor: Color(0xFF232323),
+                  decoration: const InputDecoration(
+                    hintStyle: TextStyle(
+                      color: Color(0xffB7B7B7),
+                    ),
+                    hintText: '내용을 입력해 주세요.',
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Wrap(
+                children: _selectedImages
+                    .map((image) => Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.file(image, width: 100, height: 100),
+                        ))
+                    .toList(),
+              )
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _pickImage,
         backgroundColor: const Color(0xffECF6EA),
-        child: const Icon(Icons.add, color: Colors.green),
+        elevation: 0,
+        child: const Icon(Icons.add, color: Color(0xFF449C4A)),
       ),
     );
   }
