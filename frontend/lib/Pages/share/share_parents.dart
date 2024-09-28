@@ -34,12 +34,14 @@ class _ShareParentScreenState extends State<ShareParentScreen>
     if (_tabController.index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => WritePostPage()),
+        MaterialPageRoute(
+            builder: (context) => WritePostPage(after_write: initState)),
       );
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const WriteTipPage()),
+        MaterialPageRoute(
+            builder: (context) => WriteTipPage(after_write: initState)),
       );
     }
   }
@@ -57,7 +59,7 @@ class _ShareParentScreenState extends State<ShareParentScreen>
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w800,
-              fontFamily: "GmarketSans",
+              fontFamily: "GmarketSansMedium",
             ),
           ),
         ),
@@ -81,10 +83,12 @@ class _ShareParentScreenState extends State<ShareParentScreen>
               labelStyle: const TextStyle(
                 fontSize: 20, // 선택된 탭 텍스트 크기
                 fontWeight: FontWeight.bold,
+                fontFamily: 'GmarketSansMedium',
               ),
               unselectedLabelStyle: const TextStyle(
                 fontSize: 20, // 선택되지 않은 탭 텍스트 크기
                 fontWeight: FontWeight.bold,
+                fontFamily: 'GmarketSansMedium',
               ),
               tabs: const [
                 Tab(text: "재료 나눔"),

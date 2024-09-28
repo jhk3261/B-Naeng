@@ -152,41 +152,56 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        surfaceTintColor: Colors.white,
+        shadowColor: Color(0xFF232323),
         backgroundColor: Colors.white,
-        title: const Text("재료 나눔터"),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: [
-                FutureBuilder<Ingredient>(
-                  future: _fetchIngredient(widget.id),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
-                      final ingredient = snapshot.data!;
-                      return Column(
-                        children: [
-                          _buildPost(ingredient),
-                          const Divider(),
-                          _buildCommentSection(ingredient.comments),
-                        ],
-                      );
-                    } else {
-                      return const Center(child: Text('No data available'));
-                    }
-                  },
-                ),
-              ],
-            ),
+        foregroundColor: Colors.black,
+        title: const Text(
+          "재료 나눔터",
+          style: TextStyle(
+            fontSize: 24,
           ),
-          const Divider(height: 1),
-          _buildCommentInputBar(context),
-        ],
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  FutureBuilder<Ingredient>(
+                    future: _fetchIngredient(widget.id),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (snapshot.hasData) {
+                        final ingredient = snapshot.data!;
+                        return Column(
+                          children: [
+                            _buildPost(ingredient),
+                            const Divider(),
+                            _buildCommentSection(ingredient.comments),
+                          ],
+                        );
+                      } else {
+                        return const Center(child: Text('No data available'));
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            _buildCommentInputBar(context),
+          ],
+        ),
       ),
     );
   }

@@ -5,3 +5,6 @@ sqlalchemy
 alembic
 pydantic_settings
 python-jose
+beautifulsoup4
+selenium
+webdriver-manager

@@ -30,6 +30,11 @@ class _SignupPage1 extends State<SignupPage1> {
   bool isCheckedFirstForm = false;
   bool isCheckedSecondForm = false;
 
+  bool validNickname = false;
+  bool validBirthday = false;
+  bool validGender = false;
+  bool validRecommender = false;
+
   final nicknameController = TextEditingController();
   final birthdayController = TextEditingController();
   final recommenderController = TextEditingController();
@@ -60,6 +65,43 @@ class _SignupPage1 extends State<SignupPage1> {
         isCheckedAll = true;
       }
     });
+  }
+
+  // 닉네임 유효성 검증
+  void updateNicknameValidState(bool isValid) {
+    setState(() {
+      validNickname = isValid;
+    });
+  }
+
+  // 생년월일 유효성 검증
+  void updateBirthdayValidState(bool isValid) {
+    setState(() {
+      validBirthday = isValid;
+    });
+  }
+
+  // 추천인 유효성 검증
+  void updateRecommenderValidState(bool isValid) {
+    setState(() {
+      validRecommender = isValid;
+    });
+  }
+
+  Future<void> selectDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        birthdayController.text =
+            "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+        updateBirthdayValidState(true);
+      });
+    }
   }
 
   @override
@@ -137,23 +179,30 @@ class _SignupPage1 extends State<SignupPage1> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // 닉네임 입력 폼
                         SignupFormBox(
                           formTitle: '닉네임',
                           formGuide: '2~8자 이내로 입력해주세요.',
                           titleFontSize: formTitleFontSize,
                           requiredField: true,
                           fieldController: nicknameController,
+                          validInputForm: validNickname,
+                          onInputChanged: updateNicknameValidState,
                         ),
                         const SizedBox(height: 20),
+                        // 닉네임 입력 폼
                         SignupFormBox(
                           formTitle: '생년월일',
-                          formGuide: '생년월일 입력하기',
+                          formGuide: 'YYYY-MM-DD',
                           titleFontSize: formTitleFontSize,
                           requiredField: true,
                           fieldController: birthdayController,
+                          validInputForm: validBirthday,
+                          onInputChanged: updateBirthdayValidState,
+                          selectDate: selectDate,
                         ),
                         const SizedBox(height: 20),
-                        // 성별을 라디오 버튼으로 변경
+                        // 성별 선택 폼
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -187,6 +236,7 @@ class _SignupPage1 extends State<SignupPage1> {
                               onTap: () {
                                 setState(() {
                                   gender = 0;
+                                  validGender = true;
                                 });
                               },
                               child: Container(
@@ -220,6 +270,7 @@ class _SignupPage1 extends State<SignupPage1> {
                               onTap: () {
                                 setState(() {
                                   gender = 1;
+                                  validGender = true;
                                 });
                               },
                               child: Container(
@@ -257,6 +308,8 @@ class _SignupPage1 extends State<SignupPage1> {
                           titleFontSize: formTitleFontSize,
                           requiredField: false,
                           fieldController: recommenderController,
+                          validInputForm: validRecommender,
+                          onInputChanged: updateRecommenderValidState,
                         )
                       ],
                     ),
@@ -355,24 +408,30 @@ class _SignupPage1 extends State<SignupPage1> {
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
-                  DateTime birth = DateTime.parse(birthdayController.text);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SignupPage2(
-                        username: widget.username,
-                        email: widget.email,
-                        nickname: nicknameController.text,
-                        birth: birth,
-                        gender: gender,
-                        recommender: recommenderController.text.isEmpty
-                            ? null
-                            : recommenderController.text,
-                      ),
-                    ),
-                  );
-                },
+                onPressed: (validNickname &&
+                        validBirthday &&
+                        validGender &&
+                        isCheckedAll)
+                    ? () {
+                        DateTime birth =
+                            DateTime.parse(birthdayController.text);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SignupPage2(
+                              username: widget.username,
+                              email: widget.email,
+                              nickname: nicknameController.text,
+                              birth: birth,
+                              gender: gender,
+                              recommender: recommenderController.text.isEmpty
+                                  ? ""
+                                  : recommenderController.text,
+                            ),
+                          ),
+                        );
+                      }
+                    : null,
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(screenWidth * 0.84, 50),
                   shape: const RoundedRectangleBorder(
@@ -381,7 +440,12 @@ class _SignupPage1 extends State<SignupPage1> {
                   backgroundColor: const Color(0xff449C4A),
                 ),
                 child: Text(
-                  '다음으로',
+                  (validNickname &&
+                          validBirthday &&
+                          validGender &&
+                          isCheckedAll)
+                      ? '다음으로'
+                      : '정보를 입력해주세요',
                   style: TextStyle(
                     color: const Color(0xffffffff),
                     fontSize: screenWidth * 0.045,
@@ -406,6 +470,7 @@ class _SignupPage1 extends State<SignupPage1> {
   }
 }
 
+// Signup page 2
 class SignupPage2 extends StatefulWidget {
   final String username;
   final String email;
@@ -432,43 +497,20 @@ class _SignupPage2 extends State<SignupPage2> {
   final locationController = TextEditingController();
   StreamSubscription<Position>? _positionStreamSubscription;
   StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
-  double latitude = 0.0;
-  double longitude = 0.0;
+
+  double latitude = 37.5665;
+  double longitude = 126.9780;
   String? currentAddress;
+
   final Set<Marker> _markers = {};
   GoogleMapController? _mapController;
+  bool validLocation = false;
+  bool isLoadingMap = true;
 
   @override
   void initState() {
     super.initState();
-    _getCurrentPosition();
-  }
-
-  @override
-  void dispose() {
-    _positionStreamSubscription?.cancel();
-    _serviceStatusStreamSubscription?.cancel();
-    super.dispose();
-  }
-
-  // 마커
-  void _setUserLocation(double lat, double lng) {
-    setState(() {
-      latitude = lat;
-      longitude = lng;
-      _markers.clear();
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('currentLocation'),
-          position: LatLng(lat, lng),
-          infoWindow: const InfoWindow(title: 'Current Location'),
-        ),
-      );
-      if (_mapController != null) {
-        print("Moving camera to new location");
-        _mapController?.moveCamera(CameraUpdate.newLatLng(LatLng(lat, lng)));
-      }
-    });
+    _getCurrentPosition(); // 위치 정보 불러오기
   }
 
   Future<void> _getCurrentPosition() async {
@@ -480,6 +522,9 @@ class _SignupPage2 extends State<SignupPage2> {
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         await Geolocator.openLocationSettings();
+        setState(() {
+          currentAddress = "위치 서비스를 켜주세요.";
+        });
         return;
       }
 
@@ -488,7 +533,7 @@ class _SignupPage2 extends State<SignupPage2> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          // 권한이 거부된 경우 처리
+          // 권한 거부 시 메시지를 출력
           setState(() {
             currentAddress = "위치 권한이 거부되었습니다.";
           });
@@ -496,55 +541,98 @@ class _SignupPage2 extends State<SignupPage2> {
         }
       }
 
-      // 영구적으로 권한이 거부된 경우
       if (permission == LocationPermission.deniedForever) {
+        // 영구적으로 권한이 거부된 경우 앱 설정으로 이동하게 하고 return 처리
         await Geolocator.openAppSettings();
         return;
       }
 
       // 위치 정보 가져오기
+      setState(() {
+        isLoadingMap = true; // 위치를 가져오는 동안 로딩 상태 유지
+      });
+
       Position position = await Geolocator.getCurrentPosition();
+
+      // 위치 정보를 받아온 후에만 UI를 업데이트
       _setUserLocation(position.latitude, position.longitude);
       String address =
           await getPlaceAddress(position.latitude, position.longitude);
       setState(() {
         currentAddress = address;
+        isLoadingMap = false; // 로딩 종료
       });
+
+      // TextFormField에 주소 입력
       locationController.text = currentAddress ?? '';
     } catch (e) {
       setState(() {
         currentAddress = "주소를 불러오지 못했습니다. 오류: $e";
+        isLoadingMap = false; // 로딩 실패
       });
-      _setUserLocation(0.0, 0.0); // 위치 설정 실패 시 기본값 설정
+      _setUserLocation(37.5665, 126.9780); // 위치 설정 실패 시 기본값 설정
     }
   }
 
   String Appkey = "AIzaSyAzFqc4cSwpIZRycZ3qHKrPK8ybOiPVhJ8";
 
   Future<String> getPlaceAddress(double latitude, double longitude) async {
-    final url = Uri.parse(
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$Appkey&language=ko");
-    final response = await http.get(url);
+    try {
+      
+      // final url = Uri.parse(
+          // "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$Appkey&language=ko");
+      final url = Uri.parse(
+          "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$Appkey");
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body)['results'][0]['formatted_address'];
-    } else {
-      throw Exception('주소를 불러오지 못했습니다.');
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body)['results'][0]['formatted_address'];
+      } else {
+        throw Exception('주소를 불러오지 못했습니다.');
+      }
+    } catch (e) {
+      // 오류 발생 시 빈 문자열을 반환하고 앱이 크래시되지 않도록 처리
+      return "주소를 가져올 수 없습니다.";
     }
   }
 
-  void _onMapCreated(GoogleMapController controlleer) {
-    _mapController = controlleer;
+  // 위치 좌표를 Google Map에 연동
+  void _setUserLocation(double latitude, double longitude) {
+    setState(() {
+      _markers.clear();
+
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('currentLocation'),
+          position: LatLng(latitude, longitude),
+          infoWindow: const InfoWindow(title: '현위치'),
+        ),
+      );
+
+      if (_mapController != null) {
+        _mapController
+            ?.moveCamera(CameraUpdate.newLatLng(LatLng(latitude, longitude)));
+      }
+    });
   }
 
+  @override
+  void dispose() {
+    _positionStreamSubscription?.cancel();
+    _serviceStatusStreamSubscription?.cancel();
+    super.dispose();
+  }
+
+  // 서버에 유저 정보 전송
   Future<void> signupInfoToServer(
-      String username,
-      String email,
-      String nickname,
-      DateTime birth,
-      int gender,
-      String? recommender,
-      String location) async {
+    String username,
+    String email,
+    String nickname,
+    DateTime birth,
+    int gender,
+    String? recommender,
+    String location,
+  ) async {
     try {
       final url = Uri.parse('http://127.0.0.1:8000/login');
 
@@ -664,6 +752,7 @@ class _SignupPage2 extends State<SignupPage2> {
                       titleFontSize: formTitleFontSize,
                       requiredField: true,
                       fieldController: locationController,
+                      validInputForm: validLocation,
                     ),
                     const SizedBox(
                       height: 30,
@@ -673,7 +762,12 @@ class _SignupPage2 extends State<SignupPage2> {
                       height: 400,
                       child: (latitude != 0.0 && longitude != 0.0)
                           ? GoogleMap(
-                              onMapCreated: _onMapCreated,
+                              onMapCreated: (controller) {
+                                _mapController = controller;
+                                _mapController?.moveCamera(
+                                    CameraUpdate.newLatLng(
+                                        LatLng(latitude, longitude)));
+                              },
                               initialCameraPosition: CameraPosition(
                                 target: LatLng(latitude, longitude),
                                 zoom: 15,
@@ -725,3 +819,4 @@ class _SignupPage2 extends State<SignupPage2> {
     );
   }
 }
+

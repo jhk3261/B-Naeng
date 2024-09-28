@@ -135,8 +135,7 @@ class _FridgePopupState extends State<FridgePopup> {
                           itemCount: _fridges.length,
                           itemBuilder: (context, index) {
                             final friger = _fridges[index];
-                            print(
-                                'Rendering fridge: ${friger.name}');
+                            print('Rendering fridge: ${friger.name}');
                             bool isAdmin =
                                 friger.ownerId == friger.currentUserId;
                             return _buildFridgeItem(

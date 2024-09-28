@@ -24,7 +24,7 @@ class _ShareTipsState extends State<ShareTips> {
   }
 
   Future<void> fetchReceipes() async {
-    final url = Uri.parse('http://127.0.0.1:8000/tips');
+    final url = Uri.parse('http://127.0.0.1:22222/tips');
     try {
       final response = await http.get(url);
 
@@ -64,7 +64,9 @@ class _ShareTipsState extends State<ShareTips> {
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
