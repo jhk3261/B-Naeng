@@ -21,7 +21,7 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
   String selectedCategory = "전체보기";
   List categories = ["전체보기", "육류", "소스", "유제품", "채소", "음료", "기타"];
 
-  List<Map<String, dynamic>> _inventoryList = [
+  final List<Map<String, dynamic>> _inventoryList = [
     {
       "name": "돼지고기 100g",
       "quantity": 2,
@@ -117,11 +117,11 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
         backgroundColor: Colors.white,
         floatingActionButton: SizedBox(
           child: PlusBtn(
-            cameras: [],
+            cameras: widget.cameras,
           ),
         ),
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(104.0),
+          preferredSize: const Size.fromHeight(104.0),
           child: AppBar(
             elevation: 0,
             centerTitle: false,
@@ -180,18 +180,18 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
                     tabAlignment: TabAlignment.start,
                     tabs: categories
                         .map((category) => Container(
-                              margin: EdgeInsets.symmetric(
+                              margin: const EdgeInsets.symmetric(
                                   horizontal: 1.0), // 간격 조절
                               child: Tab(text: category),
                             ))
                         .toList(),
-                    labelStyle: TextStyle(
+                    labelStyle: const TextStyle(
                       fontFamily: 'GmarketSansMedium',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF449C4A), // 선택된 탭의 텍스트 크기
                     ),
-                    unselectedLabelStyle: TextStyle(
+                    unselectedLabelStyle: const TextStyle(
                       fontFamily: 'GmarketSansMedium',
                       fontSize: 16,
                       color: Color(0xFFCBCBCB), // 선택되지 않은 탭의 텍스트 크기
@@ -211,23 +211,24 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                       top: 16,
                       left: 32,
                       bottom: 12,
                     ),
                     child: Text(
                       category,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'GmarketSansBold',
                         fontSize: 20,
                       ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(right: 12, left: 12),
+                    padding: const EdgeInsets.only(right: 12, left: 12),
                     child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         crossAxisSpacing: 4,
                         mainAxisSpacing: 4,
@@ -242,16 +243,16 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
                           day: remainingDays,
                           imagePath: 'assets/images/${item['image']}',
                           food: item['name'],
-                          bgColor: Color(0xFFFDF4F4),
-                          bdColor: Color(0xFFF28585),
-                          ftColor: Color(0xFFCE2A2A),
+                          bgColor: const Color(0xFFFDF4F4),
+                          bdColor: const Color(0xFFF28585),
+                          ftColor: const Color(0xFFCE2A2A),
                         );
                       },
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                     ),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 32),
                     child: Divider(color: Color(0xFFE5E5E5), thickness: 1.0),
                   ),

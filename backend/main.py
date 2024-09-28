@@ -64,7 +64,7 @@ async def favicon():
     return FileResponse("favicon.ico")
 
 
-HOST = "127.0.0.1"
+HOST = "192.168.0.2"
 PORT = 22222
 
 if __name__ == "__main__":

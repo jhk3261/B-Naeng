@@ -5,18 +5,11 @@ import 'package:frontend/Pages/friger/friger.dart';
 import 'package:frontend/Pages/share/share_parents.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:frontend/model/fridge_provider.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => FridgeProvider(),
-      child: MyApp(cameras: cameras),
-    ),
-  );
+  runApp(MyApp(cameras: cameras));
 }
 
 class MyApp extends StatelessWidget {

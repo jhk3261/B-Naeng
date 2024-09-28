@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // For jsonEncode
+// For File operations
 
 class BillScan extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -37,7 +40,7 @@ class _BillScanState extends State<BillScan> {
           const SizedBox(height: 80),
           const SizedBox(height: 20),
           Expanded(
-            child: CameraScreen(cameras: widget.cameras), // 카메라 화면 추가
+            child: CameraScreen(cameras: widget.cameras),
           ),
         ],
       ),
@@ -83,6 +86,64 @@ class CameraScreenState extends State<CameraScreen> {
     }
   }
 
+  Future<void> _takePicture() async {
+    if (!_controller!.value.isInitialized) {
+      print('Error: select a camera first.');
+      return;
+    }
+
+    if (_controller!.value.isTakingPicture) {
+      // A capture is already pending, do nothing.
+      return;
+    }
+
+    try {
+      final XFile file = await _controller!.takePicture();
+      await _sendPicture(file);
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> _sendPicture(XFile file) async {
+    try {
+      final uri = Uri.parse('http://192.168.0.2:22222/process_bill');
+      var request = http.MultipartRequest('POST', uri);
+      request.files.add(await http.MultipartFile.fromPath('file', file.path));
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        var responseData = await response.stream.bytesToString();
+        var decodedData = jsonDecode(responseData);
+        _showResponse(decodedData);
+      } else {
+        print('Failed to upload image. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  void _showResponse(Map<String, dynamic> response) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Server Response'),
+          content: Text(response.toString()),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     _controller?.dispose();
@@ -110,12 +171,17 @@ class CameraScreenState extends State<CameraScreen> {
                   color: Colors.transparent,
                 ),
               ),
-              Container(
-                height: 50,
-                width: 50,
-                alignment: Alignment.center,
-                decoration: const BoxDecoration(
-                    color: Colors.white, shape: BoxShape.circle),
+              GestureDetector(
+                onTap: _takePicture,
+                child: Container(
+                  height: 50,
+                  width: 50,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                ),
               ),
             ],
           ),
