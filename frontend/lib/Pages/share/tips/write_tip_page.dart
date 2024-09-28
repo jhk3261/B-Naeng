@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously, avoid_print
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -60,13 +62,12 @@ class _WriteTipPageState extends State<WriteTipPage> {
     }
 
     try {
-      print(request.files);
       final response = await request.send();
 
       if (response.statusCode == 200) {
         final responseBody = await response.stream.bytesToString();
         print('Response: $responseBody');
-        Navigator.pop(context);
+        Navigator.pop(context, true);
       } else {
         final responseBody = await response.stream.bytesToString();
         print('Failed with status code: ${response.statusCode}');

@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:frontend/Pages/share/ingrediant/WritePostPage.dart';
 import 'package:frontend/Pages/share/ingrediant/share_ingredient.dart';
 import 'package:frontend/Pages/share/tips/share_tips.dart';
@@ -29,18 +31,22 @@ class _ShareParentScreenState extends State<ShareParentScreen>
     super.dispose();
   }
 
-  void _onEditButtonPressed() {
-    // 현재 탭의 인덱스를 확인하여 조건에 맞게 페이지 전환
+  void _onEditButtonPressed() async {
+    bool? result;
     if (_tabController.index == 0) {
-      Navigator.push(
+      result = await Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => WritePostPage()),
+        MaterialPageRoute(builder: (context) => const WritePostPage()),
       );
     } else {
-      Navigator.push(
+      result = await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const WriteTipPage()),
       );
+    }
+
+    if (result == true) {
+      //
     }
   }
 

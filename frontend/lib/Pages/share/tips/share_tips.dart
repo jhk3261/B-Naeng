@@ -83,6 +83,7 @@ class _ShareTipsState extends State<ShareTips> {
                     itemCount: receipes.length,
                     itemBuilder: (context, index) {
                       final r = receipes[index];
+
                       return GestureDetector(
                         onTap: () {
                           // 터치 시 ReceipeDetailPage로 이동하면서 id를 전달
@@ -109,9 +110,6 @@ class _ShareTipsState extends State<ShareTips> {
                     },
                   ),
                 ),
-                const SizedBox(
-                  height: 100,
-                )
               ],
             ),
           ),
