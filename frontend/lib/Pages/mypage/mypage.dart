@@ -85,11 +85,10 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // 배경색을 흰색으로 설정
+      backgroundColor: Colors.white,
       body: Column(
         children: [
-          // 위쪽 여백을 조정하는 SizedBox 추가
-          const SizedBox(height: 16), // 16만큼 여백 추가
+          const SizedBox(height: 16),
           Expanded(
             child: FutureBuilder<UserProfile>(
               future: userProfileFuture,

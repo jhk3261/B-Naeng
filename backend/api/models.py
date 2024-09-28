@@ -47,6 +47,11 @@ class User(Base):
     # frigers = relationship(
     #     "Friger", secondary=friger_user_association, back_populates="users"
     # )
+
+    frigers = relationship(
+        "Friger", secondary=friger_user_association, back_populates="users"
+    )
+
     ingredients = relationship("Ingredient", back_populates="users")
 
     # MyPage와의 관계 설정
@@ -63,9 +68,7 @@ class MyPage(Base):
     profile_image_url = Column(String, nullable=True)
     green_points = Column(Integer, default=0, nullable=False)
     fridge_count = Column(Integer, default=0, nullable=False)
-    scrap_expanded = Column(
-        Boolean, default=False, nullable=False
-    )
+    scrap_expanded = Column(Boolean, default=False, nullable=False)
 
     user = relationship("User", back_populates="mypage")
 
@@ -102,6 +105,10 @@ class Friger(Base):
     name = Column(String, nullable=False)  # 냉장고 이름
     unique_code = Column(Integer, nullable=True)
     # TO DO : 유저 아이디, 냉장고 코드
+
+    users = relationship(
+        "User", secondary=friger_user_association, back_populates="frigers"
+    )
 
     inventory_list = relationship(
         "Inventory", back_populates="friger", cascade="all, delete-orphan"
@@ -198,6 +205,3 @@ class Recipe(Base):
     create_time = Column(DateTime, nullable=False)
     recommend_recipes = Column(JSON, nullable=False)
     recommend_recipes_more = Column(JSON, nullable=False)
-
-
-
