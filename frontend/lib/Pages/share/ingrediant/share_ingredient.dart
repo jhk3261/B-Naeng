@@ -83,12 +83,7 @@ class ShareIngredient extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => IngredientDetailPage(
-                                    ingredientId: food['id'],
-                                    title: food['title'],
-                                    images: pictures
-                                        .map((img) => img.toString())
-                                        .toList(),
-                                    description: food['contents'],
+                                    id: food['id'],
                                   ),
                                 ),
                               );
@@ -98,7 +93,7 @@ class ShareIngredient extends StatelessWidget {
                               title: food['title'],
                               imgPath: pictures.isNotEmpty
                                   ? pictures[0]
-                                  : 'assets/images/beef.jpg',
+                                  : 'assets/images/noimg.jpg',
                               locationDong: food['locationDong'],
                             ),
                           );

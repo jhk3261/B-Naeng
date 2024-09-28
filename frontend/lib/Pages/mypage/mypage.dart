@@ -29,7 +29,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<UserProfile> userProfileFuture;
-  int userId = 0; // 테스트용 사용자 ID
+  int userId = 0;
   bool isScrapSectionOpen = false;
   List<ScrapItem> scrapItems = [];
 
@@ -85,33 +85,42 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<UserProfile>(
-        future: userProfileFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
-          } else {
-            final profile = snapshot.data!;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  buildProfileSection(profile),
-                  const SizedBox(height: 16),
-                  buildGreenPointsSection(profile),
-                  const SizedBox(height: 16),
-                  buildFridgeSection(profile),
-                  const SizedBox(height: 16),
-                  buildScrapSection(context),
-                ],
-              ),
-            );
-          }
-        },
+      backgroundColor: Colors.white, // 배경색을 흰색으로 설정
+      body: Column(
+        children: [
+          // 위쪽 여백을 조정하는 SizedBox 추가
+          const SizedBox(height: 16), // 16만큼 여백 추가
+          Expanded(
+            child: FutureBuilder<UserProfile>(
+              future: userProfileFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data == null) {
+                  return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
+                } else {
+                  final profile = snapshot.data!;
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        buildProfileSection(profile),
+                        const SizedBox(height: 16),
+                        buildGreenPointsSection(profile),
+                        const SizedBox(height: 16),
+                        buildFridgeSection(profile),
+                        const SizedBox(height: 16),
+                        buildScrapSection(context),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -349,7 +358,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     print(imageUrl);
 
                     return ListTile(
-                      leading: Image.network(imageUrl),
+                      leading: SizedBox(
+                        width: 80,
+                        height: 60,
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                       title: Text(item.title),
                       subtitle: Row(
                         children: [
