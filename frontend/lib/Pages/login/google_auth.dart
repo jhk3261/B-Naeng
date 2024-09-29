@@ -50,7 +50,7 @@ class SignInPage extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => SignupPage1(
-                  username: googleUser.displayName ?? '', email: email),
+                  username: googleUser.displayName ?? '', email: email, cameras: cameras,),
             ),
           );
         }
