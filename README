@@ -7,10 +7,18 @@
 
 ### 서버 실행
 
-1. B-Naeng 폴더(backend 폴더, front-web 폴더, 그리고 '.gitignore' 파일이 보이는 폴더)를 열고 터미널을 연다.
+1. B-Naeng 폴더(backend 폴더, frontend 폴더의 부모 폴더)를 열고 터미널을 연다.
 2. conda activate 가상환경명
 3. cd backend
 4. (\*필요시) pip install -r requirements.txt
 5. python main.py
 
-#### (알림) QR 코드 스캔을 통한 페이지 리디렉션은 '배포 환경'에서만 작동합니다.
+### 앱 실행(iOS)
+
+1. frontend 폴더를 연다.
+2. flutter pub get
+3. cd ios
+4. pod install
+5. cd ..
+6. flutter run 또는 open ios/Runner.xcworkspace
+7. 빌드 타겟을 지정(실물 기기는 반드시 후자, 카메라 사용은 시뮬레이터에서 불가)
