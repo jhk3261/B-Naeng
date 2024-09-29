@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/Pages/login/signup_complete.dart';
 import 'package:frontend/widgets/login/signup_inputForm.dart';
 import 'package:frontend/widgets/login/signup_termsForm.dart';
 import 'package:geolocator/geolocator.dart';
-// import 'package:location/location.dart';
-// import 'package:geolocator_platform_interface/src/enums/location_accuracy.dart';
-// import 'package:location_platform_interface/location_platform_interface.dart';
 import 'package:http/http.dart' as http;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SignupPage1 extends StatefulWidget {
   final String username;
@@ -34,6 +32,7 @@ class _SignupPage1 extends State<SignupPage1> {
   bool validBirthday = false;
   bool validGender = false;
   bool validRecommender = false;
+  bool validLocation = false;
 
   final nicknameController = TextEditingController();
   final birthdayController = TextEditingController();
@@ -101,6 +100,157 @@ class _SignupPage1 extends State<SignupPage1> {
             "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
         updateBirthdayValidState(true);
       });
+    }
+  }
+
+  final TextEditingController _locationController = TextEditingController();
+  String _currentAddress = '';
+  bool _isLoading = false;
+
+  // 위치 초기화 후 위치 정보 불러오기
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation(); // 초기화 시 현재 위치를 가져옴
+  }
+
+  Future<void> _getCurrentLocation() async {
+    setState(() {
+      _isLoading = true; // 로딩 시작
+    });
+
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        setState(() {
+          _currentAddress = "위치 서비스가 비활성화되어 있습니다.";
+          _isLoading = false;
+        });
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          setState(() {
+            _currentAddress = "위치 권한이 거부되었습니다.";
+            _isLoading = false;
+          });
+          return;
+        }
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      String address =
+          await _getAddressFromLatLng(position.latitude, position.longitude);
+
+      setState(() {
+        _currentAddress = address;
+        _locationController.text = _currentAddress; // 주소를 TextFormField에 설정
+        _isLoading = false; // 로딩 중지
+      });
+    } catch (e) {
+      setState(() {
+        _currentAddress = "위치 정보를 가져오는 중 오류 발생: $e";
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<String> _getAddressFromLatLng(
+      double latitude, double longitude) async {
+    String apiKey = "YOUR_GOOGLE_MAPS_API_KEY"; // 여기에 Google Maps API 키 입력
+    final url = Uri.parse(
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$apiKey");
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['results'][0]['formatted_address']; // 주소 반환
+    } else {
+      throw Exception('주소를 불러오는 데 실패했습니다.');
+    }
+  }
+
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
+
+  // 서버에 유저 정보 전송
+  Future<bool> signupInfoToServer(
+    String username,
+    String email,
+    String nickname,
+    DateTime birth,
+    int gender,
+    String? recommender,
+    String location,
+  ) async {
+    try {
+      final url = Uri.parse('http://127.0.0.1:8000/login');
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'username': username,
+          'email': email,
+          'nickname': nickname,
+          'birth': birth.toIso8601String(),
+          'gender': gender,
+          'recommender': recommender,
+          'location': location,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        await storage.write(
+            key: 'access_token', value: responseData['access_token']);
+        String accessToken = responseData['access_token'];
+        print('Access Token: $accessToken');
+
+        // 요청 성공 시 true 반환
+        return true;
+      } else {
+        print('Failed to send user info: ${response.body}');
+        return false; // 실패 시 false 반환
+      }
+    } catch (e) {
+      print('Error occurred during signup: $e');
+      return false; // 오류 발생 시 false 반환
+    }
+  }
+
+  Future<String?> getToken() async {
+    return await storage.read(key: 'access_token');
+  }
+
+  Future<void> verifyToken(String token) async {
+    try {
+      final url = Uri.parse('http://127.0.0.1:8000/verify-token');
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', // 토큰을 Authorization 헤더에 추가
+        },
+        body: jsonEncode({
+          'token': token, // 서버에서 토큰을 받을 수 있도록
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        print('Token is valid for user: ${responseData['user']}');
+      } else {
+        print('Token validation failed: ${response.body}');
+      }
+    } catch (e) {
+      print('Error occurred during token validation: $e');
     }
   }
 
@@ -200,6 +350,15 @@ class _SignupPage1 extends State<SignupPage1> {
                           validInputForm: validBirthday,
                           onInputChanged: updateBirthdayValidState,
                           selectDate: selectDate,
+                        ),
+                        const SizedBox(height: 20),
+                        SignupFormBox(
+                          formTitle: '동네 위치 찾기',
+                          formGuide: '내 위치',
+                          titleFontSize: formTitleFontSize,
+                          requiredField: true,
+                          fieldController: _locationController,
+                          validInputForm: validLocation,
                         ),
                         const SizedBox(height: 20),
                         // 성별 선택 폼
@@ -412,24 +571,31 @@ class _SignupPage1 extends State<SignupPage1> {
                         validBirthday &&
                         validGender &&
                         isCheckedAll)
-                    ? () {
-                        DateTime birth =
-                            DateTime.parse(birthdayController.text);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SignupPage2(
-                              username: widget.username,
-                              email: widget.email,
-                              nickname: nicknameController.text,
-                              birth: birth,
-                              gender: gender,
-                              recommender: recommenderController.text.isEmpty
-                                  ? ""
-                                  : recommenderController.text,
-                            ),
-                          ),
+                    ? () async {
+                        bool success = await signupInfoToServer(
+                          widget.username, // 사용자의 이름
+                          widget.email, // 사용자의 이메일
+                          nicknameController.text, // 입력한 닉네임
+                          DateTime.tryParse(birthdayController.text) ??
+                              DateTime.now(), // 생년월일
+                          gender, // 선택한 성별
+                          recommenderController.text.isEmpty
+                              ? null
+                              : recommenderController.text, // 추천인 닉네임이 없으면 null
+                          _locationController.text, // 입력한 위치 정보
                         );
+
+                        // 서버 요청 성공 시 SignupComplete 페이지로 이동
+                        if (success) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SignupComplete(
+                                cameras: [],
+                              ),
+                            ),
+                          );
+                        }
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
@@ -444,7 +610,7 @@ class _SignupPage1 extends State<SignupPage1> {
                           validBirthday &&
                           validGender &&
                           isCheckedAll)
-                      ? '다음으로'
+                      ? '가입하기'
                       : '정보를 입력해주세요',
                   style: TextStyle(
                     color: const Color(0xffffffff),
@@ -460,363 +626,4 @@ class _SignupPage1 extends State<SignupPage1> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    nicknameController.dispose();
-    birthdayController.dispose();
-    recommenderController.dispose();
-    super.dispose();
-  }
 }
-
-// Signup page 2
-class SignupPage2 extends StatefulWidget {
-  final String username;
-  final String email;
-  final String nickname;
-  final DateTime birth;
-  final int gender;
-  final String? recommender;
-
-  const SignupPage2({
-    super.key,
-    required this.username,
-    required this.email,
-    required this.nickname,
-    required this.birth,
-    required this.gender,
-    this.recommender,
-  });
-
-  @override
-  _SignupPage2 createState() => _SignupPage2();
-}
-
-class _SignupPage2 extends State<SignupPage2> {
-  final locationController = TextEditingController();
-  StreamSubscription<Position>? _positionStreamSubscription;
-  StreamSubscription<ServiceStatus>? _serviceStatusStreamSubscription;
-
-  double latitude = 37.5665;
-  double longitude = 126.9780;
-  String? currentAddress;
-
-  final Set<Marker> _markers = {};
-  GoogleMapController? _mapController;
-  bool validLocation = false;
-  bool isLoadingMap = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentPosition(); // 위치 정보 불러오기
-  }
-
-  Future<void> _getCurrentPosition() async {
-    try {
-      bool serviceEnabled;
-      LocationPermission permission;
-
-      // 위치 서비스가 활성화되었는지 확인
-      serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        await Geolocator.openLocationSettings();
-        setState(() {
-          currentAddress = "위치 서비스를 켜주세요.";
-        });
-        return;
-      }
-
-      // 위치 권한 확인 및 요청
-      permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          // 권한 거부 시 메시지를 출력
-          setState(() {
-            currentAddress = "위치 권한이 거부되었습니다.";
-          });
-          return;
-        }
-      }
-
-      if (permission == LocationPermission.deniedForever) {
-        // 영구적으로 권한이 거부된 경우 앱 설정으로 이동하게 하고 return 처리
-        await Geolocator.openAppSettings();
-        return;
-      }
-
-      // 위치 정보 가져오기
-      setState(() {
-        isLoadingMap = true; // 위치를 가져오는 동안 로딩 상태 유지
-      });
-
-      Position position = await Geolocator.getCurrentPosition();
-
-      // 위치 정보를 받아온 후에만 UI를 업데이트
-      _setUserLocation(position.latitude, position.longitude);
-      String address =
-          await getPlaceAddress(position.latitude, position.longitude);
-      setState(() {
-        currentAddress = address;
-        isLoadingMap = false; // 로딩 종료
-      });
-
-      // TextFormField에 주소 입력
-      locationController.text = currentAddress ?? '';
-    } catch (e) {
-      setState(() {
-        currentAddress = "주소를 불러오지 못했습니다. 오류: $e";
-        isLoadingMap = false; // 로딩 실패
-      });
-      _setUserLocation(37.5665, 126.9780); // 위치 설정 실패 시 기본값 설정
-    }
-  }
-
-  String Appkey = "AIzaSyAzFqc4cSwpIZRycZ3qHKrPK8ybOiPVhJ8";
-
-  Future<String> getPlaceAddress(double latitude, double longitude) async {
-    try {
-      
-      // final url = Uri.parse(
-          // "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$Appkey&language=ko");
-      final url = Uri.parse(
-          "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$Appkey");
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body)['results'][0]['formatted_address'];
-      } else {
-        throw Exception('주소를 불러오지 못했습니다.');
-      }
-    } catch (e) {
-      // 오류 발생 시 빈 문자열을 반환하고 앱이 크래시되지 않도록 처리
-      return "주소를 가져올 수 없습니다.";
-    }
-  }
-
-  // 위치 좌표를 Google Map에 연동
-  void _setUserLocation(double latitude, double longitude) {
-    setState(() {
-      _markers.clear();
-
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('currentLocation'),
-          position: LatLng(latitude, longitude),
-          infoWindow: const InfoWindow(title: '현위치'),
-        ),
-      );
-
-      if (_mapController != null) {
-        _mapController
-            ?.moveCamera(CameraUpdate.newLatLng(LatLng(latitude, longitude)));
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _positionStreamSubscription?.cancel();
-    _serviceStatusStreamSubscription?.cancel();
-    super.dispose();
-  }
-
-  // 서버에 유저 정보 전송
-  Future<void> signupInfoToServer(
-    String username,
-    String email,
-    String nickname,
-    DateTime birth,
-    int gender,
-    String? recommender,
-    String location,
-  ) async {
-    try {
-      final url = Uri.parse('http://127.0.0.1:8000/login');
-
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'username': username,
-          'email': email,
-          'nickname': nickname,
-          'birth': birth.toIso8601String(),
-          'gender': gender,
-          'recommender': recommender,
-          'location': location,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        String accessToken = responseData['access_token'];
-        print('Access Token: $accessToken');
-        // 성공적으로 가입한 경우의 추가 로직 작성 가능
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('가입 성공!')),
-        );
-      } else {
-        print('Failed to send user info: ${response.body}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('가입 실패: ${response.body}')),
-        );
-      }
-    } catch (e) {
-      print('Error occurred during signup: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('오류 발생: $e')),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final formTitleFontSize = screenWidth * 0.04;
-
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(screenHeight * 0.05),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.08,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: screenWidth * 0.415,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF8EC96D),
-                        borderRadius: BorderRadius.circular(12.0), // 둥글게 설정
-                      ),
-                    ),
-                    Container(
-                      width: screenWidth * 0.415,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF8EC96D),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15.0,
-                  ),
-                  child: Text(
-                    '우리 동네를 입력해주세요.',
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.045,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF232323),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: screenWidth * 0.08,
-                ),
-                child: Column(
-                  children: [
-                    SignupFormBox(
-                      formTitle: '동네 위치 찾기',
-                      formGuide: '내 위치',
-                      titleFontSize: formTitleFontSize,
-                      requiredField: true,
-                      fieldController: locationController,
-                      validInputForm: validLocation,
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    SizedBox(
-                      width: screenWidth,
-                      height: 400,
-                      child: (latitude != 0.0 && longitude != 0.0)
-                          ? GoogleMap(
-                              onMapCreated: (controller) {
-                                _mapController = controller;
-                                _mapController?.moveCamera(
-                                    CameraUpdate.newLatLng(
-                                        LatLng(latitude, longitude)));
-                              },
-                              initialCameraPosition: CameraPosition(
-                                target: LatLng(latitude, longitude),
-                                zoom: 15,
-                              ),
-                              markers: _markers,
-                            )
-                          : const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        signupInfoToServer(
-                          widget.username,
-                          widget.email,
-                          widget.nickname,
-                          widget.birth,
-                          widget.gender,
-                          widget.recommender,
-                          locationController.text,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(screenWidth * 0.84, 50),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        backgroundColor: const Color(0xff449C4A),
-                      ),
-                      child: Text(
-                        '가입하기',
-                        style: TextStyle(
-                          color: const Color(0xffffffff),
-                          fontSize: screenWidth * 0.045,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-

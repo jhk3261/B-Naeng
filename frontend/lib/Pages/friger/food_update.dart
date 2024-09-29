@@ -132,7 +132,6 @@ class _FoodUpdateState extends State<FoodUpdate> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     getInventory(InventoryId, FrigerId);

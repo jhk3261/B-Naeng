@@ -7,12 +7,7 @@ from dotenv import load_dotenv
 from config.database import get_db
 import openai
 import os
-import json
-import time
-import httpx
 from api.models import Recipe
-import requests
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.service import Service
@@ -22,10 +17,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import concurrent.futures
-
-
-# import pyautogui
-# import openpyxl
 
 router = APIRouter(tags=["레시피"])
 isAuthenticated = False
@@ -46,7 +37,7 @@ class RecipesUpdate(BaseModel):
 
 # 레시피 추천 함수
 def recommend_recipe(ingredient_str : str):
-    response = openai.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {
@@ -88,7 +79,7 @@ def get_recipes(ingredient : dict):
 
 # 추가 레시피 추천 함수
 def recommend_additional_recipe(ingredient_str : str):
-    response = openai.chat.completions.create(
+    response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {
@@ -111,8 +102,6 @@ def recommend_additional_recipe(ingredient_str : str):
         frequency_penalty = 0,
         presence_penalty = 0,
     )
-    # print("OpenAI 응답:", response.choices[0].message.content)
-
 
     return eval(response.choices[0].message.content)
 
@@ -201,10 +190,9 @@ def search_multiple_keywords(keywords):
 
 # 식재료 기반 레시피 추천 생성
 @router.post("/recipes/recommend")
-async def recommendRecipes(response: Response, ingredient: IngredientInput, friger_id : int = 1, db: Session=Depends(get_db)):
+async def recommendRecipes(response: Response, ingredient: IngredientInput, friger_id : int = 3, db: Session=Depends(get_db)):
     try:
         existing_recipes = db.query(Recipe).filter(Recipe.friger_id == friger_id).first()
-        # existing_recipes = db.query(Recipe).filter(Recipe.friger_unique_code == recipes.friger_unique_code).first()
         if existing_recipes:
             time_gap = datetime.now() - existing_recipes.create_time
             if (time_gap <= timedelta(hours=1)):
@@ -212,18 +200,20 @@ async def recommendRecipes(response: Response, ingredient: IngredientInput, frig
                 return 
             else:
                 recipes = get_recipes(ingredient.ingredient)
+                recipes_more = get_additional_recipes(ingredient.ingredient)
                 existing_recipes.recommend_recipes = recipes
-                existing_recipes.recommend_recipes_more = recipes
+                existing_recipes.recommend_recipes_more = recipes_more
                 existing_recipes.create_time = datetime.now()
                 db.commit()
                 db.refresh(existing_recipes)
         else:
             recipes = get_recipes(ingredient.ingredient)
+            recipes_more = get_additional_recipes(ingredient.ingredient)
             new_recipes = Recipe(
                 friger_id = friger_id,
                 create_time = datetime.now(),
                 recommend_recipes = recipes,
-                recommend_recipes_more = recipes
+                recommend_recipes_more = recipes_more
             )
             db.add(new_recipes)
             db.commit()
@@ -231,11 +221,11 @@ async def recommendRecipes(response: Response, ingredient: IngredientInput, frig
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
-    return recipes
+    return [recipes, recipes_more]
 
 # 식재료 기반 추천 레시피 불러오기
 @router.get("/recipes/recommend")
-async def loadRecommendRecipes(friger_id: int = 1, db: Session = Depends(get_db)):
+async def loadRecommendRecipes(friger_id: int = 3, db: Session = Depends(get_db)):
     user_recipe_db = db.query(Recipe).filter(Recipe.friger_id == friger_id).first()
     user_recipe = user_recipe_db.recommend_recipes
     user_additional_recipe = user_recipe_db.recommend_recipes_more
@@ -257,41 +247,3 @@ async def loadRecommendRecipes(friger_id: int = 1, db: Session = Depends(get_db)
 
     return {"레시피" : recipes, "추가레시피" : additional_recipes, "추가재료" : additional_ingredients_url}
         
-        
-# @router.post("/recipes/recommend/additional")
-# async def recommendAdditinoalRecipes(ingredient: IngredientInput):
-#     recipes = recommend_additional_recipe(ingredient.ingredient)
-#     return recipes
-
-@router.post("/recipes/recommend/additional")
-async def recommendRecipes(response: Response, ingredient: IngredientInput, friger_id : int = 1, db: Session=Depends(get_db)):
-    try:
-        existing_recipes = db.query(Recipe).filter(Recipe.friger_id == friger_id).first()
-        # existing_recipes = db.query(Recipe).filter(Recipe.friger_unique_code == recipes.friger_unique_code).first()
-        if existing_recipes:
-            time_gap = datetime.now() - existing_recipes.create_time
-            if (time_gap <= timedelta(hours=1)):
-                response.status_code = status.HTTP_204_NO_CONTENT
-                return 
-            else:
-                recipes = get_additional_recipes(ingredient.ingredient)
-                existing_recipes.recommend_recipes = recipes
-                existing_recipes.recommend_recipes_more = recipes
-                existing_recipes.create_time = datetime.now()
-                db.commit()
-                db.refresh(existing_recipes)
-        else:
-            recipes = get_additional_recipes(ingredient.ingredient)
-            new_recipes = Recipe(
-                friger_id = friger_id,
-                create_time = datetime.now(),
-                recommend_recipes = recipes,
-                recommend_recipes_more = recipes
-            )
-            db.add(new_recipes)
-            db.commit()
-            db.refresh(new_recipes)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
-    return recipes

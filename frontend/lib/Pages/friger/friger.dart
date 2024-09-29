@@ -110,7 +110,7 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
   }
 
   String selectedCategory = "전체보기";
-  List categories = ["전체보기", "육류", "소스", "유제품", "채소", "음료", "기타"];
+  List categories = ["전체보기", "육류", "소스", "유제품", "채소및과일", "음료", "기타"];
 
   List<Map<String, dynamic>> filterInventory(String category) {
     if (category == "전체보기") {
@@ -169,17 +169,17 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
             onFoodAdded: _refreshInventory, // 콜백 함수 전달
           ),
         ),
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(104.0),
-          child: AppBar(
-            elevation: 0,
-            centerTitle: false,
-            surfaceTintColor: Colors.white,
-            // shadowColor: Colors.black,
-            backgroundColor: Colors.white,
-            foregroundColor: Color(0xFF232323),
-            title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: false,
+          surfaceTintColor: Colors.white,
+          // shadowColor: Colors.black,
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF232323),
+          title: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 28, 0, 0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -195,10 +195,10 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
                     ),
                   ),
                   const SizedBox(
-                    width: 5,
+                    width: 2,
                   ),
                   const Text(
-                    "냉장고",
+                    "의 냉장고",
                     style: TextStyle(
                       fontFamily: 'GmarketSansBold',
                       fontSize: 24,
@@ -229,36 +229,36 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
                 ],
               ),
             ),
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(32),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: TabBar(
-                    controller: _tabController,
-                    isScrollable: true,
-                    indicatorColor: Colors.transparent,
-                    overlayColor: WidgetStateProperty.all(Colors.transparent),
-                    tabAlignment: TabAlignment.start,
-                    tabs: categories
-                        .map((category) => Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 1.0), // 간격 조절
-                              child: Tab(text: category),
-                            ))
-                        .toList(),
-                    labelStyle: const TextStyle(
-                      fontFamily: 'GmarketSansMedium',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF449C4A), // 선택된 탭의 텍스트 크기
-                    ),
-                    unselectedLabelStyle: const TextStyle(
-                      fontFamily: 'GmarketSansMedium',
-                      fontSize: 16,
-                      color: Color(0xFFCBCBCB), // 선택되지 않은 탭의 텍스트 크기
-                    ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(60),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: TabBar(
+                  controller: _tabController,
+                  isScrollable: true,
+                  indicatorColor: Colors.transparent,
+                  overlayColor: WidgetStateProperty.all(Colors.transparent),
+                  tabAlignment: TabAlignment.start,
+                  tabs: categories
+                      .map((category) => Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 1.0), // 간격 조절
+                            child: Tab(text: category),
+                          ))
+                      .toList(),
+                  labelStyle: const TextStyle(
+                    fontFamily: 'GmarketSansMedium',
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF449C4A), // 선택된 탭의 텍스트 크기
+                  ),
+                  unselectedLabelStyle: const TextStyle(
+                    fontFamily: 'GmarketSansMedium',
+                    fontSize: 16,
+                    color: Color(0xFFCBCBCB), // 선택되지 않은 탭의 텍스트 크기
                   ),
                 ),
               ),
