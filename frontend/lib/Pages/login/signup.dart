@@ -262,7 +262,12 @@ class _SignupPage1 extends State<SignupPage1> {
     final formTitleFontSize = screenWidth * 0.04;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        surfaceTintColor: Colors.white,
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.white,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(screenHeight * 0.05),
           child: Padding(

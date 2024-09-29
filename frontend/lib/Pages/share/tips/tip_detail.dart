@@ -15,7 +15,7 @@ class ReceipeDetailPage extends StatefulWidget {
 class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
   bool isLiked = false;
   bool isScrapped = false;
-  final int userId = 0; // 현재 유저 아이디(0으로 고정)
+  final int userId = 1; // 현재 유저 아이디(0으로 고정)
 
   @override
   void initState() {
@@ -219,7 +219,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
                     children: [
                       Text(
                         username,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
