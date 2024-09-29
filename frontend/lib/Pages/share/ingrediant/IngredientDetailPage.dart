@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // SharedPreferences 패키지 추가
 
 // Ingredient 클래스 정의
 class Ingredient {
@@ -75,35 +76,38 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
   @override
   void initState() {
     super.initState();
-    _checkInitialStates();
+    _fetchIngredientData(); // 페이지 로드 시 데이터 가져오기
+    _loadLikeStatus(); // 좋아요 상태 로드
   }
 
-  Future<void> _checkInitialStates() async {
-    final ingredient = await _fetchIngredient(widget.id);
+  // 좋아요 상태를 로드하는 메서드
+  Future<void> _loadLikeStatus() async {
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
-      isLiked = ingredient.isLiked;
-      isScrapped = ingredient.isScrapped;
+      isLiked =
+          prefs.getBool('liked_${widget.id}') ?? false; // 로컬 스토리지에서 좋아요 상태 불러오기
     });
   }
 
   Future<void> _toggleLike() async {
-    setState(() {
-      isLiked = !isLiked;
-    });
-
-    final url =
-        Uri.parse('http://127.0.0.1:8000/ingredients/${widget.id}/likes');
-    try {
-      await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({"user_id": userId}),
-      );
-    } catch (e) {
-      print('Error liking post: $e');
-      setState(() {
-        isLiked = !isLiked;
-      });
+    // isLiked가 true일 때만 서버에 요청
+    if (!isLiked) {
+      final url =
+          Uri.parse('http://127.0.0.1:8000/ingredients/${widget.id}/likes');
+      try {
+        await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({"user_id": userId}),
+        );
+        setState(() {
+          isLiked = true; // 좋아요 상태 업데이트
+        });
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setBool('liked_${widget.id}', true); // 로컬 스토리지에 좋아요 상태 저장
+      } catch (e) {
+        print('Error liking post: $e');
+      }
     }
   }
 
@@ -148,56 +152,41 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        elevation: 0,
-        centerTitle: false,
-        surfaceTintColor: Colors.white,
-        shadowColor: Color(0xFF232323),
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        title: const Text(
-          "재료 나눔터",
-          style: TextStyle(
-            fontSize: 24,
-          ),
-        ),
+        title: const Text("재료 나눔터"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  FutureBuilder<Ingredient>(
-                    future: _fetchIngredient(widget.id),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (snapshot.hasData) {
-                        final ingredient = snapshot.data!;
-                        return Column(
-                          children: [
-                            _buildPost(ingredient),
-                            const Divider(),
-                            _buildCommentSection(ingredient.comments),
-                          ],
-                        );
-                      } else {
-                        return const Center(child: Text('No data available'));
-                      }
-                    },
-                  ),
-                ],
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              children: [
+                FutureBuilder<Ingredient>(
+                  future: _fetchIngredient(widget.id),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      final ingredient = snapshot.data!;
+                      return Column(
+                        children: [
+                          _buildPost(ingredient),
+                          const Divider(),
+                          _buildCommentSection(ingredient.comments),
+                        ],
+                      );
+                    } else {
+                      return const Center(child: Text('No data available'));
+                    }
+                  },
+                ),
+              ],
             ),
-            const Divider(height: 1),
-            _buildCommentInputBar(context),
-          ],
-        ),
+          ),
+          const Divider(height: 1),
+          _buildCommentInputBar(context),
+        ],
       ),
     );
   }
@@ -296,38 +285,26 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
               },
             ),
           const SizedBox(height: 16),
+
+          // 댓글 개수와 좋아요/스크랩 정렬
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  const Icon(Icons.chat_bubble, color: Color(0xff8EC96D)),
-                  const SizedBox(width: 5),
-                  Text(
-                    "${ingredient.commentCount}",
-                    style: const TextStyle(fontSize: 20, color: Colors.grey),
-                  ),
-                ],
+              // 댓글 개수는 좌측 정렬
+              Text(
+                '댓글 ${ingredient.commentCount}개',
+                style: const TextStyle(fontSize: 16),
               ),
+
+              // 좋아요와 스크랩은 우측 정렬
               Row(
                 children: [
                   IconButton(
                     icon: Icon(
                       isLiked ? Icons.favorite : Icons.favorite_border,
-                      color: isLiked
-                          ? const Color(0xffEC5A49)
-                          : const Color(0xffDFDFDF),
+                      color: isLiked ? Colors.green : null,
                     ),
-                    onPressed: _toggleLike,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      isScrapped ? Icons.star : Icons.star_border,
-                      color: isScrapped
-                          ? const Color(0xff449C4A)
-                          : const Color(0xffDFDFDF),
-                    ),
-                    onPressed: _toggleScrap,
+                    onPressed: _toggleLike, // 좋아요 토글
                   ),
                 ],
               ),
@@ -338,37 +315,49 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
     );
   }
 
-  // 댓글 목록을 표시하는 위젯
   Widget _buildCommentSection(List<String> comments) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            '댓글',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: comments.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(comments[index]),
-              );
-            },
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 8),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: comments.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                  vertical: 8.0, horizontal: 10.0), // 좌우 여백 추가
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 프로필 이미지 추가
+                      const CircleAvatar(
+                        radius: 20,
+                        backgroundImage:
+                            AssetImage('assets/images/profile.png'), // 기본 유저 이미지 경로
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(comments[index]),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10), // 댓글 간 간격
+                  const Divider(), // 댓글 구분선
+                ],
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
-  // 댓글 입력 필드
   Widget _buildCommentInputBar(BuildContext context) {
     final TextEditingController commentController = TextEditingController();
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -376,26 +365,32 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
           Expanded(
             child: TextField(
               controller: commentController,
-              decoration: InputDecoration(
-                hintText: '댓글을 입력하세요.',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: const BorderSide(),
-                ),
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "댓글을 입력하세요.",
               ),
             ),
           ),
           IconButton(
             icon: const Icon(Icons.send),
             onPressed: () {
-              if (commentController.text.isNotEmpty) {
-                _sendComment(commentController.text);
-                commentController.clear();
-              }
+              _sendComment(commentController.text);
+              commentController.clear(); // 댓글 입력 후 입력란 비우기
             },
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _fetchIngredientData() async {
+    try {
+      final ingredient = await _fetchIngredient(widget.id);
+      setState(() {
+        // fetched ingredient data can be set to state if needed
+      });
+    } catch (e) {
+      print('Error fetching ingredient data: $e');
+    }
   }
 }
