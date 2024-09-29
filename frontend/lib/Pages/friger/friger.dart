@@ -77,6 +77,8 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
 
     getFriger? currentFriger = await FetchFriger(FrigerId); // 현재 냉장고 데이터 가져오기
 
+// mounted 상태를 체크한 후 setState 호출
+    if (!mounted) return;
 // 기존의 내용 업데이트
     setState(() {
       _currentFriger.clear(); // 이전 데이터 초기화

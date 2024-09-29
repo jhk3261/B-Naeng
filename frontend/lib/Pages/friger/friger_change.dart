@@ -84,7 +84,7 @@ class _FrigerChangeState extends State<FrigerChange> {
 
     return Scaffold(
         appBar: AppBar(
-          elevation: 2,
+          elevation: 0,
           centerTitle: false,
           surfaceTintColor: Colors.white,
           shadowColor: Colors.black,
