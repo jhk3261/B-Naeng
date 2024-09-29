@@ -48,7 +48,6 @@ app.add_middleware(
 
 # 라우터 포함
 app.include_router(auth.router)
-# app.include_router(html.router)
 app.include_router(kakao_auth.router)
 app.include_router(tips.router)
 app.include_router(ingredients.router)
