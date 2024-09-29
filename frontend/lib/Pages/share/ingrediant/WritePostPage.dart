@@ -19,7 +19,7 @@ class _WritePostPageState extends State<WritePostPage> {
   final TextEditingController _locationDongController = TextEditingController();
   List<File> _pictures = [];
   bool _isShared = false;
-  final int userId = 0;
+  final int userId = 1;
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -78,7 +78,17 @@ class _WritePostPageState extends State<WritePostPage> {
           print('나눔 완료된 글입니다.');
         }
 
-        // 글 작성 후 나눔 페이지로 이동
+        // UI 상태 갱신
+        setState(() {
+          // 필요 시 입력 필드 및 상태 초기화
+          _titleController.clear();
+          _contentController.clear();
+          _locationDongController.clear();
+          _pictures.clear();
+          _isShared = false;
+        });
+
+        // 글 작성 후 이전 화면으로 이동
         Navigator.pop(context);
       } else {
         print('글 작성에 실패했습니다: ${response.statusCode}');
@@ -116,7 +126,7 @@ class _WritePostPageState extends State<WritePostPage> {
         centerTitle: false,
         surfaceTintColor: Colors.white,
         backgroundColor: Colors.white,
-        foregroundColor: Color(0xFF232323),
+        foregroundColor: const Color(0xFF232323),
         title: const Text('글 쓰기'),
         actions: [
           IconButton(
@@ -135,7 +145,7 @@ class _WritePostPageState extends State<WritePostPage> {
               children: [
                 TextField(
                   controller: _titleController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
                             color: Color(0xFF449C4A),
@@ -180,8 +190,8 @@ class _WritePostPageState extends State<WritePostPage> {
                 ),
                 const SizedBox(height: 16.0),
                 SwitchListTile(
-                  activeTrackColor: Color(0xFF449C4A),
-                  inactiveTrackColor: Color.fromARGB(255, 229, 229, 229),
+                  activeTrackColor: const Color(0xFF449C4A),
+                  inactiveTrackColor: const Color.fromARGB(255, 229, 229, 229),
                   selectedTileColor: Colors.white,
                   title: const Text("공유 여부"),
                   value: _isShared,
@@ -211,8 +221,8 @@ class _WritePostPageState extends State<WritePostPage> {
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 1,
-        shadowColor: Color(0xffd2d2d2),
-        color: Color(0xFFF6FAF6),
+        shadowColor: const Color(0xffd2d2d2),
+        color: const Color(0xFFF6FAF6),
         child: IconButton(
           iconSize: 36,
           icon: const Icon(Icons.camera_alt, color: Colors.green),

@@ -84,19 +84,19 @@ class _UsePointsPageState extends State<UsePointsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('사용하기',
-            style: TextStyle(
-              fontFamily: 'GmarketSansBold',
-            )),
-        centerTitle: true,
-        leading: IconButton(
-          // 왼쪽 상단 나가기 아이콘 추가
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            widget.onRefresh(); // 마이페이지 새로 고침 호출
-            Navigator.pop(context); // 현재 페이지 닫기
-          },
+        elevation: 0,
+        centerTitle: false,
+        surfaceTintColor: Colors.white,
+        shadowColor: Colors.black,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        title: const Text(
+          "포인트 사용하기",
+          style: TextStyle(
+            fontSize: 24,
+          ),
         ),
       ),
       body: Padding(

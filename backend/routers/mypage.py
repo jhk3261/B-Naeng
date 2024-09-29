@@ -5,8 +5,10 @@ from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
 from typing import Optional, List
 from config.database import get_db
-from api.models import MyPage, Scrap, Tip
+from api.models import Friger, MyPage, Scrap, Tip
 from datetime import datetime
+
+from routers.friger import FrigerResponseWithCount
 
 router = APIRouter(tags=["마이페이지"])
 
@@ -160,3 +162,32 @@ def use_points(request: UsePointsRequest, db: Session = Depends(get_db)):
         "message": "Points successfully used.",
         "remaining_points": mypage.green_points,
     }
+
+@router.get("/users/{user_id}/frigers/")
+def get_user_frigers(user_id: int, db: Session = Depends(get_db)):
+    user_frigers = db.query(Friger).filter(Friger.owner_id == user_id).all()
+    if not user_frigers:
+        raise HTTPException(status_code=404, detail="No frigers found for this user")
+
+    return [
+        FrigerResponseWithCount(
+            id=friger.id,
+            name=friger.name,
+            inventory_count=len(friger.inventory_list),
+            owner_id=friger.owner_id,
+            user_count=len(friger.user_list) if isinstance(friger.user_list, list) else 1,
+        )
+        for friger in user_frigers
+    ]
+
+
+@router.get("/frigers/{friger_id}/users/")
+def get_frigers_users(friger_id: int, db: Session = Depends(get_db)):
+    # 냉장고 존재 여부 확인
+    friger = db.query(Friger).filter(Friger.id == friger_id).first()
+    if not friger:
+        raise HTTPException(status_code=404, detail="Friger not found")
+
+    # 냉장고에 속한 사용자 목록 조회
+    users = friger.user_list
+    return {"users": users}

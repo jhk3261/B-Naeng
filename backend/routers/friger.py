@@ -1,3 +1,4 @@
+from os import name
 from random import randint
 from sqlite3 import IntegrityError
 from typing import List
@@ -8,7 +9,9 @@ from sqlalchemy.orm import Session
 from api.models import Friger, Inventory, User
 from config.database import get_db
 from routers.users import authenticate
+from sqlalchemy.orm import joinedload
 from datetime import date
+
 # from routers.users import UserLogin
 
 router = APIRouter(tags=["식재료, 냉장고"])
@@ -71,11 +74,11 @@ class FrigerResponseWithCount(BaseModel):
 # 1. Friger 생성
 @router.post("/frigers/")
 # async def create_friger(name : str, unique_code: int, db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
-async def create_friger(unique_code: int, db: Session = Depends(get_db)):
+async def create_friger(name: str, unique_code: int, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.id == 1).first()
     # 임시
     new_friger = Friger(
-        name=db_user.nickname,
+        name=name,
         unique_code=unique_code,
         owner_id=1,
         user_id=1,
@@ -133,7 +136,12 @@ def get_friger(friger_id: int, db: Session = Depends(get_db)):
             for inventory in db_friger.inventory_list
         ],
         user_list=[1],
+        # users = [user.id for user in db_friger.users] #유저 스키마 추가 후 수정 필요
     )
+    #         for inventory in db_friger.inverntory_list
+    #     ],
+    #     user_list=User,  # 유저 스키마 추가 후 수정 필요
+    # )
 
 
 # 4. Friger 수정 (Friger name, userlist 수정 가능)
@@ -270,60 +278,3 @@ def delete_inventory(friger_id: int, inventory_id: int, db: Session = Depends(ge
     db.delete(inventory)
     db.commit()
     return {"detail": "Inventory deleted successfully"}
-
-
-# 11. 냉장고에 유저 추가
-@router.post("/frigers/{friger_id}/users/{user_id}")
-def add_user_to_friger(friger_id: int, user_id: int, db: Session = Depends(get_db)):
-    friger = db.query(Friger).filter(Friger.id == friger_id).first()
-    if not friger:
-        raise HTTPException(status_code=404, detail="Friger not found")
-
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    # 유저가 이미 냉장고에 추가되어 있는지 확인
-    if user in friger.users:
-        raise HTTPException(status_code=400, detail="User already in Friger")
-
-    # 유저를 냉장고에 추가
-    friger.users.append(user)
-    db.commit()
-
-    return {"detail": f"User {user.username} added to Friger {friger.name}"}
-
-
-# 12. 냉장고에서 유저 삭제
-@router.delete("/frigers/{friger_id}/users/{user_id}")
-def remove_user_from_friger(
-    friger_id: int, user_id: int, db: Session = Depends(get_db)
-):
-    friger = db.query(Friger).filter(Friger.id == friger_id).first()
-    if not friger:
-        raise HTTPException(status_code=404, detail="Friger not found")
-
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    # 유저가 냉장고에 있는지 확인
-    if user not in friger.users:
-        raise HTTPException(status_code=400, detail="User not in Friger")
-
-    # 유저를 냉장고에서 제거
-    friger.users.remove(user)
-    db.commit()
-
-    return {"detail": f"User {user.username} removed from Friger {friger.name}"}
-
-
-# 13. 특정 Friger의 모든 Users 조회
-@router.get("/users/{user_id}/frigers/")
-def get_user_frigers(user_id: int, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    frigers = user.frigers  # assuming there's a relationship defined in User model
-    return [{"id": friger.id, "name": friger.name} for friger in frigers]

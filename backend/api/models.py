@@ -190,3 +190,4 @@ class Recipe(Base):
     create_time = Column(DateTime, nullable=False)
     recommend_recipes = Column(JSON, nullable=False)
     recommend_recipes_more = Column(JSON, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)

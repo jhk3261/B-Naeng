@@ -53,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
       print('Error fetching user profile: $error');
       return UserProfile(
         id: 1,
-        userId: userId,
+        userId: 1,
         username: '기본 사용자',
         profileImageUrl: null,
         greenPoints: 0,
@@ -86,40 +86,43 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          const SizedBox(height: 16),
-          Expanded(
-            child: FutureBuilder<UserProfile>(
-              future: userProfileFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data == null) {
-                  return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
-                } else {
-                  final profile = snapshot.data!;
-                  return SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        buildProfileSection(profile),
-                        const SizedBox(height: 16),
-                        buildGreenPointsSection(profile),
-                        const SizedBox(height: 16),
-                        buildFridgeSection(profile),
-                        const SizedBox(height: 16),
-                        buildScrapSection(context),
-                      ],
-                    ),
-                  );
-                }
-              },
+      body: Padding(
+        padding: const EdgeInsets.only(top: 60),
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            Expanded(
+              child: FutureBuilder<UserProfile>(
+                future: userProfileFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data == null) {
+                    return const Center(child: Text('사용자 정보를 불러오지 못했습니다.'));
+                  } else {
+                    final profile = snapshot.data!;
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          buildProfileSection(profile),
+                          const SizedBox(height: 16),
+                          buildGreenPointsSection(profile),
+                          const SizedBox(height: 16),
+                          buildFridgeSection(profile),
+                          const SizedBox(height: 16),
+                          buildScrapSection(context),
+                        ],
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

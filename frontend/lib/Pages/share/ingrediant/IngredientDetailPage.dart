@@ -71,7 +71,7 @@ class IngredientDetailPage extends StatefulWidget {
 class _IngredientDetailPageState extends State<IngredientDetailPage> {
   bool isLiked = false;
   bool isScrapped = false;
-  final int userId = 0; // 현재 유저 아이디(0으로 고정)
+  final int userId = 1;
 
   @override
   void initState() {
@@ -336,8 +336,8 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
                       // 프로필 이미지 추가
                       const CircleAvatar(
                         radius: 20,
-                        backgroundImage: AssetImage(
-                            'assets/images/profile.png'), // 기본 유저 이미지 경로
+                        backgroundImage:
+                            AssetImage('assets/images/profile.png'), // 기본 유저 이미지 경로
                       ),
                       const SizedBox(width: 10),
                       Expanded(
