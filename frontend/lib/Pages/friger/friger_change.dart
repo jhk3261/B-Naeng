@@ -49,6 +49,7 @@ class _FrigerChangeState extends State<FrigerChange> {
               "id": friger.id,
               "name": friger.name,
               "inventory_count": friger.inventory_count,
+              "user_count": friger.user_count,
             }).toList();
       });
       // 현재 냉장고를 선택된 냉장고로 설정
@@ -114,7 +115,7 @@ class _FrigerChangeState extends State<FrigerChange> {
                           style: TextStyle(
                             fontSize: 24 * scaleWidth(context),
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF232323),
+                            color: const Color(0xFF232323),
                           ),
                         ),
                         const SizedBox(
@@ -170,7 +171,6 @@ class _FrigerChangeState extends State<FrigerChange> {
                                   onTap: () {
                                     setState(() {
                                       selectedFridge = friger; // 선택된 냉장고 업데이트
-                                      print(selectedFridge);
                                     });
                                   });
                             },
@@ -232,15 +232,20 @@ class getFrigerList {
   final int id;
   final String name;
   final int inventory_count;
+  final int user_count;
 
   getFrigerList(
-      {required this.id, required this.name, required this.inventory_count});
+      {required this.id,
+      required this.name,
+      required this.inventory_count,
+      required this.user_count});
 
   factory getFrigerList.fromJson(Map<String, dynamic> json) {
     return getFrigerList(
       id: json['id'],
       name: json['name'],
       inventory_count: json["inventory_count"],
+      user_count: json['user_count'],
     );
   }
 }

@@ -22,7 +22,7 @@ class _FoodCreateState extends State<FoodCreate> {
   // Callback 추가
   final _formKey = GlobalKey<FormState>();
 
-  final List<String> categories = ['육류', '소스', '유제품', '채소', '음료', '기타'];
+  final List<String> categories = ['육류', '소스', '유제품', '채소및과일', '음료', '기타'];
   String? selectCategory;
 
   TextEditingController nameController = TextEditingController();
@@ -53,11 +53,6 @@ class _FoodCreateState extends State<FoodCreate> {
       );
 
       if (response.statusCode == 200) {
-        // 성공적으로 등록된 경우
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('식재료가 등록되었습니다.')),
-        );
-
         widget.onFoodAdded();
         Navigator.pop(context);
         // 입력값 초기화
@@ -79,48 +74,48 @@ class _FoodCreateState extends State<FoodCreate> {
 
   int get FrigerId => widget.currentFrige;
 
-  Future<void> submitData() async {
-    if (_formKey.currentState!.validate()) {
-      // 데이터 유효성 검사 통과 시 서버로 전송
-      final response = await http.post(
-        Uri.parse(
-            'http://127.0.0.1:8000/frigers/$FrigerId/inventories/'), // 실제 API URL로 변경
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode({
-          'friger_id': FrigerId, // 적절한 friger_id로 수정
-          'name': nameController.text,
-          'quantity': _localVariable,
-          'date': dateController.text,
-          'category': selectCategory ?? '기타',
-        }),
-      );
+  // Future<void> submitData() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     // 데이터 유효성 검사 통과 시 서버로 전송
+  //     final response = await http.post(
+  //       Uri.parse(
+  //           'http://127.0.0.1:8000/frigers/$FrigerId/inventories/'), // 실제 API URL로 변경
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //       body: jsonEncode({
+  //         'friger_id': FrigerId, // 적절한 friger_id로 수정
+  //         'name': nameController.text,
+  //         'quantity': _localVariable,
+  //         'date': dateController.text,
+  //         'category': selectCategory ?? '기타',
+  //       }),
+  //     );
 
-      if (response.statusCode == 200) {
-        // 성공적으로 등록된 경우
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('식재료가 등록되었습니다.')),
-        );
+  //     if (response.statusCode == 200) {
+  //       // 성공적으로 등록된 경우
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('식재료가 등록되었습니다.')),
+  //       );
 
-        widget.onFoodAdded();
-        Navigator.pop(context);
-        // 입력값 초기화
-        nameController.clear();
-        dateController.clear();
-        buyDateController.clear();
-        setState(() {
-          selectCategory = null;
-          _localVariable = 0;
-        });
-      } else {
-        // 에러 처리
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('식재료 등록에 실패했습니다.')),
-        );
-      }
-    }
-  }
+  //       widget.onFoodAdded();
+  //       Navigator.pop(context);
+  //       // 입력값 초기화
+  //       nameController.clear();
+  //       dateController.clear();
+  //       buyDateController.clear();
+  //       setState(() {
+  //         selectCategory = null;
+  //         _localVariable = 0;
+  //       });
+  //     } else {
+  //       // 에러 처리
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('식재료 등록에 실패했습니다.')),
+  //       );
+  //     }
+  //   }
+  // }
 
   static double scaleWidth(BuildContext context) {
     const designGuideWidth = 430;
@@ -135,7 +130,7 @@ class _FoodCreateState extends State<FoodCreate> {
         elevation: 0,
         centerTitle: false,
         surfaceTintColor: Colors.white,
-        shadowColor: Color(0xFF232323),
+        shadowColor: const Color(0xFF232323),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         title: const Text(
@@ -179,7 +174,7 @@ class _FoodCreateState extends State<FoodCreate> {
                           hintText: '재료 이름을 입력해주세요 (ex-돼지고기 100g)',
                           hintStyle: TextStyle(
                             fontSize: 14 * scaleWidth(context),
-                            color: Color(0xFFB4B4B4),
+                            color: const Color(0xFFB4B4B4),
                           ),
                           focusColor: const Color(0xFF8EC96D),
                           focusedBorder: OutlineInputBorder(
@@ -203,7 +198,7 @@ class _FoodCreateState extends State<FoodCreate> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       const InputLabel(
                         content: '카테고리',
                         isVauable: true,
@@ -216,7 +211,7 @@ class _FoodCreateState extends State<FoodCreate> {
                             '카테고리를 선택해주세요 (없다면 기타 선택)',
                             style: TextStyle(
                               fontSize: 14 * scaleWidth(context),
-                              color: Color(0xFFB4B4B4),
+                              color: const Color(0xFFB4B4B4),
                             ),
                           ),
                           items: categories
@@ -227,7 +222,7 @@ class _FoodCreateState extends State<FoodCreate> {
                                     item,
                                     style: TextStyle(
                                       fontSize: 16 * scaleWidth(context),
-                                      color: Color(0xFF232323),
+                                      color: const Color(0xFF232323),
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -313,7 +308,7 @@ class _FoodCreateState extends State<FoodCreate> {
                           hintText: '식재료의 소비 기한을 설정해주세요.',
                           hintStyle: TextStyle(
                             fontSize: 14 * scaleWidth(context),
-                            color: Color(0xFFB4B4B4),
+                            color: const Color(0xFFB4B4B4),
                           ),
                           focusColor: const Color(0xFF8EC96D),
                           focusedBorder: OutlineInputBorder(
@@ -377,16 +372,16 @@ class _FoodCreateState extends State<FoodCreate> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          InputLabel(
+                          const InputLabel(
                             content: '구매 일자',
                             isVauable: false,
                           ),
-                          SizedBox(width: 4),
+                          const SizedBox(width: 4),
                           Text(
                             '(선택)',
                             style: TextStyle(
                               fontSize: 16 * scaleWidth(context),
-                              color: Color(0xFFA6A6A6),
+                              color: const Color(0xFFA6A6A6),
                             ),
                           )
                         ],
@@ -406,7 +401,7 @@ class _FoodCreateState extends State<FoodCreate> {
                           hintText: '식재료 구매 일자를 선택해주세요.',
                           hintStyle: TextStyle(
                             fontSize: 14 * scaleWidth(context),
-                            color: Color(0xFFB4B4B4),
+                            color: const Color(0xFFB4B4B4),
                           ),
                           focusColor: const Color(0xFF8EC96D),
                           focusedBorder: OutlineInputBorder(
