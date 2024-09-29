@@ -112,11 +112,11 @@ def get_additional_recipes(ingredient : dict):
     ingredient_str = ", ".join([f"{key}: {value}" for key, value in ingredient.items()])
 
     recipes = recommend_additional_recipe(ingredient_str)
-    if (len(recipes) != 8):
-        while(True):
-            recipes = recommend_additional_recipe(ingredient_str)
-            if (len(eval(recipes)) == 8):
-                break
+    # if (len(recipes) != 8):
+    #     while(True):
+    #         recipes = recommend_additional_recipe(ingredient_str)
+    #         if (len(eval(recipes)) == 8):
+    #             break
     return recipes    
 
 def setup_driver():
@@ -126,7 +126,7 @@ def setup_driver():
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36')
-    options.add_argument('--disable-gpu')
+    # options.add_argument('--disable-gpu')
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
     return driver
@@ -150,11 +150,6 @@ def search_coupang_link(keyword : list):
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "search-product")))
 
         products = driver.find_elements(By.CLASS_NAME, "search-product")
-        # items = []
-        # for product in products:
-        #     ahref = product.find_element(By.TAG_NAME, 'a')
-        #     item = ahref.get_attribute('href')
-        #     items.append(item)
 
         items = []
         ahref = products[0].find_element(By.TAG_NAME, 'a')
@@ -190,7 +185,7 @@ def search_multiple_keywords(keywords):
 
 # 식재료 기반 레시피 추천 생성
 @router.post("/recipes/recommend")
-async def recommendRecipes(response: Response, ingredient: IngredientInput, friger_id : int = 3, db: Session=Depends(get_db)):
+async def recommendRecipes(response: Response, ingredient: IngredientInput, friger_id : int, user_id : int, db: Session=Depends(get_db)):
     try:
         existing_recipes = db.query(Recipe).filter(Recipe.friger_id == friger_id).first()
         if existing_recipes:
@@ -201,19 +196,31 @@ async def recommendRecipes(response: Response, ingredient: IngredientInput, frig
             else:
                 recipes = get_recipes(ingredient.ingredient)
                 recipes_more = get_additional_recipes(ingredient.ingredient)
+                # ingredient_url = []
+
+                # for key, value in recipes_more.items():
+                #     ingredient_url.append(search_multiple_keywords(value['필요한 재료']))
                 existing_recipes.recommend_recipes = recipes
                 existing_recipes.recommend_recipes_more = recipes_more
                 existing_recipes.create_time = datetime.now()
+                # existing_recipes.ingredient_url = ingredient_url
                 db.commit()
                 db.refresh(existing_recipes)
         else:
             recipes = get_recipes(ingredient.ingredient)
             recipes_more = get_additional_recipes(ingredient.ingredient)
+            # ingredient_url = []
+
+            # for key, value in recipes_more.items():
+            #     ingredient_url.append(search_multiple_keywords(value['필요한 재료']))
+
             new_recipes = Recipe(
                 friger_id = friger_id,
+                user_id = user_id,
                 create_time = datetime.now(),
                 recommend_recipes = recipes,
-                recommend_recipes_more = recipes_more
+                recommend_recipes_more = recipes_more,
+                # ingredient_url = ingredient_url
             )
             db.add(new_recipes)
             db.commit()
@@ -225,25 +232,28 @@ async def recommendRecipes(response: Response, ingredient: IngredientInput, frig
 
 # 식재료 기반 추천 레시피 불러오기
 @router.get("/recipes/recommend")
-async def loadRecommendRecipes(friger_id: int = 3, db: Session = Depends(get_db)):
+async def loadRecommendRecipes(friger_id: int, user_id : int, db: Session = Depends(get_db)):
     user_recipe_db = db.query(Recipe).filter(Recipe.friger_id == friger_id).first()
     user_recipe = user_recipe_db.recommend_recipes
     user_additional_recipe = user_recipe_db.recommend_recipes_more
-    # recipe_names = {value["요리 이름"] for key, value in user_recipe.items()}
+
     recipes = []
-    additional_recipes = []
-    additional_ingredients = []
     for key, value in user_recipe.items():
         recipes.append({'title' : value['요리 이름'], 'ingredients' : value['재료'], 'steps' : value['레시피']})
 
+    additional_recipes = []
+    additinoal_ingredients = []
+    additinoal_ingredients_list = []
     for key, value in user_additional_recipe.items():
-        # coupangUrl = search_coupang_link(value['필요한 재료'])
-        additional_ingredients.append(value['필요한 재료'])
-        additional_recipes.append({'title' : value['요리 이름'], 'ingredients' : value['재료'], 'additional_ingredients' : value['필요한 재료'], 'steps' : value['레시피']})
-
-    additional_ingredients_list = [item for sublist in additional_ingredients for item in sublist]
-    additional_ingredients_url = search_multiple_keywords(additional_ingredients_list)
-    # print(additional_ingredients_list)
-
-    return {"레시피" : recipes, "추가레시피" : additional_recipes, "추가재료" : additional_ingredients_url}
+        additional_recipes.append({'title' : value['요리 이름'], 'ingredients' : value['재료'], 'steps' : value['레시피']})
+        additinoal_ingredients.append(value['필요한 재료'])
         
+    
+    # for value in additinoal_ingredients:
+    #     for ingredient in value:
+    #         additinoal_ingredients_list.append(ingredient)
+    # additinoal_ingredients_url = search_multiple_keywords(additinoal_ingredients)
+
+    return {'recipes' : recipes, 'additional_recipes' : additional_recipes, 'additional_ingredients' : additinoal_ingredients}
+        
+
