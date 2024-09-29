@@ -7,9 +7,9 @@ from typing import Optional
 from jose import jwt, JWTError
 from config.database import get_db
 from dotenv import load_dotenv
-from api.models import User
+from api.models import User, Friger
 from sqlalchemy.orm import Session
-
+import json
 load_dotenv()
 
 class Settings(BaseSettings):
@@ -139,3 +139,46 @@ async def login(
 async def verify_token(token: str = Depends(oauth2_scheme)):
     user = authenticate(token)
     return {"user": user}
+
+
+def get_user_from_token(token: str, db: Session):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="유효하지 않은 토큰입니다.",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        email: str = payload.get("user")  # 'user' 필드를 이메일로 사용
+        if email is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+
+    user = db.query(User).filter(User.email == email).first()
+    if user is None:
+        raise credentials_exception
+    return user
+
+@router.get("/load/userinfo")
+async def userInfo(user_id : int, db : Session=Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    friger = db.query(Friger).filter(Friger.user_id == user_id).all()
+    return [user, len(friger)]
+
+@router.get("/load/userinfo/detail")
+async def userInfoDetail(user_id: int, type: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return getattr(user, type)
+    
+
+@router.get("/valid/user")
+async def validUser(email : str, db : Session=Depends(get_db)):
+    user = db.query(User).filter(User.email == email).first()
+    if user:
+        return True
+    else:
+        return False
