@@ -29,7 +29,7 @@ class _FoodUpdateState extends State<FoodUpdate> {
   int get InventoryId => widget.inventoryId; //현재 iventory id
   int get FrigerId => widget.currentFrigerId;
 
-  final List<String> categories = ['육류', '소스', '유제품', '채소', '음료', '기타'];
+  final List<String> categories = ['육류', '소스', '유제품', '채소및과일', '음료', '기타'];
   String? selectCategory;
 
   TextEditingController nameController = TextEditingController();
@@ -61,7 +61,7 @@ class _FoodUpdateState extends State<FoodUpdate> {
   //id에 맞는 인벤토리 데이터 불러오는 함수
   Future getInventory(int InventoryId, int FrigerId) async {
     final url = Uri.parse(
-        'http://127.0.0.1:8000/frigers/${FrigerId}/inventories/${InventoryId}/');
+        'http://127.0.0.1:8000/frigers/$FrigerId/inventories/$InventoryId/');
 
     try {
       final response = await http.get(url);
@@ -194,7 +194,7 @@ class _FoodUpdateState extends State<FoodUpdate> {
                                 ),
                                 hintStyle: TextStyle(
                                   fontSize: 14 * scaleWidth(context),
-                                  color: Color(0xFFB4B4B4),
+                                  color: const Color(0xFFB4B4B4),
                                 ),
                                 focusColor: const Color(0xFF8EC96D),
                                 focusedBorder: OutlineInputBorder(
@@ -233,7 +233,7 @@ class _FoodUpdateState extends State<FoodUpdate> {
                                           item,
                                           style: TextStyle(
                                             fontSize: 16 * scaleWidth(context),
-                                            color: Color(0xFF232323),
+                                            color: const Color(0xFF232323),
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -349,33 +349,37 @@ class _FoodUpdateState extends State<FoodUpdate> {
                                         DateTime.parse(dateController.text),
                                     builder: (context, Widget? child) => Theme(
                                           data: ThemeData(
-                                            splashColor: Color(0xFF8EC96D),
-                                            textTheme: TextTheme(
+                                            splashColor:
+                                                const Color(0xFF8EC96D),
+                                            textTheme: const TextTheme(
                                               titleMedium: TextStyle(
                                                   color: Color(0xFF232323)),
                                               labelLarge: TextStyle(
                                                   color: Color(0xFF232323)),
                                             ),
                                             dialogBackgroundColor:
-                                                Color(0xFF449C4A),
-                                            colorScheme: ColorScheme.light(
-                                                    primary: Color(0xff8EC96D),
-                                                    onSecondary:
-                                                        Color(0xFF232323),
-                                                    onPrimary:
-                                                        Color(0xFFDCF0D1),
-                                                    surface: Color.fromARGB(
-                                                        255, 250, 255, 247),
-                                                    onSurface:
-                                                        Color(0xFF232323),
-                                                    secondary:
-                                                        Color(0xff232323))
-                                                .copyWith(
-                                                    primary: Color(0xff449C4A),
-                                                    secondary:
-                                                        Color(0xff8EC96D)),
+                                                const Color(0xFF449C4A),
+                                            colorScheme:
+                                                const ColorScheme.light(
+                                                        primary:
+                                                            Color(0xff8EC96D),
+                                                        onSecondary:
+                                                            Color(0xFF232323),
+                                                        onPrimary:
+                                                            Color(0xFFDCF0D1),
+                                                        surface: Color.fromARGB(
+                                                            255, 250, 255, 247),
+                                                        onSurface:
+                                                            Color(0xFF232323),
+                                                        secondary:
+                                                            Color(0xff232323))
+                                                    .copyWith(
+                                                        primary: const Color(
+                                                            0xff449C4A),
+                                                        secondary: const Color(
+                                                            0xff8EC96D)),
                                           ),
-                                          child: child ?? Text(""),
+                                          child: child ?? const Text(""),
                                         ));
                                 if (pickerdate != null) {
                                   dateController.text = DateFormat('yyyy-MM-dd')
@@ -447,15 +451,16 @@ class _FoodUpdateState extends State<FoodUpdate> {
                                   initialDate: DateTime.now(),
                                   builder: (context, Widget? child) => Theme(
                                     data: ThemeData(
-                                      splashColor: Color(0xFF8EC96D),
-                                      textTheme: TextTheme(
+                                      splashColor: const Color(0xFF8EC96D),
+                                      textTheme: const TextTheme(
                                         titleMedium:
                                             TextStyle(color: Color(0xFF232323)),
                                         labelLarge:
                                             TextStyle(color: Color(0xFF232323)),
                                       ),
-                                      dialogBackgroundColor: Color(0xFF449C4A),
-                                      colorScheme: ColorScheme.light(
+                                      dialogBackgroundColor:
+                                          const Color(0xFF449C4A),
+                                      colorScheme: const ColorScheme.light(
                                               primary: Color(0xff8EC96D),
                                               onSecondary: Color(0xFF232323),
                                               onPrimary: Color(0xFFDCF0D1),
@@ -464,10 +469,11 @@ class _FoodUpdateState extends State<FoodUpdate> {
                                               onSurface: Color(0xFF232323),
                                               secondary: Color(0xff232323))
                                           .copyWith(
-                                              primary: Color(0xff449C4A),
-                                              secondary: Color(0xff8EC96D)),
+                                              primary: const Color(0xff449C4A),
+                                              secondary:
+                                                  const Color(0xff8EC96D)),
                                     ),
-                                    child: child ?? Text(""),
+                                    child: child ?? const Text(""),
                                   ),
                                 );
                                 if (pickerdate != null) {

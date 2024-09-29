@@ -32,9 +32,9 @@ class MyApp extends StatelessWidget {
         fontFamily: 'GmarketSansMedium', // 여기서 폰트 패밀리 이름 설정
         // 추가적으로 다른 테마 속성도 설정 가능
       ),
-      // home: HomeScreen(cameras: cameras),
+      home: HomeScreen(cameras: cameras),
       // home: RecipesRecommendList(cameras: cameras),
-      home: SignInPage(cameras: cameras),
+      // home: SignInPage(cameras: cameras),
     );
   }
 }

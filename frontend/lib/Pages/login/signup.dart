@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/login/signup_complete.dart';
 import 'package:frontend/widgets/login/signup_inputForm.dart';
@@ -12,11 +13,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class SignupPage1 extends StatefulWidget {
   final String username;
   final String email;
+  final List<CameraDescription> cameras;
 
   const SignupPage1({
     super.key,
     required this.username,
     required this.email,
+    required this.cameras,
   });
 
   @override
@@ -262,7 +265,12 @@ class _SignupPage1 extends State<SignupPage1> {
     final formTitleFontSize = screenWidth * 0.04;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        surfaceTintColor: Colors.white,
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.white,
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(screenHeight * 0.05),
           child: Padding(
@@ -591,7 +599,7 @@ class _SignupPage1 extends State<SignupPage1> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => SignupComplete(
-                                cameras: [],
+                                cameras: widget.cameras,
                               ),
                             ),
                           );

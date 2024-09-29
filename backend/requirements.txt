@@ -11,3 +11,5 @@ webdriver-manager
 slugify
 genai
 google-generativeai
+python-multipart
+itsdangerous

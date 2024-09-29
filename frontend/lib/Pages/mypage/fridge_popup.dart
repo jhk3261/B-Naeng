@@ -19,12 +19,13 @@ class AppUser {
 }
 
 // 냉장고(Friger) 모델
+// Friger 모델
 class Friger {
   final int id;
   final String name;
   final bool isSelected;
   final int ownerId;
-  final int currentUserId;
+  final int currentUserId = 1;
   final List<AppUser> userList;
 
   Friger({
@@ -32,7 +33,6 @@ class Friger {
     required this.name,
     required this.isSelected,
     required this.ownerId,
-    required this.currentUserId,
     required this.userList,
   });
 
@@ -40,12 +40,13 @@ class Friger {
     return Friger(
       id: json['id'],
       name: json['name'],
-      isSelected: json['isSelected'],
+      isSelected:
+          json.containsKey('isSelected') ? json['isSelected'] : false, // 기본값 설정
       ownerId: json['owner_id'],
-      currentUserId: json['current_user_id'],
-      userList: (json['users'] as List)
-          .map((user) => AppUser.fromJson(user))
-          .toList(),
+      userList: (json['users'] as List<dynamic>?)
+              ?.map((user) => AppUser.fromJson(user))
+              .toList() ??
+          [], // null일 경우 빈 리스트 반환
     );
   }
 }
@@ -69,29 +70,42 @@ class _FridgePopupState extends State<FridgePopup> {
 
   Future<void> _fetchFridges() async {
     try {
-      const userId = 1; // 조회하고자 하는 유저의 ID
+      const userId = 1;
       final response =
           await http.get(Uri.parse('$apiUrl/users/$userId/frigers/'));
 
       if (response.statusCode == 200) {
-        List<dynamic> frigerJson = jsonDecode(response.body);
-        print('Fetched fridges JSON: $frigerJson'); // 추가: 서버에서 받은 JSON 데이터 출력
+        List<dynamic> frigerJson =
+            jsonDecode((utf8.decode(response.bodyBytes)));
+        print('Fetched fridges JSON: $frigerJson'); // 서버에서 받은 JSON 데이터 출력
+
+        // JSON 데이터 구조 확인
+        if (frigerJson.isEmpty) {
+          print('No fridges found for user ID: $userId');
+        } else {
+          print('Fetched ${frigerJson.length} fridges for user ID: $userId');
+        }
 
         // Friger 객체로 변환
-        List<Friger> fridges =
-            frigerJson.map((json) => Friger.fromJson(json)).toList();
-        print('Mapped Friger objects: $fridges'); // 추가: 변환된 Friger 객체 출력
+        List<Friger> fridges = frigerJson.map((json) {
+          print('Converting JSON to Friger: $json'); // 변환할 JSON 출력
+          return Friger.fromJson(json);
+        }).toList();
+        print('Mapped Friger objects: $fridges'); // 변환된 Friger 객체 출력
 
         setState(() {
           _fridges = fridges;
           _isLoading = false;
         });
       } else {
+        print(
+            'Failed to load fridges: ${response.statusCode}'); // 실패한 경우 상태 코드 출력
         throw Exception('Failed to load fridges');
       }
     } catch (e) {
+      print('Error fetching fridges: $e');
       setState(() {
-        _fridges = _fridges;
+        _fridges = [];
         _isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
@@ -106,7 +120,7 @@ class _FridgePopupState extends State<FridgePopup> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
         padding: const EdgeInsets.all(16.0),
-        height: 400, // 높이를 늘려 유저 목록 표시 공간 확보
+        height: 400,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -135,7 +149,7 @@ class _FridgePopupState extends State<FridgePopup> {
                           itemCount: _fridges.length,
                           itemBuilder: (context, index) {
                             final friger = _fridges[index];
-                            print('Rendering fridge: ${friger.name}');
+                            print('Rendering fridge: ${friger.name}'); // 이름 확인
                             bool isAdmin =
                                 friger.ownerId == friger.currentUserId;
                             return _buildFridgeItem(
@@ -156,7 +170,7 @@ class _FridgePopupState extends State<FridgePopup> {
 
   Widget _buildFridgeItem(BuildContext context, int fridgeId, String title,
       bool isSelected, bool isAdmin) {
-    print('Building fridge item: $title'); // 추가: 냉장고 아이템 빌드 확인
+    print('Building fridge item: $title'); // 냉장고 아이템 빌드 확인
     return ListTile(
       title: Text(
         title,
@@ -254,7 +268,6 @@ class AdminFridgeDialog extends StatefulWidget {
 class _AdminFridgeDialogState extends State<AdminFridgeDialog> {
   List<AppUser> _users = [];
   bool _isLoading = true;
-  final TextEditingController _userIdController = TextEditingController();
 
   @override
   void initState() {
@@ -270,8 +283,22 @@ class _AdminFridgeDialogState extends State<AdminFridgeDialog> {
 
       if (response.statusCode == 200) {
         List<dynamic> usersJson = jsonDecode(response.body);
+
+        // JSON을 AppUser 리스트로 변환
+        List<AppUser> fetchedUsers =
+            usersJson.map((json) => AppUser.fromJson(json)).toList();
+
+        // 현재 유저 ID가 목록에 없으면 추가
+        const int currentUserId = 1;
+        bool currentUserExists =
+            fetchedUsers.any((user) => user.id == currentUserId);
+
+        if (!currentUserExists) {
+          fetchedUsers.add(AppUser(id: currentUserId, username: '현재 유저'));
+        }
+
         setState(() {
-          _users = usersJson.map((json) => AppUser.fromJson(json)).toList();
+          _users = fetchedUsers;
           _isLoading = false;
         });
       } else {
@@ -284,48 +311,6 @@ class _AdminFridgeDialogState extends State<AdminFridgeDialog> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('유저 목록을 불러오는 데 실패했습니다.')),
-      );
-    }
-  }
-
-  // 유저 추가 함수
-  Future<void> _addUser(int userId) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$apiUrl/frigers/${widget.fridgeId}/users/'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, int>{'user_id': userId}),
-      );
-
-      if (response.statusCode == 200) {
-        _fetchUsers(); // 유저 목록 새로고침
-      } else {
-        throw Exception('Failed to add user');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('유저 추가에 실패했습니다.')),
-      );
-    }
-  }
-
-  // 유저 삭제 함수
-  Future<void> _removeUser(int userId) async {
-    try {
-      final response = await http.delete(
-        Uri.parse('$apiUrl/frigers/${widget.fridgeId}/users/$userId/'),
-      );
-
-      if (response.statusCode == 200) {
-        _fetchUsers(); // 유저 목록 새로고침
-      } else {
-        throw Exception('Failed to remove user');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('유저 삭제에 실패했습니다.')),
       );
     }
   }
@@ -354,53 +339,28 @@ class _AdminFridgeDialogState extends State<AdminFridgeDialog> {
                           itemCount: _users.length,
                           itemBuilder: (context, index) {
                             final user = _users[index];
-                            return _buildUserItem(user.id, user.username);
+                            return _buildUserItem(user.username);
                           },
                         ),
             ),
-            _buildAddUserField(),
+            const SizedBox(height: 10),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('닫기'),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildUserItem(int userId, String userName) {
+  Widget _buildUserItem(String userName) {
     return ListTile(
       title: Text(userName),
-      trailing: IconButton(
-        icon: const Icon(Icons.delete, color: Colors.red),
-        onPressed: () {
-          _removeUser(userId);
-        },
-      ),
-    );
-  }
-
-  Widget _buildAddUserField() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _userIdController,
-            decoration: const InputDecoration(
-              labelText: '유저 ID 추가',
-              border: OutlineInputBorder(),
-            ),
-            keyboardType: TextInputType.number,
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: () {
-            final userId = int.tryParse(_userIdController.text);
-            if (userId != null) {
-              _addUser(userId);
-              _userIdController.clear();
-            }
-          },
-        ),
-      ],
     );
   }
 }

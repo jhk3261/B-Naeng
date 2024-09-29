@@ -30,6 +30,7 @@ class SignupComplete extends StatelessWidget {
       final normalizedPayload = base64Url.normalize(payload);
       final decodedPayload = utf8.decode(base64Url.decode(normalizedPayload));
 
+      // Json 으로 변환 후 반환
       return json.decode(decodedPayload);
     }
 
@@ -95,6 +96,13 @@ class SignupComplete extends StatelessWidget {
                         builder: (context) => HomeScreen(cameras: cameras),
                       ),
                     );
+                    // Navigator.of(context).pushAndRemoveUntil(
+                    //   MaterialPageRoute(
+                    //     builder: (_) =>
+                    //         HomeScreen(cameras: cameras), // HomeScreen으로 이동
+                    //   ),
+                    //   (route) => route.settings.name == '/',
+                    // );
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(screenWidth * 0.84, 50),

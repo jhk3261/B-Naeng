@@ -71,7 +71,7 @@ class IngredientDetailPage extends StatefulWidget {
 class _IngredientDetailPageState extends State<IngredientDetailPage> {
   bool isLiked = false;
   bool isScrapped = false;
-  final int userId = 0; // 현재 유저 아이디(0으로 고정)
+  final int userId = 1;
 
   @override
   void initState() {
@@ -152,36 +152,49 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        surfaceTintColor: Colors.white,
+        shadowColor: const Color(0xFF232323),
         backgroundColor: Colors.white,
-        title: const Text("재료 나눔터"),
+        foregroundColor: Colors.black,
+        title: const Text(
+          "재료 나눔터",
+          style: TextStyle(
+            fontSize: 24,
+          ),
+        ),
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              children: [
-                FutureBuilder<Ingredient>(
-                  future: _fetchIngredient(widget.id),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
-                      final ingredient = snapshot.data!;
-                      return Column(
-                        children: [
-                          _buildPost(ingredient),
-                          const Divider(),
-                          _buildCommentSection(ingredient.comments),
-                        ],
-                      );
-                    } else {
-                      return const Center(child: Text('No data available'));
-                    }
-                  },
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ListView(
+                children: [
+                  FutureBuilder<Ingredient>(
+                    future: _fetchIngredient(widget.id),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (snapshot.hasData) {
+                        final ingredient = snapshot.data!;
+                        return Column(
+                          children: [
+                            _buildPost(ingredient),
+                            const Divider(),
+                            _buildCommentSection(ingredient.comments),
+                          ],
+                        );
+                      } else {
+                        return const Center(child: Text('No data available'));
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           const Divider(height: 1),
@@ -301,8 +314,8 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
                 children: [
                   IconButton(
                     icon: Icon(
-                      isLiked ? Icons.favorite : Icons.favorite_border,
-                      color: isLiked ? Colors.green : null,
+                      Icons.favorite,
+                      color: isLiked ? Colors.green : Colors.grey,
                     ),
                     onPressed: _toggleLike, // 좋아요 토글
                   ),
@@ -356,29 +369,39 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
     );
   }
 
+  // 하단 댓글 입력창 UI
   Widget _buildCommentInputBar(BuildContext context) {
-    final TextEditingController commentController = TextEditingController();
+    final TextEditingController controller = TextEditingController();
+
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: commentController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "댓글을 입력하세요.",
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: Container(
+        padding: const EdgeInsets.only(left: 32, right: 16, top: 5, bottom: 30),
+        color: const Color(0xff8EC96D),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  hintText: '댓글을 입력하세요',
+                  border: InputBorder.none,
+                ),
               ),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.send),
-            onPressed: () {
-              _sendComment(commentController.text);
-              commentController.clear(); // 댓글 입력 후 입력란 비우기
-            },
-          ),
-        ],
+            IconButton(
+              icon: const Icon(Icons.send),
+              onPressed: () {
+                if (controller.text.isNotEmpty) {
+                  _sendComment(controller.text);
+                  controller.clear(); // 입력 필드 초기화
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

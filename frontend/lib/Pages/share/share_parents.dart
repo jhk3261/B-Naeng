@@ -54,6 +54,7 @@ class _ShareParentScreenState extends State<ShareParentScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         surfaceTintColor: Colors.transparent,
         backgroundColor: Colors.white,
         title: const Padding(
