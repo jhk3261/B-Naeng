@@ -53,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
       print('Error fetching user profile: $error');
       return UserProfile(
         id: 1,
-        userId: userId,
+        userId: 1,
         username: '기본 사용자',
         profileImageUrl: null,
         greenPoints: 0,
