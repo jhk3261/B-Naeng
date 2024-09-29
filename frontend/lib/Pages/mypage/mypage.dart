@@ -53,8 +53,8 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (error) {
       print('Error fetching user profile: $error');
       return UserProfile(
-        id: 1,
-        userId: 1,
+        id: userId,
+        userId: userId,
         username: '기본 사용자',
         profileImageUrl: null,
         greenPoints: 0,
@@ -131,6 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildProfileSection(UserProfile profile) {
     return Column(
       children: [
+        const SizedBox(height: 80),
         Container(
           width: 60,
           height: 60,
@@ -428,12 +429,12 @@ class UserProfile {
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
-      id: json['id'],
-      userId: json['user_id'],
-      username: json['username'],
-      profileImageUrl: json['profile_image_url'],
-      greenPoints: json['green_points'],
-      fridgeCount: json['fridge_count'],
+      id: json['id'] != null ? json['id'] as int : 0,
+      userId: json['user_id'] != null ? json['user_id'] as int : 0,
+      username: json['username'] as String? ?? '기본 사용자',
+      profileImageUrl: json['profile_image_url'] as String?,
+      greenPoints: json['green_points'] != null ? json['green_points'] as int : 0,
+      fridgeCount: json['fridge_count'] != null ? json['fridge_count'] as int : 0,
     );
   }
 }

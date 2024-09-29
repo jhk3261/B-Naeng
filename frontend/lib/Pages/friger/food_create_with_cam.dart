@@ -16,7 +16,7 @@ class IngredientForm extends StatefulWidget {
   final ValueChanged<String?> onCategoryChanged;
 
   const IngredientForm({
-    Key? key,
+    super.key,
     required this.nameController,
     required this.dateController,
     required this.buyDateController,
@@ -25,7 +25,7 @@ class IngredientForm extends StatefulWidget {
     required this.categories,
     required this.onQuantityChanged,
     required this.onCategoryChanged,
-  }) : super(key: key);
+  });
 
   @override
   _IngredientFormState createState() => _IngredientFormState();
@@ -240,13 +240,13 @@ class _IngredientFormState extends State<IngredientForm> {
                         labelLarge: TextStyle(color: Color(0xFF232323)),
                       ),
                       dialogBackgroundColor: const Color(0xFF449C4A),
-                      colorScheme: ColorScheme.light(
-                        primary: const Color(0xff8EC96D),
-                        onSecondary: const Color(0xFF232323),
-                        onPrimary: const Color(0xFFDCF0D1),
-                        surface: const Color.fromARGB(255, 250, 255, 247),
-                        onSurface: const Color(0xFF232323),
-                        secondary: const Color(0xff232323),
+                      colorScheme: const ColorScheme.light(
+                        primary: Color(0xff8EC96D),
+                        onSecondary: Color(0xFF232323),
+                        onPrimary: Color(0xFFDCF0D1),
+                        surface: Color.fromARGB(255, 250, 255, 247),
+                        onSurface: Color(0xFF232323),
+                        secondary: Color(0xff232323),
                       ).copyWith(
                         primary: const Color(0xff449C4A),
                         secondary: const Color(0xff8EC96D),
@@ -331,13 +331,13 @@ class _IngredientFormState extends State<IngredientForm> {
                         labelLarge: TextStyle(color: Color(0xFF232323)),
                       ),
                       dialogBackgroundColor: const Color(0xFF449C4A),
-                      colorScheme: ColorScheme.light(
-                        primary: const Color(0xff8EC96D),
-                        onSecondary: const Color(0xFF232323),
-                        onPrimary: const Color(0xFFDCF0D1),
-                        surface: const Color.fromARGB(255, 250, 255, 247),
-                        onSurface: const Color(0xFF232323),
-                        secondary: const Color(0xff232323),
+                      colorScheme: const ColorScheme.light(
+                        primary: Color(0xff8EC96D),
+                        onSecondary: Color(0xFF232323),
+                        onPrimary: Color(0xFFDCF0D1),
+                        surface: Color.fromARGB(255, 250, 255, 247),
+                        onSurface: Color(0xFF232323),
+                        secondary: Color(0xff232323),
                       ).copyWith(
                         primary: const Color(0xff449C4A),
                         secondary: const Color(0xff8EC96D),
@@ -370,8 +370,8 @@ class FoodCreateSwipe extends StatefulWidget {
   const FoodCreateSwipe({
     required this.ingredients,
     required this.frigerId, // Add this line
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<FoodCreateSwipe> createState() => _FoodCreateSwipeState();
@@ -382,7 +382,7 @@ class _FoodCreateSwipeState extends State<FoodCreateSwipe> {
   final PageController _pageController = PageController(); // 페이지 컨트롤러
   int _currentPage = 0;
 
-  final List<String> categories = ['육류', '소스', '유제품', '채소', '음료', '기타'];
+  final List<String> categories = ['육류', '소스', '유제품', '채소및과일', '음료', '기타'];
   List<String?> selectedCategories = [];
   List<TextEditingController> nameControllers = [];
   List<TextEditingController> dateControllers = [];

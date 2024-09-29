@@ -79,6 +79,7 @@ class _RecipesRecommendList extends State<RecipesRecommendList> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: false,
         surfaceTintColor: Colors.white,
         backgroundColor: Colors.white,

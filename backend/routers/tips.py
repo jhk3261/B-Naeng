@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from datetime import datetime
 from sqlalchemy.orm import Session
-from api.models import Tip, Like, Comment, Scrap
+from api.models import Tip, Like, Comment, Scrap, User
 from config.database import get_db
 
 router = APIRouter(tags=["팁, 좋아요, 댓글, 스크랩"])
@@ -93,6 +93,7 @@ class TipResponseWithCounts(BaseModel):
 
 
 class TipDetailsResponse(TipResponse):
+    username: str
     like_count: int
     scrap_count: int
     comments: List[CommentResponse]
@@ -183,9 +184,13 @@ def get_tip(tip_id: int, db: Session = Depends(get_db)):
     if db_tip is None:
         raise HTTPException(status_code=404, detail="Tip not found")
 
+    user_id = 1
+    user = db.query(User).filter(User.id == user_id).first()
+
     # 좋아요, 댓글, 스크랩 객체들을 리스트로 반환
     return TipDetailsResponse(
         id=db_tip.id,
+        username=user.username,
         title=db_tip.title,
         contents=db_tip.contents,
         category=db_tip.category,

@@ -5,7 +5,6 @@ from routers import (
     auth,
     tips,
     ingredients,
-    kakao_auth,
     users,
     recipe,
     mypage,
@@ -32,9 +31,6 @@ app.add_middleware(
 )
 
 
-# static 폴더 연결
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 # 데이터베이스 초기화
 Base.metadata.create_all(bind=engine)
 
@@ -48,8 +44,6 @@ app.add_middleware(
 
 # 라우터 포함
 app.include_router(auth.router)
-# app.include_router(html.router)
-app.include_router(kakao_auth.router)
 app.include_router(tips.router)
 app.include_router(ingredients.router)
 app.include_router(users.router)

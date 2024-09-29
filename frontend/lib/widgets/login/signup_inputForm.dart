@@ -57,10 +57,19 @@ class SignupFormBox extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        formTitle == '닉네임' 
+        formTitle == '닉네임'
             ? TextFormField(
+                cursorColor: Colors.grey,
                 controller: fieldController,
                 decoration: InputDecoration(
+                  labelStyle: const TextStyle(
+                    color: Color(0xffB7B7B7),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Color(0xff8ec960), width: 2.0), // 포커스 시 테두리 색상
+                  ),
+                  border: const UnderlineInputBorder(),
                   labelText: formGuide,
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -85,8 +94,17 @@ class SignupFormBox extends StatelessWidget {
               )
             : formTitle == '생년월일'
                 ? TextFormField(
+                    cursorColor: Colors.grey,
                     controller: fieldController,
                     decoration: InputDecoration(
+                      labelStyle: const TextStyle(
+                        color: Color(0xffB7B7B7),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xff8ec960),
+                            width: 2.0), // 포커스 시 테두리 색상
+                      ),
                       labelText: formGuide,
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
@@ -114,8 +132,17 @@ class SignupFormBox extends StatelessWidget {
                     },
                   )
                 : TextFormField(
+                    cursorColor: Colors.grey,
                     controller: fieldController,
                     decoration: InputDecoration(
+                      labelStyle: const TextStyle(
+                        color: Color(0xffB7B7B7),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color(0xff8ec960),
+                            width: 2.0), // 포커스 시 테두리 색상
+                      ),
                       labelText: formGuide,
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
