@@ -14,22 +14,23 @@ class SignupComplete extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+
+    // SecureStorage 
     const FlutterSecureStorage storage = FlutterSecureStorage();
 
     Future<Map<String, dynamic>?> getUserInfo() async {
       final token = await storage.read(key: 'access_token');
       if (token == null) return null;
 
-      // JWT를 '.'로 분리하여 Payload 부분을 가져옵니다.
+      // JWT로 payload 불러오기
       final parts = token.split('.');
       if (parts.length != 3) return null;
 
-      // Payload 부분을 Base64로 디코딩합니다.
       final payload = parts[1];
       final normalizedPayload = base64Url.normalize(payload);
       final decodedPayload = utf8.decode(base64Url.decode(normalizedPayload));
       
-      // JSON으로 변환합니다.
+      // Json 으로 변환 후 반환
       return json.decode(decodedPayload);
     }
 
