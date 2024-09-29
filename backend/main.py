@@ -5,7 +5,6 @@ from routers import (
     auth,
     tips,
     ingredients,
-    kakao_auth,
     users,
     recipe,
     mypage,
@@ -45,7 +44,6 @@ app.add_middleware(
 
 # 라우터 포함
 app.include_router(auth.router)
-app.include_router(kakao_auth.router)
 app.include_router(tips.router)
 app.include_router(ingredients.router)
 app.include_router(users.router)
@@ -60,8 +58,8 @@ async def favicon():
     return FileResponse("favicon.ico")
 
 
-HOST = "127.0.0.1"
-PORT = 8000
+HOST = "192.168.0.26"
+PORT = 22222
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host=HOST, port=PORT, reload=True)
