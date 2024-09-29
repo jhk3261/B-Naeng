@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 load_dotenv()
 
+
 class Settings(BaseSettings):
     SECRET_KEY: str
     DATABASE_URL: str
@@ -20,7 +21,9 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
+
 settings = Settings()
+
 
 # < JWT 토큰 관련 함수 정의 >
 def create_access_token(user: str, exp: int = 2592000):
@@ -86,12 +89,11 @@ router = APIRouter(tags=["User"])
 class UserLogin(BaseModel):
     email: str
     username: str
-    nickname : str
-    birth : datetime
-    gender : int
-    recommender : str = None
-    location : str
-
+    nickname: str
+    birth: datetime
+    gender: int
+    recommender: str = None
+    location: str
 
 
 class TokenResponse(BaseModel):
@@ -120,20 +122,43 @@ async def login(
                 gender=body.gender,
                 recommender=body.recommender,
                 location=body.location,
-                green_points = 0, # 추가 기본 0
+                green_points=0,  # 추가 기본 0
             )
             db.add(new_user)
             db.commit()
             db.refresh(new_user)
             access_token = create_access_token(new_user.email)
-        
-        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite='Lax')
+
+        response.set_cookie(
+            key="access_token",
+            value=access_token,
+            httponly=True,
+            secure=True,
+            samesite="Lax",
+        )
 
         # return {"access_token": access_token, "token_type": "Bearer"}
         return TokenResponse(access_token=access_token, token_type="Bearer")
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.get("/load/userinfo")
+async def userInfo(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    return user
+
+
+@router.get("/load/userinfo/detail")
+async def userInfoDetail(user_id: int, type: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return getattr(user, type)
+
 
 @router.post("/verify-token")
 async def verify_token(token: str = Depends(oauth2_scheme)):

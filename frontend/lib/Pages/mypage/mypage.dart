@@ -42,7 +42,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<UserProfile> fetchUserProfile(int userId) async {
     try {
-      final response = await http.get(Uri.parse('$apiUrl/mypage/$userId'));
+      final response =
+          await http.get(Uri.parse('$apiUrl/load/userinfo?user_id=$userId'));
       if (response.statusCode == 200) {
         return UserProfile.fromJson(
             jsonDecode(utf8.decode(response.bodyBytes)));
