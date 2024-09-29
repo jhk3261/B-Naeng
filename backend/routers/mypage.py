@@ -179,3 +179,15 @@ def get_user_frigers(user_id: int, db: Session = Depends(get_db)):
         )
         for friger in user_frigers
     ]
+
+
+@router.get("/frigers/{friger_id}/users/")
+def get_frigers_users(friger_id: int, db: Session = Depends(get_db)):
+    # 냉장고 존재 여부 확인
+    friger = db.query(Friger).filter(Friger.id == friger_id).first()
+    if not friger:
+        raise HTTPException(status_code=404, detail="Friger not found")
+
+    # 냉장고에 속한 사용자 목록 조회
+    users = friger.user_list
+    return {"users": users}
