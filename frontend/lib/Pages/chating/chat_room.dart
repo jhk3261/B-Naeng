@@ -9,40 +9,43 @@ class ChatRoom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
+      appBar: AppBar(
+        centerTitle: false,
+        surfaceTintColor: Colors.white,
+        backgroundColor: Colors.white,
+        title: const Padding(
+          padding: EdgeInsets.fromLTRB(16, 30, 16, 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '채팅',
+                style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: "GmarketSansMedium",
+                    color: Color(0xFF232323)),
+              ),
+              Text(
+                "관리",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+      body: const Stack(
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 80),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          "채팅",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontFamily: "GmarketSansMedium",
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      "관리",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    )
-                  ],
-                ),
                 SizedBox(height: 20),
                 ChatElement(
                   otherUserName: "이민재",

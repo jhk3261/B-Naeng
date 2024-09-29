@@ -1,7 +1,6 @@
 import 'package:frontend/Pages/chating/chat_room.dart';
 import 'package:frontend/Pages/login/google_auth.dart';
 import 'package:frontend/Pages/mypage/mypage.dart';
-import 'package:frontend/Pages/recipe/receipe_recommend.dart';
 import 'package:frontend/Pages/friger/friger.dart';
 import 'package:frontend/Pages/recipe/recipes_list.dart';
 import 'package:frontend/Pages/share/share_parents.dart';
@@ -58,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _pageController = PageController();
     _pages = [
-      ReceipeRecommend(cameras: widget.cameras),
+      RecipesRecommendList(cameras: widget.cameras),
       ShareParentScreen(cameras: widget.cameras),
       Friger(cameras: widget.cameras),
       ChatRoom(cameras: widget.cameras),

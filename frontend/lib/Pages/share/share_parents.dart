@@ -68,9 +68,12 @@ class _ShareParentScreenState extends State<ShareParentScreen>
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: _onEditButtonPressed, // 버튼 클릭 시 조건에 맞게 페이지 이동
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: _onEditButtonPressed, // 버튼 클릭 시 조건에 맞게 페이지 이동
+            ),
           ),
           const SizedBox(width: 10),
         ],
@@ -94,7 +97,7 @@ class _ShareParentScreenState extends State<ShareParentScreen>
                 fontWeight: FontWeight.bold,
                 fontFamily: 'GmarketSansMedium',
               ),
-              overlayColor: WidgetStatePropertyAll(Colors.white),
+              overlayColor: const WidgetStatePropertyAll(Colors.white),
               tabs: const [
                 Tab(text: "재료 나눔"),
                 Tab(text: "정보 나눔"),

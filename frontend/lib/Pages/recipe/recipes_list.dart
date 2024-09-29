@@ -79,29 +79,18 @@ class _RecipesRecommendList extends State<RecipesRecommendList> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xffffffff),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(screenHeight * 0.001),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              screenWidth * 0.08,
-              0,
-              screenWidth * 0.08,
-              screenWidth * 0.04,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  '비냉 추천 레시피',
-                  style: TextStyle(
-                    fontSize: screenWidth * 0.055,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF232323),
-                  ),
-                ),
-              ],
-            ),
+        centerTitle: false,
+        surfaceTintColor: Colors.white,
+        backgroundColor: Colors.white,
+        title: const Padding(
+          padding: EdgeInsets.fromLTRB(16, 30, 0, 8),
+          child: Text(
+            '비냉 추천 레시피',
+            style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.w800,
+                fontFamily: "GmarketSansMedium",
+                color: Color(0xFF232323)),
           ),
         ),
       ),

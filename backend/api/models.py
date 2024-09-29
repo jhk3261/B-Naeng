@@ -91,6 +91,7 @@ class Friger(Base):
     owner_id = Column(Integer, nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
+
     inventory_list = relationship(
         "Inventory", back_populates="friger", cascade="all, delete-orphan"
     )
