@@ -51,9 +51,7 @@ class ShareIngredient extends StatelessWidget {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
-                        return Center(
-                            child: Text(
-                                'Failed to load ingredients: ${snapshot.error}'));
+                        return const Center(child: Text('아직 적힌 나눔글이 없습니다.'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(
                             child: Text('No ingredients available.'));

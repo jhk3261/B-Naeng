@@ -207,6 +207,7 @@ class _FrigerChangeState extends State<FrigerChange> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
+                        shadowColor: Colors.transparent,
                         backgroundColor: const Color(0xFF449C4A),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),

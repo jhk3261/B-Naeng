@@ -101,7 +101,7 @@ class _RecipesRecommendList extends State<RecipesRecommendList> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return const Center(child: Text('Failed to load recipes'));
+            return const Center(child: Text('재료를 등록하시면 레시피를 추천해드립니다.'));
           } else if (snapshot.hasData) {
             var recipes = snapshot.data!['recipes'];
             var additionalRecipes = snapshot.data!['additional_recipes'];

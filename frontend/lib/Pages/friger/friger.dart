@@ -179,33 +179,38 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
           backgroundColor: Colors.white,
           foregroundColor: const Color(0xFF232323),
           title: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 28, 0, 0),
+              padding: const EdgeInsets.fromLTRB(8, 28, 0, 0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    _currentFriger.isNotEmpty
-                        ? _currentFriger[0]['name'] ??
-                            'No Name' // 첫 번째 아이템의 name
-                        : 'No Friger Available',
-                    style: const TextStyle(
-                      fontSize: 28,
-                      color: Color(0xFF449C4A),
-                      fontFamily: 'GmarketSansBold',
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 2,
-                  ),
-                  const Text(
-                    "의 냉장고",
-                    style: TextStyle(
-                      fontFamily: 'GmarketSansBold',
-                      fontSize: 24,
-                      color: Color(0xFF8EC96D),
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        _currentFriger.isNotEmpty
+                            ? _currentFriger[0]['name'] ??
+                                'No Name' // 첫 번째 아이템의 name
+                            : 'No Friger Available',
+                        style: const TextStyle(
+                          fontSize: 28,
+                          color: Color(0xFF449C4A),
+                          fontFamily: 'GmarketSansBold',
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 2,
+                      ),
+                      const Text(
+                        "의 냉장고",
+                        style: TextStyle(
+                          fontFamily: 'GmarketSansBold',
+                          fontSize: 24,
+                          color: Color(0xFF8EC96D),
+                        ),
+                      ),
+                    ],
                   ),
                   IconButton(
                     onPressed: () async {

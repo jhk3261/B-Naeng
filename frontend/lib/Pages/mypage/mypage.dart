@@ -52,11 +52,13 @@ class _ProfilePageState extends State<ProfilePage> {
       print('Fetching user profile from: $url'); // URL 출력
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+        final List<dynamic> data =
+            jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
         if (data.length < 2) {
           throw Exception('Invalid user profile data');
         }
-        Map<String, dynamic> userJson = data[0] as Map<String, dynamic>; // user 정보
+        Map<String, dynamic> userJson =
+            data[0] as Map<String, dynamic>; // user 정보
         int fridgeCount = data[1] as int; // 냉장고 개수
         print('User Profile JSON: $userJson'); // JSON 응답 출력
         return UserProfile.fromJson(userJson, fridgeCount);
@@ -78,15 +80,19 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<List<ScrapItem>> fetchScrapItems(int userId) async {
     try {
-      final response = await http.get(Uri.parse('$apiUrl/users/$userId/scraps'));
+      final response =
+          await http.get(Uri.parse('$apiUrl/users/$userId/scraps'));
 
       if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+        List<dynamic> data =
+            jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
         print('Scrap Items JSON: $data'); // Scrap Items JSON 응답 출력
         if (data.isEmpty) {
           return [];
         }
-        return data.map((json) => ScrapItem.fromJson(json as Map<String, dynamic>)).toList();
+        return data
+            .map((json) => ScrapItem.fromJson(json as Map<String, dynamic>))
+            .toList();
       } else {
         throw Exception('Failed to load scrap items');
       }
@@ -387,7 +393,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ? Image.network(
                                       imageUrl,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
                                         return Image.asset(
                                           'assets/images/noimg.png',
                                           fit: BoxFit.cover,
@@ -463,7 +470,8 @@ class UserProfile {
       userId: json['user_id'] != null ? json['user_id'] as int : 0,
       username: json['username'] as String? ?? '기본 사용자',
       profileImageUrl: json['profile_image_url'] as String?,
-      greenPoints: json['green_points'] != null ? json['green_points'] as int : 0,
+      greenPoints:
+          json['green_points'] != null ? json['green_points'] as int : 0,
       fridgeCount: fridgeCount,
     );
   }
@@ -489,16 +497,18 @@ class ScrapItem {
   });
 
   factory ScrapItem.fromJson(Map<String, dynamic> json) {
-    String? imageUrl = (json['pictures'] != null && (json['pictures'] as List).isNotEmpty)
-        ? '${json['pictures'][0].replaceAll("\\", "/")}'
-        : null;
+    String? imageUrl =
+        (json['pictures'] != null && (json['pictures'] as List).isNotEmpty)
+            ? '${json['pictures'][0].replaceAll("\\", "/")}'
+            : null;
 
     return ScrapItem(
       id: json['id'] != null ? json['id'] as int : 0,
       title: json['title'] as String? ?? '제목 없음',
       imageUrl: imageUrl,
       likeCount: json['like_count'] != null ? json['like_count'] as int : 0,
-      commentCount: json['comment_count'] != null ? json['comment_count'] as int : 0,
+      commentCount:
+          json['comment_count'] != null ? json['comment_count'] as int : 0,
       scrapCount: json['scrap_count'] != null ? json['scrap_count'] as int : 0,
       createdAt: json['created_at'] as String? ?? '',
     );

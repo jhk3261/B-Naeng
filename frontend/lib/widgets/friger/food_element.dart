@@ -29,8 +29,7 @@ class FoodElement extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15), // BorderRadius 설정
                 image: DecorationImage(
                   image: NetworkImage(
-                      "http://127.0.0.1:8000/ingredient_image?file_path=." +
-                          imgPath),
+                      "http://127.0.0.1:8000/ingredient_image?file_path=.$imgPath"),
                   fit: BoxFit.cover, // 이미지 비율 유지, 잘라내기
                 ),
               ),

@@ -82,7 +82,7 @@ class LocationSettingsConfig {
         ),
       );
     } else {
-      return LocationSettings(
+      return const LocationSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 100,
       );

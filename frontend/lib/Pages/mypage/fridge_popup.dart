@@ -117,6 +117,7 @@ class _FridgePopupState extends State<FridgePopup> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
         padding: const EdgeInsets.all(16.0),
@@ -129,7 +130,7 @@ class _FridgePopupState extends State<FridgePopup> {
               children: [
                 const Text(
                   '냉장고 소유 목록',
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 20, fontFamily: 'GmarketSansBold'),
                 ),
                 GestureDetector(
                   onTap: () {
@@ -320,6 +321,8 @@ class _AdminFridgeDialogState extends State<AdminFridgeDialog> {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(10)),
         padding: const EdgeInsets.all(16.0),
         height: 400,
         child: Column(
@@ -346,10 +349,17 @@ class _AdminFridgeDialogState extends State<AdminFridgeDialog> {
             const SizedBox(height: 10),
             Center(
               child: ElevatedButton(
+                style: const ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Color(0xFF449C4A)),
+                  shadowColor: WidgetStatePropertyAll(Colors.transparent),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('닫기'),
+                child: const Text(
+                  '닫기',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],

@@ -1,6 +1,5 @@
 import 'package:frontend/Pages/chating/chat_room.dart';
 import 'package:frontend/Pages/login/google_auth.dart';
-import 'package:frontend/Pages/login/signup.dart';
 import 'package:frontend/Pages/mypage/mypage.dart';
 import 'package:frontend/Pages/friger/friger.dart';
 import 'package:frontend/Pages/recipe/recipes_list.dart';
@@ -32,9 +31,9 @@ class MyApp extends StatelessWidget {
         fontFamily: 'GmarketSansMedium', // 여기서 폰트 패밀리 이름 설정
         // 추가적으로 다른 테마 속성도 설정 가능
       ),
-      home: HomeScreen(cameras: cameras),
+      //home: HomeScreen(cameras: cameras),
       // home: RecipesRecommendList(cameras: cameras),
-      // home: SignInPage(cameras: cameras),
+      home: SignInPage(cameras: cameras),
     );
   }
 }

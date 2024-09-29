@@ -3,11 +3,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:frontend/main.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert'; 
+import 'dart:convert';
 import 'package:camera/camera.dart';
 
 class SignupComplete extends StatelessWidget {
-  final List<CameraDescription> cameras; 
+  final List<CameraDescription> cameras;
   const SignupComplete({super.key, required this.cameras});
 
   @override
@@ -54,7 +54,8 @@ class SignupComplete extends StatelessWidget {
           final userData = json.decode(response.body);
           print('User Info: $userData');
         } else {
-          print('Failed to load user info. Status code: ${response.statusCode}');
+          print(
+              'Failed to load user info. Status code: ${response.statusCode}');
         }
       } catch (e) {
         print('Error fetching user info: $e');
@@ -62,6 +63,7 @@ class SignupComplete extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: FutureBuilder<Map<String, dynamic>?>(
           future: getUserInfo(),

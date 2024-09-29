@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleLoginPage extends StatefulWidget {
+  const GoogleLoginPage({super.key});
+
   @override
   _GoogleLoginPageState createState() => _GoogleLoginPageState();
 }
@@ -34,16 +36,16 @@ class _GoogleLoginPageState extends State<GoogleLoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Google Sign In')),
+      appBar: AppBar(title: const Text('Google Sign In')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
               onPressed: _handleGoogleSignIn,
-              child: Text('Sign in with Google'),
+              child: const Text('Sign in with Google'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (_userEmail != null && _userName != null)
               Column(
                 children: [

@@ -129,9 +129,18 @@ class _WritePostPageState extends State<WritePostPage> {
         foregroundColor: const Color(0xFF232323),
         title: const Text('글 쓰기'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.check, color: Colors.green),
-            onPressed: _submitPost,
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: TextButton(
+              onPressed: _submitPost,
+              child: const Text(
+                '올리기',
+                style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
         ],
       ),

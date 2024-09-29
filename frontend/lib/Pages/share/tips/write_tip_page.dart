@@ -87,7 +87,7 @@ class _WriteTipPageState extends State<WriteTipPage> {
         centerTitle: false,
         surfaceTintColor: Colors.white,
         backgroundColor: Colors.white,
-        foregroundColor: Color(0xFF232323),
+        foregroundColor: const Color(0xFF232323),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -137,7 +137,7 @@ class _WriteTipPageState extends State<WriteTipPage> {
               const SizedBox(height: 10),
               TextField(
                 controller: _titleController,
-                cursorColor: Color(0xFF232323),
+                cursorColor: const Color(0xFF232323),
                 decoration: const InputDecoration(
                   labelText: '제목',
                   labelStyle: TextStyle(
@@ -155,7 +155,7 @@ class _WriteTipPageState extends State<WriteTipPage> {
                 child: TextField(
                   controller: _contentController,
                   maxLines: null,
-                  cursorColor: Color(0xFF232323),
+                  cursorColor: const Color(0xFF232323),
                   decoration: const InputDecoration(
                     hintStyle: TextStyle(
                       color: Color(0xffB7B7B7),
