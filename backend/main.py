@@ -32,9 +32,6 @@ app.add_middleware(
 )
 
 
-# static 폴더 연결
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 # 데이터베이스 초기화
 Base.metadata.create_all(bind=engine)
 
