@@ -85,9 +85,7 @@ class _FoodUpdateState extends State<FoodUpdate> {
       } else {
         throw Exception('Failed to load friger');
       }
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> submitData() async {
@@ -115,8 +113,6 @@ class _FoodUpdateState extends State<FoodUpdate> {
         Navigator.pop(context, true);
         // });
       } else {
-        // 에러 처리
-        print('Error: ${response.statusCode} - ${response.body}'); // 오류 로그 추가
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('식재료 수정에 실패했습니다.')),
         );

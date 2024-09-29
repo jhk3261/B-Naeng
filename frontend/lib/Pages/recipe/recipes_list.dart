@@ -20,7 +20,6 @@ Future<Map<String, dynamic>> fetchRecipes() async {
       'http://127.0.0.1:8000/recipes/recommend?friger_id=1&user_id=1')); // id 수정 필요
 
   if (response.statusCode == 200) {
-    print(jsonDecode(utf8.decode(response.bodyBytes)));
     return jsonDecode(utf8.decode(response.bodyBytes));
   } else {
     throw Exception('레시피 정보 불러오기 실패!!!');

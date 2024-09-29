@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:frontend/Pages/login/signup.dart';
 import 'package:frontend/main.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http; 
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:camera/camera.dart';
 
@@ -22,12 +22,11 @@ class SignInPage extends StatelessWidget {
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-      final String accessToken = googleAuth.accessToken!; 
+      final String accessToken = googleAuth.accessToken!;
       final String email = googleUser.email;
 
       // 이메일로 토큰 생성 후 storage에 저장
-      await storage.write(
-          key: 'access_token', value: accessToken); 
+      await storage.write(key: 'access_token', value: accessToken);
 
       // 사용자 조회
       final response = await http.get(
@@ -35,7 +34,7 @@ class SignInPage extends StatelessWidget {
       );
 
       if (response.statusCode == 200) {
-        final bool userExists = json.decode(response.body); 
+        final bool userExists = json.decode(response.body);
         if (userExists) {
           // 홈으로 이동
           Navigator.pushReplacement(
@@ -50,16 +49,15 @@ class SignInPage extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => SignupPage1(
-                  username: googleUser.displayName ?? '', email: email, cameras: cameras,),
+                username: googleUser.displayName ?? '',
+                email: email,
+                cameras: cameras,
+              ),
             ),
           );
         }
-      } else {
-        print("서버 응답 오류: ${response.statusCode}");
-      }
-    } catch (error) {
-      print("구글 로그인 중 오류 발생: $error");
-    }
+      } else {}
+    } catch (error) {}
   }
 
   @override

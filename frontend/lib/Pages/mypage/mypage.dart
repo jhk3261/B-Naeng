@@ -41,15 +41,13 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         scrapItems = items;
       });
-    }).catchError((error) {
-      print('Error fetching scrap items: $error');
-    });
+    }).catchError((error) {});
   }
 
   Future<UserProfile> fetchUserProfile(int userId) async {
     try {
       final url = Uri.parse('$apiUrl/load/userinfo?user_id=$userId');
-      print('Fetching user profile from: $url'); // URL 출력
+
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final List<dynamic> data =
@@ -60,13 +58,12 @@ class _ProfilePageState extends State<ProfilePage> {
         Map<String, dynamic> userJson =
             data[0] as Map<String, dynamic>; // user 정보
         int fridgeCount = data[1] as int; // 냉장고 개수
-        print('User Profile JSON: $userJson'); // JSON 응답 출력
+
         return UserProfile.fromJson(userJson, fridgeCount);
       } else {
         throw Exception('Failed to load user profile');
       }
     } catch (error) {
-      print('Error fetching user profile: $error');
       return UserProfile(
         id: userId,
         userId: userId,
@@ -86,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
       if (response.statusCode == 200) {
         List<dynamic> data =
             jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
-        print('Scrap Items JSON: $data'); // Scrap Items JSON 응답 출력
+
         if (data.isEmpty) {
           return [];
         }
@@ -97,7 +94,6 @@ class _ProfilePageState extends State<ProfilePage> {
         throw Exception('Failed to load scrap items');
       }
     } catch (error) {
-      print('Error fetching scrap items: $error');
       return Future.error('스크랩 항목을 불러오는 데 오류가 발생했습니다.');
     }
   }
@@ -382,8 +378,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           String imageUrl = item.imageUrl != null
                               ? "$apiUrl/scrap_image?file_path=${item.imageUrl}"
                               : "assets/images/noimg.png";
-
-                          print('Scrap Item Image URL: $imageUrl');
 
                           return ListTile(
                             leading: SizedBox(

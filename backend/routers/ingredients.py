@@ -99,7 +99,6 @@ class ScrapResponse(BaseModel):
 async def get_ingredient_image(file_path: str):
     # 파일이 존재하는지 확인
     if os.path.exists(file_path):
-        print("파일 보냅니다~")
         return FileResponse(file_path)
     else:
         return {"error": "File not found"}

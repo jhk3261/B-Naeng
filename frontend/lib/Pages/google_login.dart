@@ -28,9 +28,7 @@ class _GoogleLoginPageState extends State<GoogleLoginPage> {
         _userEmail = googleUser.email;
         _userName = googleUser.displayName;
       });
-    } catch (error) {
-      print('Google Sign In failed: $error');
-    }
+    } catch (error) {}
   }
 
   @override

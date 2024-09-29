@@ -46,15 +46,11 @@ class _ShareTipsState extends State<ShareTips> {
           };
         }).toList();
 
-        // print(receipes);
-
         setState(() {});
       } else {
         throw Exception('Failed to load receipes');
       }
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
+    } catch (e) {}
   }
 
   @override

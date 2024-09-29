@@ -65,7 +65,6 @@ class UsePointsRequest(BaseModel):
 async def get_tip_image(file_path: str):
     # 파일이 존재하는지 확인
     if os.path.exists(file_path):
-        print("파일 보냅니다~")
         return FileResponse(file_path)
     else:
         return {"error": "File not found"}
@@ -163,6 +162,7 @@ def use_points(request: UsePointsRequest, db: Session = Depends(get_db)):
         "remaining_points": mypage.green_points,
     }
 
+
 @router.get("/users/{user_id}/frigers/")
 def get_user_frigers(user_id: int, db: Session = Depends(get_db)):
     user_frigers = db.query(Friger).filter(Friger.owner_id == user_id).all()
@@ -175,7 +175,9 @@ def get_user_frigers(user_id: int, db: Session = Depends(get_db)):
             name=friger.name,
             inventory_count=len(friger.inventory_list),
             owner_id=friger.owner_id,
-            user_count=len(friger.user_list) if isinstance(friger.user_list, list) else 1,
+            user_count=(
+                len(friger.user_list) if isinstance(friger.user_list, list) else 1
+            ),
         )
         for friger in user_frigers
     ]

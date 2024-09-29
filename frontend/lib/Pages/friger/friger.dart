@@ -44,9 +44,7 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
       } else {
         throw Exception('Failed to load friger');
       }
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
+    } catch (e) {}
     return null;
   }
 
@@ -64,9 +62,7 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
       } else {
         throw Exception('Failed to load inventory');
       }
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
+    } catch (e) {}
     return null;
   }
 

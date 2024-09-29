@@ -38,7 +38,6 @@ class SignupComplete extends StatelessWidget {
     Future<void> fetchAndPrintUserInfo() async {
       final token = await storage.read(key: 'access_token');
       if (token == null) {
-        print('No token found');
         return;
       }
 
@@ -52,14 +51,8 @@ class SignupComplete extends StatelessWidget {
 
         if (response.statusCode == 200) {
           final userData = json.decode(response.body);
-          print('User Info: $userData');
-        } else {
-          print(
-              'Failed to load user info. Status code: ${response.statusCode}');
-        }
-      } catch (e) {
-        print('Error fetching user info: $e');
-      }
+        } else {}
+      } catch (e) {}
     }
 
     return Scaffold(

@@ -66,16 +66,12 @@ class _WriteTipPageState extends State<WriteTipPage> {
 
       if (response.statusCode == 200) {
         final responseBody = await response.stream.bytesToString();
-        print('Response: $responseBody');
+
         Navigator.pop(context, true);
       } else {
         final responseBody = await response.stream.bytesToString();
-        print('Failed with status code: ${response.statusCode}');
-        print('Response body: $responseBody');
       }
-    } catch (e) {
-      print('Error: $e');
-    }
+    } catch (e) {}
   }
 
   @override

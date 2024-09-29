@@ -62,22 +62,11 @@ class _WritePostPageState extends State<WritePostPage> {
       }
 
       // 요청 데이터 확인을 위해 출력
-      print('요청 필드: ${request.fields}');
-      print('요청 파일 수: ${request.files.length}');
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('글이 성공적으로 작성되었습니다.');
-        print('제목: $title');
-        print('내용: $content');
-        print('지역: $locationDong');
-
-        if (_isShared) {
-          print('나눔 완료된 글입니다.');
-        }
-
         // UI 상태 갱신
         setState(() {
           // 필요 시 입력 필드 및 상태 초기화
@@ -91,9 +80,6 @@ class _WritePostPageState extends State<WritePostPage> {
         // 글 작성 후 이전 화면으로 이동
         Navigator.pop(context);
       } else {
-        print('글 작성에 실패했습니다: ${response.statusCode}');
-        print('응답 본문: ${response.body}');
-
         String errorMessage = '글 작성에 실패했습니다.';
         try {
           final responseBody = jsonDecode(response.body);
@@ -110,7 +96,6 @@ class _WritePostPageState extends State<WritePostPage> {
         );
       }
     } catch (e) {
-      print('오류 발생: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('오류가 발생했습니다: $e')),
       );

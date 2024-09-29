@@ -424,20 +424,7 @@ class _FoodCreateSwipeState extends State<FoodCreateSwipe> {
             headers: {"Content-Type": "application/json"},
             body: jsonEncode(data),
           );
-
-          if (response.statusCode == 200) {
-            // Successfully posted
-            print('Ingredient ${data["name"]} successfully registered.');
-          } else {
-            // Handle error
-            print(
-                'Failed to register ingredient ${data["name"]}. Status code: ${response.statusCode}');
-          }
-        } catch (e) {
-          // Handle any errors
-          print(
-              'Error occurred while registering ingredient ${data["name"]}: $e');
-        }
+        } catch (e) {}
       }
 
       // Show a success message after all ingredients are registered

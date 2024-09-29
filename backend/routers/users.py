@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from api.models import Friger, User
 from sqlalchemy.orm import Session
 import json
+
 load_dotenv()
 
 
@@ -70,16 +71,13 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/user/login")
 # 토큰을 받아서 유효검사 후 payload의 user 필드 반환
 async def authenticate(token: str = Depends(oauth2_scheme)) -> str:
 
-    print("유효성검사 시작")
     if not token:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Sign in for access"
         )
 
-    print("디코딩 시작")
     decode_token = verify_access_token(token)
 
-    print("리턴 시작")
     return decode_token["user"]
 
 
@@ -145,7 +143,7 @@ async def login(
 
 
 @router.get("/load/userinfo")
-async def userInfo(user_id : int, db : Session=Depends(get_db)):
+async def userInfo(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     friger = db.query(Friger).filter(Friger.user_id == user_id).all()
     return [user, len(friger)]
@@ -186,23 +184,25 @@ def get_user_from_token(token: str, db: Session):
         raise credentials_exception
     return user
 
+
 @router.get("/load/userinfo")
-async def userInfo(user_id : int, db : Session=Depends(get_db)):
+async def userInfo(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     friger = db.query(Friger).filter(Friger.user_id == user_id).all()
     return [user, len(friger)]
 
+
 @router.get("/load/userinfo/detail")
 async def userInfoDetail(user_id: int, type: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
-    
+
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return getattr(user, type)
-    
+
 
 @router.get("/valid/user")
-async def validUser(email : str, db : Session=Depends(get_db)):
+async def validUser(email: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first()
     if user:
         return True

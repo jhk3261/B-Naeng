@@ -105,9 +105,7 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
         });
         final prefs = await SharedPreferences.getInstance();
         prefs.setBool('liked_${widget.id}', true); // 로컬 스토리지에 좋아요 상태 저장
-      } catch (e) {
-        print('Error liking post: $e');
-      }
+      } catch (e) {}
     }
   }
 
@@ -125,7 +123,6 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
         body: jsonEncode({"user_id": userId}),
       );
     } catch (e) {
-      print('Error scrapping post: $e');
       setState(() {
         isScrapped = !isScrapped;
       });
@@ -142,9 +139,7 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
         body: jsonEncode({"user_id": userId, "content": content}),
       );
       setState(() {}); // 댓글 추가 후 화면 갱신
-    } catch (e) {
-      print('Error sending comment: $e');
-    }
+    } catch (e) {}
   }
 
   @override
@@ -217,7 +212,6 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
         throw Exception('Failed to load ingredient');
       }
     } catch (e) {
-      print('Error fetching data: $e');
       rethrow;
     }
   }
@@ -260,7 +254,7 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (snapshot.hasData) {
                   final imageUrls = snapshot.data!;
-                  print(imageUrls);
+
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -412,8 +406,6 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
       setState(() {
         // fetched ingredient data can be set to state if needed
       });
-    } catch (e) {
-      print('Error fetching ingredient data: $e');
-    }
+    } catch (e) {}
   }
 }

@@ -1,6 +1,9 @@
 import uvicorn
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
+from config.database import engine, Base
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from routers import (
     auth,
     tips,
@@ -11,10 +14,7 @@ from routers import (
     friger,
     bill,
 )
-from config.database import engine, Base
-from fastapi.responses import FileResponse
-from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
@@ -58,7 +58,7 @@ async def favicon():
     return FileResponse("favicon.ico")
 
 
-HOST = "127.0.0.1"
+HOST = "127.0.0.1:8000"
 PORT = 8000
 
 if __name__ == "__main__":

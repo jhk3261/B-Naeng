@@ -14,7 +14,6 @@ class FridgeProvider with ChangeNotifier {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
-        print(data);
         setFridgeList(data
             .map((fridge) => {
                   'id': fridge['id'],
@@ -26,7 +25,6 @@ class FridgeProvider with ChangeNotifier {
         throw Exception('Failed to load fridges');
       }
     } catch (e) {
-      print(e);
       // 예외 처리 추가 가능
     }
   }

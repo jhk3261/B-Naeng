@@ -164,7 +164,8 @@ class _SignupPage1 extends State<SignupPage1> {
 
   Future<String> _getAddressFromLatLng(
       double latitude, double longitude) async {
-    String apiKey = "AIzaSyAzFqc4cSwpIZRycZ3qHKrPK8ybOiPVhJ8"; // 여기에 Google Maps API 키 입력
+    String apiKey =
+        "AIzaSyAzFqc4cSwpIZRycZ3qHKrPK8ybOiPVhJ8"; // 여기에 Google Maps API 키 입력
     final url = Uri.parse(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$apiKey");
 
@@ -213,16 +214,11 @@ class _SignupPage1 extends State<SignupPage1> {
         await storage.write(
             key: 'access_token', value: responseData['access_token']);
         String accessToken = responseData['access_token'];
-        print('Access Token: $accessToken');
-
-        // 요청 성공 시 true 반환
         return true;
       } else {
-        print('Failed to send user info: ${response.body}');
         return false; // 실패 시 false 반환
       }
     } catch (e) {
-      print('Error occurred during signup: $e');
       return false; // 오류 발생 시 false 반환
     }
   }
@@ -248,13 +244,8 @@ class _SignupPage1 extends State<SignupPage1> {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print('Token is valid for user: ${responseData['user']}');
-      } else {
-        print('Token validation failed: ${response.body}');
-      }
-    } catch (e) {
-      print('Error occurred during token validation: $e');
-    }
+      } else {}
+    } catch (e) {}
   }
 
   @override

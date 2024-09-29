@@ -83,7 +83,6 @@ class CameraScreenState extends State<CameraScreen> {
 
   Future<void> _takePicture() async {
     if (!_controller!.value.isInitialized) {
-      print('Error: select a camera first.');
       return;
     }
 
@@ -99,7 +98,6 @@ class CameraScreenState extends State<CameraScreen> {
       });
       await _sendPicture(file);
     } catch (e) {
-      print('Error: $e');
       setState(() {
         _isLoading = false; // Reset loading state on error
       });
@@ -123,8 +121,6 @@ class CameraScreenState extends State<CameraScreen> {
           ingredients.add(element);
         }
 
-        print(ingredients);
-
         setState(() {
           _isLoading = false; // Reset loading state
         });
@@ -138,13 +134,11 @@ class CameraScreenState extends State<CameraScreen> {
                   )),
         );
       } else {
-        print('Failed to upload image. Status code: ${response.statusCode}');
         setState(() {
           _isLoading = false; // Reset loading state on failure
         });
       }
     } catch (e) {
-      print('Error: $e');
       setState(() {
         _isLoading = false; // Reset loading state on error
       });

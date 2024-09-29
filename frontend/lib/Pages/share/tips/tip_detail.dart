@@ -50,7 +50,6 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
         ),
       );
     } catch (e) {
-      print('Error liking post: $e');
       // 오류 시 상태 롤백
       setState(() {
         isLiked = !isLiked;
@@ -74,7 +73,6 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
         ),
       );
     } catch (e) {
-      print('Error scrapping post: $e');
       // 오류 시 상태 롤백
       setState(() {
         isScrapped = !isScrapped;
@@ -92,9 +90,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
         body: jsonEncode({"user_id": userId, "content": content}),
       );
       setState(() {}); // 댓글 추가 후 화면 갱신
-    } catch (e) {
-      print('Error sending comment: $e');
-    }
+    } catch (e) {}
   }
 
   @override
@@ -166,7 +162,6 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
         throw Exception('Failed to load tip');
       }
     } catch (e) {
-      print('Error fetching data: $e');
       rethrow;
     }
   }
@@ -253,7 +248,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
               itemCount: tip['pictures'].length,
               itemBuilder: (context, index) {
                 final pictureUrl = tip['pictures'][index];
-                print(pictureUrl);
+
                 final fullUrl =
                     "http://127.0.0.1:8000/tip_image?file_path=$pictureUrl";
 

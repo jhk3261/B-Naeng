@@ -77,33 +77,24 @@ class _FridgePopupState extends State<FridgePopup> {
       if (response.statusCode == 200) {
         List<dynamic> frigerJson =
             jsonDecode((utf8.decode(response.bodyBytes)));
-        print('Fetched fridges JSON: $frigerJson'); // 서버에서 받은 JSON 데이터 출력
 
         // JSON 데이터 구조 확인
         if (frigerJson.isEmpty) {
-          print('No fridges found for user ID: $userId');
-        } else {
-          print('Fetched ${frigerJson.length} fridges for user ID: $userId');
-        }
+        } else {}
 
         // Friger 객체로 변환
         List<Friger> fridges = frigerJson.map((json) {
-          print('Converting JSON to Friger: $json'); // 변환할 JSON 출력
           return Friger.fromJson(json);
         }).toList();
-        print('Mapped Friger objects: $fridges'); // 변환된 Friger 객체 출력
 
         setState(() {
           _fridges = fridges;
           _isLoading = false;
         });
       } else {
-        print(
-            'Failed to load fridges: ${response.statusCode}'); // 실패한 경우 상태 코드 출력
         throw Exception('Failed to load fridges');
       }
     } catch (e) {
-      print('Error fetching fridges: $e');
       setState(() {
         _fridges = [];
         _isLoading = false;
@@ -150,7 +141,7 @@ class _FridgePopupState extends State<FridgePopup> {
                           itemCount: _fridges.length,
                           itemBuilder: (context, index) {
                             final friger = _fridges[index];
-                            print('Rendering fridge: ${friger.name}'); // 이름 확인
+
                             bool isAdmin =
                                 friger.ownerId == friger.currentUserId;
                             return _buildFridgeItem(
@@ -171,7 +162,6 @@ class _FridgePopupState extends State<FridgePopup> {
 
   Widget _buildFridgeItem(BuildContext context, int fridgeId, String title,
       bool isSelected, bool isAdmin) {
-    print('Building fridge item: $title'); // 냉장고 아이템 빌드 확인
     return ListTile(
       title: Text(
         title,

@@ -31,9 +31,7 @@ class _FrigerChangeState extends State<FrigerChange> {
       } else {
         throw Exception('Failed to load list');
       }
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
+    } catch (e) {}
     return null;
   }
 
@@ -56,9 +54,7 @@ class _FrigerChangeState extends State<FrigerChange> {
       selectedFridge = _frigerList.firstWhere(
         (fridge) => fridge['id'] == currentFridgeId,
       );
-    } else {
-      print('No data found');
-    }
+    } else {}
   }
 
   static double scaleWidth(BuildContext context) {
