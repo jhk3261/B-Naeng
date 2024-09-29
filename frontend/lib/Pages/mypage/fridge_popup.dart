@@ -75,7 +75,8 @@ class _FridgePopupState extends State<FridgePopup> {
           await http.get(Uri.parse('$apiUrl/users/$userId/frigers/'));
 
       if (response.statusCode == 200) {
-        List<dynamic> frigerJson = jsonDecode((utf8.decode(response.bodyBytes)));
+        List<dynamic> frigerJson =
+            jsonDecode((utf8.decode(response.bodyBytes)));
         print('Fetched fridges JSON: $frigerJson'); // 서버에서 받은 JSON 데이터 출력
 
         // JSON 데이터 구조 확인
@@ -282,8 +283,22 @@ class _AdminFridgeDialogState extends State<AdminFridgeDialog> {
 
       if (response.statusCode == 200) {
         List<dynamic> usersJson = jsonDecode(response.body);
+
+        // JSON을 AppUser 리스트로 변환
+        List<AppUser> fetchedUsers =
+            usersJson.map((json) => AppUser.fromJson(json)).toList();
+
+        // 현재 유저 ID가 목록에 없으면 추가
+        const int currentUserId = 1;
+        bool currentUserExists =
+            fetchedUsers.any((user) => user.id == currentUserId);
+
+        if (!currentUserExists) {
+          fetchedUsers.add(AppUser(id: currentUserId, username: '현재 유저'));
+        }
+
         setState(() {
-          _users = usersJson.map((json) => AppUser.fromJson(json)).toList();
+          _users = fetchedUsers;
           _isLoading = false;
         });
       } else {

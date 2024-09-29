@@ -71,7 +71,7 @@ class _UsePointsPageState extends State<UsePointsPage> {
         userProfileFuture = fetchUserProfile(userId);
       } else {
         setState(() {
-          message = '포인트 사용 중 문제가 발생했습니다. 상태 코드: ${response.statusCode}';
+          message = '포인트가 부족합니다.';
         });
       }
     } catch (_) {

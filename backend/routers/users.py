@@ -7,7 +7,7 @@ from typing import Optional
 from jose import jwt, JWTError
 from config.database import get_db
 from dotenv import load_dotenv
-from api.models import User
+from api.models import Friger, User
 from sqlalchemy.orm import Session
 
 load_dotenv()
@@ -145,9 +145,10 @@ async def login(
 
 
 @router.get("/load/userinfo")
-async def userInfo(user_id: int, db: Session = Depends(get_db)):
+async def userInfo(user_id : int, db : Session=Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
-    return user
+    friger = db.query(Friger).filter(Friger.user_id == user_id).all()
+    return [user, len(friger)]
 
 
 @router.get("/load/userinfo/detail")

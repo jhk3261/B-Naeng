@@ -37,16 +37,29 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     userProfileFuture = fetchUserProfile(userId);
-    fetchScrapItems(userId);
+    fetchScrapItems(userId).then((items) {
+      setState(() {
+        scrapItems = items;
+      });
+    }).catchError((error) {
+      print('Error fetching scrap items: $error');
+    });
   }
 
   Future<UserProfile> fetchUserProfile(int userId) async {
     try {
-      final response =
-          await http.get(Uri.parse('$apiUrl/load/userinfo?user_id=$userId'));
+      final url = Uri.parse('$apiUrl/load/userinfo?user_id=$userId');
+      print('Fetching user profile from: $url'); // URL 출력
+      final response = await http.get(url);
       if (response.statusCode == 200) {
-        return UserProfile.fromJson(
-            jsonDecode(utf8.decode(response.bodyBytes)));
+        final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+        if (data.length < 2) {
+          throw Exception('Invalid user profile data');
+        }
+        Map<String, dynamic> userJson = data[0] as Map<String, dynamic>; // user 정보
+        int fridgeCount = data[1] as int; // 냉장고 개수
+        print('User Profile JSON: $userJson'); // JSON 응답 출력
+        return UserProfile.fromJson(userJson, fridgeCount);
       } else {
         throw Exception('Failed to load user profile');
       }
@@ -65,15 +78,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<List<ScrapItem>> fetchScrapItems(int userId) async {
     try {
-      final response =
-          await http.get(Uri.parse('$apiUrl/users/$userId/scraps'));
+      final response = await http.get(Uri.parse('$apiUrl/users/$userId/scraps'));
 
       if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode((utf8.decode(response.bodyBytes)));
+        List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+        print('Scrap Items JSON: $data'); // Scrap Items JSON 응답 출력
         if (data.isEmpty) {
           return [];
         }
-        return data.map((json) => ScrapItem.fromJson(json)).toList();
+        return data.map((json) => ScrapItem.fromJson(json as Map<String, dynamic>)).toList();
       } else {
         throw Exception('Failed to load scrap items');
       }
@@ -343,64 +356,80 @@ class _ProfilePageState extends State<ProfilePage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return Center(child: Text('오류가 발생했습니다.  ${snapshot.error}'));
+                return Center(child: Text('오류가 발생했습니다: ${snapshot.error}'));
               } else if (!snapshot.hasData || snapshot.data == null) {
                 return const Center(child: Text('스크랩 항목이 없습니다.'));
               } else {
                 scrapItems = snapshot.data!;
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: scrapItems.length,
-                  itemBuilder: (context, index) {
-                    final item = scrapItems[index];
+                return scrapItems.isEmpty
+                    ? const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text('스크랩 항목이 없습니다.'),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: scrapItems.length,
+                        itemBuilder: (context, index) {
+                          final item = scrapItems[index];
 
-                    String imageUrl = item.imageUrl != null
-                        ? "http://127.0.0.1:8000/scrap_image?file_path=${item.imageUrl}"
-                        : "assets/images/noimg.png";
+                          String imageUrl = item.imageUrl != null
+                              ? "$apiUrl/scrap_image?file_path=${item.imageUrl}"
+                              : "assets/images/noimg.png";
 
-                    print(imageUrl);
+                          print('Scrap Item Image URL: $imageUrl');
 
-                    return ListTile(
-                      leading: SizedBox(
-                        width: 80,
-                        height: 60,
-                        child: Image.network(
-                          imageUrl,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      title: Text(item.title),
-                      subtitle: Row(
-                        children: [
-                          Image.asset(
-                            'assets/images/heart.png',
-                            width: 15,
-                            height: 15,
-                          ),
-                          const SizedBox(width: 5),
-                          Text('${item.likeCount}'),
-                          const SizedBox(width: 10),
-                          Image.asset(
-                            'assets/images/comment.png',
-                            width: 15,
-                            height: 15,
-                          ),
-                          const SizedBox(width: 5),
-                          Text('${item.commentCount}'),
-                          const SizedBox(width: 10),
-                          Image.asset(
-                            'assets/images/star.png',
-                            width: 15,
-                            height: 15,
-                          ),
-                          const SizedBox(width: 5),
-                          Text('${item.scrapCount}'),
-                        ],
-                      ),
-                    );
-                  },
-                );
+                          return ListTile(
+                            leading: SizedBox(
+                              width: 80,
+                              height: 60,
+                              child: item.imageUrl != null
+                                  ? Image.network(
+                                      imageUrl,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Image.asset(
+                                          'assets/images/noimg.png',
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    )
+                                  : Image.asset(
+                                      'assets/images/noimg.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                            title: Text(item.title),
+                            subtitle: Row(
+                              children: [
+                                Image.asset(
+                                  'assets/images/heart.png',
+                                  width: 15,
+                                  height: 15,
+                                ),
+                                const SizedBox(width: 5),
+                                Text('${item.likeCount}'),
+                                const SizedBox(width: 10),
+                                Image.asset(
+                                  'assets/images/comment.png',
+                                  width: 15,
+                                  height: 15,
+                                ),
+                                const SizedBox(width: 5),
+                                Text('${item.commentCount}'),
+                                const SizedBox(width: 10),
+                                Image.asset(
+                                  'assets/images/star.png',
+                                  width: 15,
+                                  height: 15,
+                                ),
+                                const SizedBox(width: 5),
+                                Text('${item.scrapCount}'),
+                              ],
+                            ),
+                          );
+                        },
+                      );
               }
             },
           ),
@@ -427,14 +456,15 @@ class UserProfile {
     required this.fridgeCount,
   });
 
-  factory UserProfile.fromJson(Map<String, dynamic> json) {
+  // fridgeCount를 추가로 받는 생성자
+  factory UserProfile.fromJson(Map<String, dynamic> json, int fridgeCount) {
     return UserProfile(
       id: json['id'] != null ? json['id'] as int : 0,
       userId: json['user_id'] != null ? json['user_id'] as int : 0,
       username: json['username'] as String? ?? '기본 사용자',
       profileImageUrl: json['profile_image_url'] as String?,
       greenPoints: json['green_points'] != null ? json['green_points'] as int : 0,
-      fridgeCount: json['fridge_count'] != null ? json['fridge_count'] as int : 0,
+      fridgeCount: fridgeCount,
     );
   }
 }
@@ -459,18 +489,18 @@ class ScrapItem {
   });
 
   factory ScrapItem.fromJson(Map<String, dynamic> json) {
-    String? imageUrl = (json['pictures'] != null && json['pictures'].isNotEmpty)
+    String? imageUrl = (json['pictures'] != null && (json['pictures'] as List).isNotEmpty)
         ? '${json['pictures'][0].replaceAll("\\", "/")}'
         : null;
 
     return ScrapItem(
-      id: json['id'],
-      title: json['title'],
+      id: json['id'] != null ? json['id'] as int : 0,
+      title: json['title'] as String? ?? '제목 없음',
       imageUrl: imageUrl,
-      likeCount: json['like_count'],
-      commentCount: json['comment_count'],
-      scrapCount: json['scrap_count'],
-      createdAt: json['created_at'] ?? '',
+      likeCount: json['like_count'] != null ? json['like_count'] as int : 0,
+      commentCount: json['comment_count'] != null ? json['comment_count'] as int : 0,
+      scrapCount: json['scrap_count'] != null ? json['scrap_count'] as int : 0,
+      createdAt: json['created_at'] as String? ?? '',
     );
   }
 }
