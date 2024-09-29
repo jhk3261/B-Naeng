@@ -31,25 +31,10 @@ class User(Base):
     recommender = Column(String, default="", nullable=True)
     location = Column(String, nullable=False)
     green_points = Column(Integer, default=0, nullable=False)
-
-<<<<<<< HEAD
-    # owned_friger = relationship(
-    #     "Friger", back_populates="owner", cascade="all, delete-orphan"
-    # )
-    # frigers = relationship(
-    #     "Friger", secondary=friger_user_association, back_populates="users"
-    # )
-
-    frigers = relationship(
-        "Friger", secondary=friger_user_association, back_populates="users"
-    )
-
-=======
     #냉장고와의 관계 설정
     frigers = relationship(
         "Friger", back_populates="user_list", cascade="all, delete-orphan"
     )
->>>>>>> 80ef084b1cfb344479bec3c5ba5cf37aed478673
     ingredients = relationship("Ingredient", back_populates="users")
 
     # MyPage와의 관계 설정
@@ -105,9 +90,6 @@ class Friger(Base):
     owner_id = Column(Integer, nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    users = relationship(
-        "User", secondary=friger_user_association, back_populates="frigers"
-    )
 
     inventory_list = relationship(
         "Inventory", back_populates="friger", cascade="all, delete-orphan"
@@ -206,7 +188,3 @@ class Recipe(Base):
     create_time = Column(DateTime, nullable=False)
     recommend_recipes = Column(JSON, nullable=False)
     recommend_recipes_more = Column(JSON, nullable=False)
-<<<<<<< HEAD
-=======
-
->>>>>>> 80ef084b1cfb344479bec3c5ba5cf37aed478673
