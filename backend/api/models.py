@@ -31,7 +31,8 @@ class User(Base):
     recommender = Column(String, default="", nullable=True)
     location = Column(String, nullable=False)
     green_points = Column(Integer, default=0, nullable=False)
-    #냉장고와의 관계 설정
+
+    # 냉장고와의 관계 설정
     frigers = relationship(
         "Friger", back_populates="user_list", cascade="all, delete-orphan"
     )
@@ -95,7 +96,8 @@ class Friger(Base):
         "Inventory", back_populates="friger", cascade="all, delete-orphan"
     )
     user_list = relationship(
-        "User", back_populates="frigers",
+        "User",
+        back_populates="frigers",
     )
 
 

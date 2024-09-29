@@ -83,8 +83,7 @@ class ShareIngredient extends StatelessWidget {
                                     id: food['id'],
                                   ),
                                 ),
-                              ).then((_) {
-                              });
+                              ).then((_) {});
                             },
                             child: FoodElement(
                               isShared: food['is_shared'],
