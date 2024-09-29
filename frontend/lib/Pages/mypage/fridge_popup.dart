@@ -75,7 +75,7 @@ class _FridgePopupState extends State<FridgePopup> {
           await http.get(Uri.parse('$apiUrl/users/$userId/frigers/'));
 
       if (response.statusCode == 200) {
-        List<dynamic> frigerJson = jsonDecode(response.body);
+        List<dynamic> frigerJson = jsonDecode((utf8.decode(response.bodyBytes)));
         print('Fetched fridges JSON: $frigerJson'); // 서버에서 받은 JSON 데이터 출력
 
         // JSON 데이터 구조 확인
