@@ -60,6 +60,7 @@ class SignupTermsForm extends StatelessWidget {
           height: 5,
         ),
         Container(
+          width: 430,
           height: 100,
           // border 추가 필요
           color: const Color(0xfff9f9f9),

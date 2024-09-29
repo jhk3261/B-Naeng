@@ -171,6 +171,7 @@ class _FrigerState extends State<Friger> with SingleTickerProviderStateMixin {
           ),
         ),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           elevation: 0,
           centerTitle: false,
           surfaceTintColor: Colors.white,
