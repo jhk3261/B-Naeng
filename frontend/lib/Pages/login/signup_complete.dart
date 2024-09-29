@@ -1,14 +1,13 @@
-import 'dart:convert';
-
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:frontend/main.dart'; // HomeScreen을 불러오기 위해 main.dart도 import
+import 'package:frontend/main.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; 
+import 'package:camera/camera.dart';
 
 class SignupComplete extends StatelessWidget {
-  final List<CameraDescription> cameras; // 카메라 정보를 받아야 함
-
+  final List<CameraDescription> cameras; 
   const SignupComplete({super.key, required this.cameras});
 
   @override
@@ -18,6 +17,7 @@ class SignupComplete extends StatelessWidget {
     // SecureStorage
     const FlutterSecureStorage storage = FlutterSecureStorage();
 
+    // 사용자 정보를 가져오는 기존 함수 토큰 파싱
     Future<Map<String, dynamic>?> getUserInfo() async {
       final token = await storage.read(key: 'access_token');
       if (token == null) return null;
@@ -32,6 +32,33 @@ class SignupComplete extends StatelessWidget {
 
       // Json 으로 변환 후 반환
       return json.decode(decodedPayload);
+    }
+
+    // 토큰을 가져와서 서버에 전송 후 사용자 정보를 받아오기
+    Future<void> fetchAndPrintUserInfo() async {
+      final token = await storage.read(key: 'access_token');
+      if (token == null) {
+        print('No token found');
+        return;
+      }
+
+      try {
+        final response = await http.get(
+          Uri.parse('http://127.0.0.1:8000/load/userinfo'),
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final userData = json.decode(response.body);
+          print('User Info: $userData');
+        } else {
+          print('Failed to load user info. Status code: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error fetching user info: $e');
+      }
     }
 
     return Scaffold(
@@ -60,13 +87,13 @@ class SignupComplete extends StatelessWidget {
                 Text(user), // 사용자 이름 표시
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    //HomeScreen으로 이동
+                  onPressed: () async {
+                    await fetchAndPrintUserInfo();
+                    // HomeScreen으로 이동
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            HomeScreen(cameras: cameras), // HomeScreen으로 이동
+                        builder: (context) => HomeScreen(cameras: cameras),
                       ),
                     );
                     // Navigator.of(context).pushAndRemoveUntil(

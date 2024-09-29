@@ -164,7 +164,7 @@ class _SignupPage1 extends State<SignupPage1> {
 
   Future<String> _getAddressFromLatLng(
       double latitude, double longitude) async {
-    String apiKey = "YOUR_GOOGLE_MAPS_API_KEY"; // 여기에 Google Maps API 키 입력
+    String apiKey = "AIzaSyAzFqc4cSwpIZRycZ3qHKrPK8ybOiPVhJ8"; // 여기에 Google Maps API 키 입력
     final url = Uri.parse(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$apiKey");
 
@@ -203,7 +203,7 @@ class _SignupPage1 extends State<SignupPage1> {
           'nickname': nickname,
           'birth': birth.toIso8601String(),
           'gender': gender,
-          'recommender': recommender,
+          'recommender': recommender ?? '',
           'location': location,
         }),
       );

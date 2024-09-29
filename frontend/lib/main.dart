@@ -1,5 +1,6 @@
 import 'package:frontend/Pages/chating/chat_room.dart';
 import 'package:frontend/Pages/login/google_auth.dart';
+import 'package:frontend/Pages/login/signup.dart';
 import 'package:frontend/Pages/mypage/mypage.dart';
 import 'package:frontend/Pages/friger/friger.dart';
 import 'package:frontend/Pages/recipe/recipes_list.dart';
