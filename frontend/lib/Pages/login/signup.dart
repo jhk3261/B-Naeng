@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/Pages/login/signup_complete.dart';
 import 'package:frontend/widgets/login/signup_inputForm.dart';
@@ -12,11 +13,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class SignupPage1 extends StatefulWidget {
   final String username;
   final String email;
+  final List<CameraDescription> cameras;
 
   const SignupPage1({
     super.key,
     required this.username,
     required this.email,
+    required this.cameras,
   });
 
   @override
@@ -590,8 +593,8 @@ class _SignupPage1 extends State<SignupPage1> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SignupComplete(
-                                cameras: [],
+                              builder: (context) => SignupComplete(
+                                cameras: widget.cameras,
                               ),
                             ),
                           );

@@ -336,8 +336,8 @@ class _IngredientDetailPageState extends State<IngredientDetailPage> {
                       // 프로필 이미지 추가
                       const CircleAvatar(
                         radius: 20,
-                        backgroundImage:
-                            AssetImage('assets/images/profile.png'), // 기본 유저 이미지 경로
+                        backgroundImage: AssetImage(
+                            'assets/images/profile.png'), // 기본 유저 이미지 경로
                       ),
                       const SizedBox(width: 10),
                       Expanded(

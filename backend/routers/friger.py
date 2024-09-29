@@ -71,14 +71,13 @@ class FrigerResponseWithCount(BaseModel):
 # TO DO : 2. 내가 포함된 Friger List 조회
 
 
-# 1. Friger 생성
 @router.post("/frigers/")
 # async def create_friger(name : str, unique_code: int, db: Session = Depends(get_db), current_user: User = Depends(authenticate)):
-async def create_friger(name: str, unique_code: int, db: Session = Depends(get_db)):
+async def create_friger(unique_code: int, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.id == 1).first()
     # 임시
     new_friger = Friger(
-        name=name,
+        name=db_user.nickname,
         unique_code=unique_code,
         owner_id=1,
         user_id=1,
