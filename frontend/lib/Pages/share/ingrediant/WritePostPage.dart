@@ -78,7 +78,6 @@ class _WritePostPageState extends State<WritePostPage> {
           print('나눔 완료된 글입니다.');
         }
 
-        super.initState();
         // 글 작성 후 나눔 페이지로 이동
         Navigator.pop(context);
       } else {

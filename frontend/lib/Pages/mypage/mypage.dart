@@ -127,6 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget buildProfileSection(UserProfile profile) {
     return Column(
       children: [
+        const SizedBox(height: 80),
         Container(
           width: 60,
           height: 60,

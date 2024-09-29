@@ -133,7 +133,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
                         final tip = snapshot.data!;
                         return Column(
                           children: [
-                            _buildPost(tip),
+                            _buildPost(tip, tip["username"]),
                             const Divider(),
                             _buildCommentSection(tip['comments']),
                           ],
@@ -172,9 +172,10 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
   }
 
   // 게시글 내용을 출력하는 위젯
-  Widget _buildPost(Map<String, dynamic> tip) {
+  Widget _buildPost(Map<String, dynamic> tip, String username) {
     String category =
         tip["category"] == 0 ? "레시피" : (tip["category"] == 1 ? "관리" : "특가");
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -208,7 +209,7 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
               Row(
                 children: [
                   Image.asset(
-                    "assets/images/rice.jpeg",
+                    "assets/images/profile.png",
                     width: 40,
                     height: 40,
                   ),
@@ -216,8 +217,8 @@ class _ReceipeDetailPageState extends State<ReceipeDetailPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "신지아지랑이",
+                      Text(
+                        username,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
